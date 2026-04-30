@@ -1,33 +1,38 @@
 "use client";
 
 import { AnimatedTextScroll } from "@/components/ui/text-scroll-animation";
-import { MoveRight } from "lucide-react";
+import { 
+  HoverSlider,
+  HoverSliderImage,
+  HoverSliderImageWrap,
+  TextStaggerHover 
+} from "@/components/blocks/animated-slideshow";
 
 export default function DemoThree() {
   const services = [
     {
       title: "Cerámica Estética",
-      description: "Carillas ultrafinas hechas a mano que imitan la translucidez natural del esmalte orgánico para una sonrisa impecable.",
+      imageUrl: "https://images.unsplash.com/photo-1576402431718-4a572a1cfcb3?q=80&w=2486&auto=format&fit=crop",
     },
     {
       title: "Implantes de Precisión",
-      description: "Soluciones restaurativas de microingeniería que se integran a la perfección con tu biología y estética.",
+      imageUrl: "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?q=80&w=2486&auto=format&fit=crop",
     },
     {
       title: "Alineación Invisible",
-      description: "Terapia de alineadores transparentes de última generación que utiliza modelado predictivo 3D avanzado para una alineación perfecta.",
+      imageUrl: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?q=80&w=2486&auto=format&fit=crop",
     },
     {
-      title: "Diseño de Sonrisa Digital",
-      description: "Planificación virtual avanzada para diseñar y previsualizar los resultados de tu tratamiento antes de comenzar.",
+      title: "Diseño de Sonrisa",
+      imageUrl: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=2486&auto=format&fit=crop",
     },
     {
       title: "Blanqueamiento Láser",
-      description: "Tratamiento de blanqueamiento profundo y seguro para devolver el brillo natural a tu sonrisa en una sola sesión.",
+      imageUrl: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=2486&auto=format&fit=crop",
     },
     {
       title: "Odontología Preventiva",
-      description: "Cuidado integral y limpiezas profundas para mantener una salud bucal óptima y prevenir futuros problemas.",
+      imageUrl: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2486&auto=format&fit=crop",
     },
   ];
 
@@ -36,31 +41,45 @@ export default function DemoThree() {
       {/* Animated Text Header */}
       <AnimatedTextScroll text="Te mereces la mejor sonrisa" className="h-[70vh] -mb-[10vh]" />
 
-      <div className="w-full max-w-7xl px-8 z-10 mb-6">
+      <div className="w-full max-w-7xl px-8 z-10 mb-16 text-center md:text-left">
         <p className="text-xs md:text-sm uppercase tracking-[0.2em] text-gray-500 font-medium">
           Lo que ofrecemos
         </p>
       </div>
 
-      {/* Services Grid */}
-      <div className="w-full max-w-7xl px-8 z-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-        {services.map((service, index) => (
-          <div 
-            key={index}
-            className="group relative flex flex-col p-8 border border-black/10 bg-white/50 backdrop-blur-sm hover:bg-white transition-all duration-500 ease-out hover:shadow-xl hover:-translate-y-2"
-          >
-            <div className="text-black mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <MoveRight strokeWidth={1} size={32} />
-            </div>
-            <h3 className="text-2xl font-bold uppercase tracking-wide text-black mb-4">
-              {service.title}
-            </h3>
-            <p className="text-gray-500 font-light text-sm leading-relaxed">
-              {service.description}
-            </p>
+      {/* Services Hover Slider */}
+      <HoverSlider className="w-full max-w-7xl px-8 z-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-12 md:gap-24">
+          <div className="flex flex-col space-y-6 md:space-y-8 w-full md:w-1/2 text-left items-start">
+            {services.map((service, index) => (
+              <TextStaggerHover
+                key={service.title}
+                index={index}
+                className="cursor-pointer text-3xl md:text-5xl font-bold uppercase tracking-tighter text-black"
+                text={service.title}
+              />
+            ))}
           </div>
-        ))}
-      </div>
+          
+          <div className="w-full md:w-1/2 flex justify-center md:justify-end">
+            <HoverSliderImageWrap className="w-full max-w-[500px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
+              {services.map((service, index) => (
+                <div key={index} className="size-full">
+                  <HoverSliderImage
+                    index={index}
+                    imageUrl={service.imageUrl}
+                    src={service.imageUrl}
+                    alt={service.title}
+                    className="size-full object-cover"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </div>
+              ))}
+            </HoverSliderImageWrap>
+          </div>
+        </div>
+      </HoverSlider>
     </section>
   );
 }
