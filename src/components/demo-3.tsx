@@ -17,12 +17,30 @@ export default function DemoThree() {
       title: "Alineación Invisible",
       description: "Terapia de alineadores transparentes de última generación que utiliza modelado predictivo 3D avanzado para una alineación perfecta.",
     },
+    {
+      title: "Diseño de Sonrisa Digital",
+      description: "Planificación virtual avanzada para diseñar y previsualizar los resultados de tu tratamiento antes de comenzar.",
+    },
+    {
+      title: "Blanqueamiento Láser",
+      description: "Tratamiento de blanqueamiento profundo y seguro para devolver el brillo natural a tu sonrisa en una sola sesión.",
+    },
+    {
+      title: "Odontología Preventiva",
+      description: "Cuidado integral y limpiezas profundas para mantener una salud bucal óptima y prevenir futuros problemas.",
+    },
   ];
 
   return (
     <section className="relative w-full bg-[#f5f4f3] flex flex-col items-center pb-32">
       {/* Animated Text Header */}
       <AnimatedTextScroll text="Te mereces la mejor sonrisa" className="h-[150vh] -mb-[50vh]" />
+
+      <div className="w-full max-w-7xl px-8 z-10 mb-6">
+        <p className="text-xs md:text-sm uppercase tracking-[0.2em] text-gray-500 font-medium">
+          Lo que ofrecemos
+        </p>
+      </div>
 
       {/* Services Grid */}
       <div className="w-full max-w-7xl px-8 z-10 grid grid-cols-1 md:grid-cols-3 gap-8">
