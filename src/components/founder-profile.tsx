@@ -22,15 +22,15 @@ export default function FounderProfile() {
         {/* Right: Content */}
         <div className="flex flex-col space-y-10 max-w-2xl">
           <div className="space-y-4">
-            <h4 className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-500">El Arquitecto de la Sonrisa</h4>
-            <h2 className="text-4xl md:text-5xl font-light text-white/90 tracking-tight leading-[1.2]">
-              "La odontología no se trata solo de la perfección clínica, se trata de restaurar el <span className="italic font-serif text-white/60">espíritu humano</span>."
+            <h4 className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300">El Arquitecto de la Sonrisa</h4>
+            <h2 className="text-4xl md:text-5xl font-light text-white tracking-tight leading-[1.2]">
+              "La odontología no se trata solo de la perfección clínica, se trata de restaurar el <span className="italic font-serif text-gray-300">espíritu humano</span>."
             </h2>
           </div>
 
-          <div className="w-16 h-[1px] bg-gray-700"></div>
+          <div className="w-16 h-[1px] bg-gray-500"></div>
 
-          <div className="space-y-6 text-gray-400 font-light leading-relaxed">
+          <div className="space-y-6 text-gray-200 font-light leading-relaxed">
             <p>
               Este estudio fue fundado con una visión singular: desmantelar la ansiedad históricamente asociada con el cuidado dental y reemplazarla con una sensación de profunda serenidad y empoderamiento.
             </p>
@@ -42,7 +42,7 @@ export default function FounderProfile() {
           {/* Signature or Name */}
           <div className="pt-8">
             <h3 className="text-xl font-medium tracking-widest uppercase text-white">Dental Valez</h3>
-            <p className="text-xs uppercase tracking-widest text-gray-500 mt-2">Visión y Equipo Clínico</p>
+            <p className="text-xs uppercase tracking-widest text-gray-300 mt-2">Visión y Equipo Clínico</p>
           </div>
         </div>
 

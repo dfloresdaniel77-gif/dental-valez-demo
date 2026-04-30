@@ -39,10 +39,10 @@ export default function DemoFour() {
     <section className="relative w-full bg-[#2a2a2a] flex flex-col items-center py-32 px-8">
       <div className="max-w-4xl w-full flex flex-col items-center">
         <div className="text-center mb-16">
-          <h2 className="text-white/90 text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
+          <h2 className="text-white text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
             Transformaciones
           </h2>
-          <p className="text-gray-400 font-light text-lg tracking-wide">
+          <p className="text-gray-200 font-light text-lg tracking-wide">
             La sutil diferencia entre el cuidado estándar y el verdadero arte.
           </p>
         </div>

@@ -44,10 +44,10 @@ export default function DemoFive() {
     <section className="relative w-full bg-[#2a2a2a] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
       <div className="max-w-xl w-full mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-white/90 text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
+          <h2 className="text-white text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
             Comienza Tu Viaje
           </h2>
-          <p className="text-gray-400 font-light text-lg tracking-wide">
+          <p className="text-gray-200 font-light text-lg tracking-wide">
             Programa una consulta privada y descubre el futuro del cuidado dental premium.
           </p>
         </div>
@@ -77,7 +77,7 @@ export default function DemoFive() {
               />
               <label 
                 htmlFor="fullName" 
-                className="absolute left-0 top-3 text-gray-500 text-lg transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white cursor-text"
+                className="absolute left-0 top-3 text-gray-400 text-lg transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white cursor-text"
               >
                 Nombre Completo
               </label>
@@ -94,7 +94,7 @@ export default function DemoFive() {
                 />
                 <label 
                   htmlFor="email" 
-                  className="absolute left-0 top-3 text-gray-500 text-lg transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white cursor-text"
+                  className="absolute left-0 top-3 text-gray-400 text-lg transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white cursor-text"
                 >
                   Correo Electrónico
                 </label>
@@ -102,7 +102,7 @@ export default function DemoFive() {
 
               <div className="flex items-center justify-center pt-2">
                 <div className="h-px bg-gray-800 flex-grow"></div>
-                <span className="px-4 text-gray-600 text-xs font-medium tracking-widest uppercase">O</span>
+                <span className="px-4 text-gray-400 text-xs font-medium tracking-widest uppercase">O</span>
                 <div className="h-px bg-gray-800 flex-grow"></div>
               </div>
 
@@ -116,7 +116,7 @@ export default function DemoFive() {
                 />
                 <label 
                   htmlFor="phone" 
-                  className="absolute left-0 top-3 text-gray-500 text-lg transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white cursor-text"
+                  className="absolute left-0 top-3 text-gray-400 text-lg transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white cursor-text"
                 >
                   Número de Teléfono
                 </label>
