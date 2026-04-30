@@ -33,14 +33,14 @@ export default function Home() {
       {/* Transformations Slider Section */}
       <DemoFour />
 
-      {/* Booking Section (Custom Form) */}
-      <div id="contacto">
-        <DemoFive />
-      </div>
-
       {/* Testimonials Section */}
       <div id="historias">
         <Testimonials />
+      </div>
+
+      {/* Booking Section (Custom Form) */}
+      <div id="contacto">
+        <DemoFive />
       </div>
 
       {/* Luxury Footer */}
