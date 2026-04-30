@@ -43,14 +43,17 @@ const CharacterV1 = ({
   const isSpace = char === " ";
   const distanceFromCenter = index - centerIndex;
 
-  const x = useTransform(scrollYProgress, [0, 0.4, 1], [distanceFromCenter * 150, 0, 0]);
-  const rotateX = useTransform(scrollYProgress, [0, 0.4, 1], [distanceFromCenter * 150, 0, 0]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 1], [0, 1, 1]);
+  // Since scrollYProgress now perfectly maps to 0 (entering screen) to 1 (center of screen),
+  // we can use a clean 0 to 1 mapping.
+  const x = useTransform(scrollYProgress, [0, 1], [distanceFromCenter * 150, 0]);
+  const rotateZ = useTransform(scrollYProgress, [0, 1], [distanceFromCenter * 20, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [0, 1]);
+  const scale = useTransform(scrollYProgress, [0, 1], [3, 1]);
 
   return (
     <motion.span
       className={cn("inline-block text-black", isSpace && "w-4")}
-      style={{ x, rotateX, opacity }}
+      style={{ x, rotateZ, opacity, scale }}
     >
       {char}
     </motion.span>
@@ -65,7 +68,13 @@ export const AnimatedTextScroll = ({
   className?: string;
 }) => {
   const targetRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({ target: targetRef });
+  
+  // Explicitly tell Framer Motion to track from when it enters the bottom of the screen
+  // to when it reaches exactly the center of the screen.
+  const { scrollYProgress } = useScroll({ 
+    target: targetRef,
+    offset: ["start 90%", "center center"]
+  });
 
   const characters = text.split("");
   const centerIndex = Math.floor(characters.length / 2);
