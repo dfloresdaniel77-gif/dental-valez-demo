@@ -68,7 +68,7 @@ export default function Testimonials() {
 
       <ContainerScroll className="container mx-auto h-[300vh] w-full">
         <div className="sticky left-0 top-0 h-svh w-full py-12 flex items-center justify-center">
-          <CardsContainer className="mx-auto size-full h-[450px] w-[350px] md:w-[400px]">
+          <CardsContainer className="mx-auto size-full h-[550px] w-[90vw] max-w-[500px]">
             {TESTIMONIALS.map((testimonial, index) => (
               <CardTransformed
                 arrayLength={TESTIMONIALS.length}
@@ -89,10 +89,11 @@ export default function Testimonials() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 mt-6">
-                  <Avatar className="!size-12 border border-stone-300">
+                  <Avatar className="!size-14 border border-stone-300">
                     <AvatarImage
                       src={testimonial.avatarUrl}
                       alt={`Portrait of ${testimonial.name}`}
+                      className="object-cover"
                     />
                     <AvatarFallback className="text-black bg-stone-200">
                       {testimonial.name
