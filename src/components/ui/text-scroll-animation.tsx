@@ -43,13 +43,14 @@ const CharacterV1 = ({
   const isSpace = char === " ";
   const distanceFromCenter = index - centerIndex;
 
-  const x = useTransform(scrollYProgress, [0, 0.5], [distanceFromCenter * 50, 0]);
-  const rotateX = useTransform(scrollYProgress, [0, 0.5], [distanceFromCenter * 50, 0]);
+  const x = useTransform(scrollYProgress, [0, 0.4, 1], [distanceFromCenter * 150, 0, 0]);
+  const rotateX = useTransform(scrollYProgress, [0, 0.4, 1], [distanceFromCenter * 150, 0, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 1], [0, 1, 1]);
 
   return (
     <motion.span
       className={cn("inline-block text-black", isSpace && "w-4")}
-      style={{ x, rotateX }}
+      style={{ x, rotateX, opacity }}
     >
       {char}
     </motion.span>
