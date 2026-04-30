@@ -41,7 +41,7 @@ export default function DemoFive() {
     }
   };
   return (
-    <section className="relative w-full bg-[#1c1c1c] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
+    <section className="relative w-full bg-[#2a2a2a] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
       <div className="max-w-xl w-full mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-white/90 text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
@@ -53,7 +53,7 @@ export default function DemoFive() {
         </div>
 
         {isSubmitted ? (
-          <div className="flex flex-col items-center justify-center py-12 px-8 bg-[#1a1a1a] border border-gray-800 shadow-xl shadow-black/50 rounded-2xl animate-in fade-in zoom-in duration-500">
+          <div className="flex flex-col items-center justify-center py-12 px-8 bg-[#333333] border border-gray-700 shadow-xl shadow-black/30 rounded-2xl animate-in fade-in zoom-in duration-500">
             <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
               <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
