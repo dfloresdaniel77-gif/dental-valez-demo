@@ -36,20 +36,20 @@ export default function DemoFour() {
   }, []);
 
   return (
-    <section className="relative w-full bg-[#f5f4f3] flex flex-col items-center py-32 px-8">
+    <section className="relative w-full bg-[#111] flex flex-col items-center py-32 px-8">
       <div className="max-w-4xl w-full flex flex-col items-center">
         <div className="text-center mb-16">
-          <h2 className="text-black text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
+          <h2 className="text-white/90 text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
             Transformaciones
           </h2>
-          <p className="text-gray-500 font-light text-lg tracking-wide">
+          <p className="text-gray-400 font-light text-lg tracking-wide">
             La sutil diferencia entre el cuidado estándar y el verdadero arte.
           </p>
         </div>
 
         <div 
           ref={containerRef}
-          className="relative w-full max-w-2xl mx-auto aspect-square md:aspect-[4/3] overflow-hidden rounded-xl shadow-2xl cursor-ew-resize select-none"
+          className="relative w-full max-w-2xl mx-auto aspect-square md:aspect-[4/3] overflow-hidden rounded-xl shadow-2xl cursor-ew-resize select-none border border-white/10"
           onMouseMove={handleMouseMove}
           onTouchMove={handleTouchMove}
           onMouseDown={(e) => {
@@ -61,31 +61,31 @@ export default function DemoFour() {
             handleMove(e.touches[0].clientX);
           }}
         >
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-black">
             <Image 
               src="/assets/after_new.png" 
               alt="After Transformation" 
               fill 
-              className="object-cover object-center pointer-events-none"
+              className="object-cover object-center pointer-events-none opacity-90"
             />
           </div>
 
           {/* Before image (Overlay) using clip-path */}
           <div 
-            className="absolute inset-0"
+            className="absolute inset-0 bg-black"
             style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
           >
             <Image 
               src="/assets/before_new.png" 
               alt="Before Transformation" 
               fill 
-              className="object-cover object-center pointer-events-none"
+              className="object-cover object-center pointer-events-none opacity-90"
             />
           </div>
 
           {/* Slider Line & Handle */}
           <div 
-            className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.3)]"
+            className="absolute top-0 bottom-0 w-[2px] bg-white cursor-ew-resize flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.5)]"
             style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
           >
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg border border-gray-200 pointer-events-none text-black">
@@ -94,10 +94,10 @@ export default function DemoFour() {
           </div>
           
           {/* Labels */}
-          <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-md text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded">
+          <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded border border-white/10">
             Antes
           </div>
-          <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded">
+          <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded border border-white/10">
             Después
           </div>
         </div>
