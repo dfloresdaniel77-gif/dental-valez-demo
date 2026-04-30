@@ -98,7 +98,7 @@ export const TextStaggerHover = React.forwardRef<
         >
           <MotionConfig
             transition={{
-              delay: index * 0.025,
+              delay: isActive ? index * 0.025 : 0,
               duration: 0.3,
               ease: [0.25, 0.46, 0.45, 0.94],
             }}
