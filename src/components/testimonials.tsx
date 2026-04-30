@@ -54,7 +54,7 @@ const TESTIMONIALS = [
 
 export default function Testimonials() {
   return (
-    <section className="bg-[#111] text-white py-32 md:py-48 flex flex-col items-center justify-center overflow-hidden">
+    <section className="bg-[#111] text-white py-32 md:py-48 flex flex-col items-center justify-center overflow-clip">
       <div className="w-full max-w-4xl flex flex-col items-center text-center px-8">
         <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.3] text-white/90">
           Lo que dicen nuestros <br className="hidden md:block" />
