@@ -54,13 +54,13 @@ const TESTIMONIALS = [
 
 export default function Testimonials() {
   return (
-    <section className="bg-[#111] text-white py-32 md:py-48 flex flex-col items-center justify-center overflow-clip">
+    <section className="bg-[#f5f4f3] text-black py-32 md:py-48 flex flex-col items-center justify-center overflow-clip">
       <div className="w-full max-w-4xl flex flex-col items-center text-center px-8">
-        <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.3] text-white/90">
+        <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.3] text-black/90">
           Lo que dicen nuestros <br className="hidden md:block" />
-          <span className="italic font-serif text-white/60">pacientes</span>
+          <span className="italic font-serif text-black/60">pacientes</span>
         </h2>
-        <p className="mx-auto mt-6 max-w-2xl text-center text-gray-400 font-light text-lg md:text-xl">
+        <p className="mx-auto mt-6 max-w-2xl text-center text-gray-500 font-light text-lg md:text-xl">
           La verdadera medida de nuestro trabajo no recae en los espejos, sino en
           la risa desinhibida de las personas que confían en nosotros.
         </p>
@@ -73,7 +73,7 @@ export default function Testimonials() {
               <CardTransformed
                 arrayLength={TESTIMONIALS.length}
                 key={testimonial.id}
-                variant="dark"
+                variant="light"
                 index={index + 2}
                 role="article"
                 aria-labelledby={`card-${testimonial.id}-title`}
@@ -84,12 +84,12 @@ export default function Testimonials() {
                     className="text-[#e2b050]"
                     rating={testimonial.rating}
                   />
-                  <div className="mx-auto w-full px-2 text-lg text-white">
+                  <div className="mx-auto w-full px-2 text-lg text-black">
                     <blockquote cite="#">"{testimonial.description}"</blockquote>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 mt-6">
-                  <Avatar className="!size-12 border border-stone-700">
+                  <Avatar className="!size-12 border border-stone-300">
                     <AvatarImage
                       src={testimonial.avatarUrl}
                       alt={`Portrait of ${testimonial.name}`}
@@ -102,10 +102,10 @@ export default function Testimonials() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="text-left">
-                    <span className="block text-lg font-semibold tracking-tight md:text-xl text-white">
+                    <span className="block text-lg font-semibold tracking-tight md:text-xl text-black">
                       {testimonial.name}
                     </span>
-                    <span className="block text-sm text-stone-400">
+                    <span className="block text-sm text-stone-500">
                       {testimonial.profession}
                     </span>
                   </div>
