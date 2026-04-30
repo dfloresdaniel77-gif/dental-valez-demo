@@ -78,7 +78,7 @@ export const AnimatedTextScroll = ({
       )}
     >
       <div
-        className="w-full max-w-7xl text-center text-5xl md:text-7xl lg:text-9xl font-bold uppercase tracking-tighter text-black leading-none"
+        className="w-full max-w-6xl text-center text-4xl md:text-5xl lg:text-7xl font-bold uppercase tracking-tighter text-black leading-tight"
         style={{ perspective: "500px" }}
       >
         {characters.map((char, index) => (
