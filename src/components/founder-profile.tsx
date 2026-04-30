@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function FounderProfile() {
   return (
-    <section className="w-full bg-[#111] flex flex-col md:flex-row items-center justify-center py-32 px-8 min-h-screen">
+    <section className="w-full bg-[#1c1c1c] flex flex-col md:flex-row items-center justify-center py-32 px-8 min-h-screen">
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
         
         {/* Left: Image */}

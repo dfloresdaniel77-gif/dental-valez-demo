@@ -41,7 +41,7 @@ export default function DemoFive() {
     }
   };
   return (
-    <section className="relative w-full bg-[#111] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
+    <section className="relative w-full bg-[#1c1c1c] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
       <div className="max-w-xl w-full mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-white/90 text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">

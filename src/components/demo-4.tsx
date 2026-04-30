@@ -36,7 +36,7 @@ export default function DemoFour() {
   }, []);
 
   return (
-    <section className="relative w-full bg-[#111] flex flex-col items-center py-32 px-8">
+    <section className="relative w-full bg-[#1c1c1c] flex flex-col items-center py-32 px-8">
       <div className="max-w-4xl w-full flex flex-col items-center">
         <div className="text-center mb-16">
           <h2 className="text-white/90 text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
@@ -61,25 +61,25 @@ export default function DemoFour() {
             handleMove(e.touches[0].clientX);
           }}
         >
-          <div className="absolute inset-0 bg-black">
+          <div className="absolute inset-0">
             <Image 
               src="/assets/after_new.png" 
               alt="After Transformation" 
               fill 
-              className="object-cover object-center pointer-events-none opacity-90"
+              className="object-cover object-center pointer-events-none"
             />
           </div>
 
           {/* Before image (Overlay) using clip-path */}
           <div 
-            className="absolute inset-0 bg-black"
+            className="absolute inset-0"
             style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
           >
             <Image 
               src="/assets/before_new.png" 
               alt="Before Transformation" 
               fill 
-              className="object-cover object-center pointer-events-none opacity-90"
+              className="object-cover object-center pointer-events-none"
             />
           </div>
 
