@@ -12,7 +12,7 @@ export default function DemoThree() {
   const services = [
     {
       title: "Cerámica Estética",
-      imageUrl: "https://images.unsplash.com/photo-1576402431718-4a572a1cfcb3?q=80&w=2486&auto=format&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1520121401995-928cd50d4e27?q=80&w=2400&auto=format&fit=crop",
     },
     {
       title: "Implantes de Precisión",
@@ -28,7 +28,7 @@ export default function DemoThree() {
     },
     {
       title: "Blanqueamiento Láser",
-      imageUrl: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=2486&auto=format&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2400&auto=format&fit=crop",
     },
     {
       title: "Odontología Preventiva",
@@ -55,7 +55,7 @@ export default function DemoThree() {
               <TextStaggerHover
                 key={service.title}
                 index={index}
-                className="cursor-pointer text-3xl md:text-5xl font-bold uppercase tracking-tighter text-black"
+                className="cursor-pointer text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tighter text-black whitespace-nowrap"
                 text={service.title}
               />
             ))}
