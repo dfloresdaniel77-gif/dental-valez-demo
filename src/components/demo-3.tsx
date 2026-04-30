@@ -12,7 +12,7 @@ export default function DemoThree() {
   const services = [
     {
       title: "Cerámica Estética",
-      imageUrl: "https://plus.unsplash.com/premium_photo-1661274198129-e580e55104fb?q=80&w=2400&auto=format&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2400&auto=format&fit=crop",
     },
     {
       title: "Implantes de Precisión",
