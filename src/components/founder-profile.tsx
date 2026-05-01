@@ -106,7 +106,7 @@ export default function FounderProfile() {
               </h4>
               <h2 className="text-4xl md:text-5xl font-light text-white tracking-tight leading-[1.2]">
                 <AnimatedUnderline>
-                  "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-300">Ya no tienes que esconderlo más</span>."
+                  "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-300">Ya no tienes por qué esconderlo</span>."
                 </AnimatedUnderline>
               </h2>
             </div>
