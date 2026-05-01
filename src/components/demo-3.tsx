@@ -37,7 +37,7 @@ export default function DemoThree() {
   ];
 
   return (
-    <section className="relative w-full bg-[#f5f4f3] flex flex-col items-center pb-32">
+    <section className="relative w-full bg-[#ece8e1] flex flex-col items-center pb-32">
       {/* Animated Text Header */}
       <AnimatedTextScroll text="Te mereces la mejor sonrisa" className="h-[70vh] -mb-[10vh]" />
 

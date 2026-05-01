@@ -8,7 +8,7 @@ import Testimonials from "@/components/testimonials";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#f5f4f3] text-black">
+    <main className="min-h-screen bg-[#ece8e1] text-black">
       {/* Dental Valez Header */}
       <header className="fixed top-0 left-0 w-full z-[100] px-8 py-6 flex justify-between items-center pointer-events-none mix-blend-difference">
         <div className="text-white font-bold text-xl tracking-widest uppercase">Dental Valez</div>
@@ -45,7 +45,7 @@ export default function Home() {
 
 
       {/* Luxury Footer */}
-      <footer className="w-full bg-[#f5f4f3] px-8 py-16 md:py-24 border-t border-gray-200">
+      <footer className="w-full bg-[#ece8e1] px-8 py-16 md:py-24 border-t border-gray-200">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col items-center md:items-start space-y-2">
             <div className="text-black font-bold text-2xl tracking-widest uppercase">Dental Valez</div>

@@ -115,11 +115,10 @@ const Skiper31 = () => {
             Desplázate para ver más
           </span>
         </div >
-        <AnimatedTextScroll text={"creando sonrisas perfectas"} className="bg-[#f5f4f3] h-[210vh]" />
+        <AnimatedTextScroll text={"creando sonrisas perfectas"} className="bg-[#ece8e1] h-[210vh]" />
       </main>
     </ReactLenis>
   );
 };
 
 export { CharacterV1, Skiper31 };
-
