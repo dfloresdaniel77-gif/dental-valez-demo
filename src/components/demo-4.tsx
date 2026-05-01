@@ -40,8 +40,8 @@ export default function DemoFour() {
     <section className="relative w-full bg-[#111111] flex flex-col items-center py-32 px-8">
       <div className="max-w-4xl w-full flex flex-col items-center">
         <div className="text-center mb-16">
-          <h2 className="text-white text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
-            <ShimmerText duration={2} delay={1}>Transformaciones</ShimmerText>
+          <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
+            <ShimmerText duration={2} delay={1} className="text-gray-300 [--shimmer-contrast:rgba(255,255,255,1)]">Transformaciones</ShimmerText>
           </h2>
           <p className="text-gray-200 font-light text-lg tracking-wide">
             La sutil diferencia entre el cuidado estándar y el verdadero arte.
