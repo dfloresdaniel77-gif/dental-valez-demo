@@ -20,9 +20,9 @@ export default function Home() {
         <DemoTwo />
       </section>
 
-      {/* Founder Profile Section */}
-      <div id="nuestro-enfoque">
-        <FounderProfile />
+      {/* Services Section */}
+      <div id="servicios">
+        <DemoThree />
       </div>
 
       {/* Transformations Slider Section */}
@@ -38,9 +38,9 @@ export default function Home() {
         <DemoFive />
       </div>
 
-      {/* Services Section */}
-      <div id="servicios">
-        <DemoThree />
+      {/* Founder Profile Section */}
+      <div id="nuestro-enfoque">
+        <FounderProfile />
       </div>
 
       {/* Luxury Footer */}
