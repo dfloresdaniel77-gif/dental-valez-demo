@@ -16,7 +16,7 @@ export default function DemoThree() {
     },
     {
       title: "Implantes de Precisión",
-      imageUrl: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?q=80&w=2486&auto=format&fit=crop",
+      imageUrl: "/images/orange_chair_no_door.png",
     },
     {
       title: "Alineación Invisible",
