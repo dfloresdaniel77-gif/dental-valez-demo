@@ -22,9 +22,9 @@ export default function FounderProfile() {
         {/* Right: Content */}
         <div className="flex flex-col space-y-10 max-w-2xl">
           <div className="space-y-4">
-            <h4 className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300">El Arquitecto de la Sonrisa</h4>
+            <h4 className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300">Transformando Vidas</h4>
             <h2 className="text-4xl md:text-5xl font-light text-white tracking-tight leading-[1.2]">
-              "La odontología no se trata solo de la perfección clínica, se trata de restaurar el <span className="italic font-serif text-gray-300">espíritu humano</span>."
+              "Entendemos el miedo a sonreír. Ya no tienes que <span className="italic font-serif text-gray-300">esconderte</span> nunca más."
             </h2>
           </div>
 
@@ -32,10 +32,10 @@ export default function FounderProfile() {
 
           <div className="space-y-6 text-gray-200 font-light leading-relaxed">
             <p>
-              Este estudio fue fundado con una visión singular: desmantelar la ansiedad históricamente asociada con el cuidado dental y reemplazarla con una sensación de profunda serenidad y empoderamiento.
+              Sabemos que vivir con una sonrisa que no te gusta es agotador. Taparte la boca al reír, evitar salir en las fotos y sentir ansiedad o miedo por ir al dentista son cargas que nadie debería tener que soportar.
             </p>
             <p>
-              Cada material seleccionado, cada luz colocada y cada protocolo establecido ha sido meticulosamente diseñado en torno a la experiencia del paciente. Aquí no solo tratamos dientes. Adaptamos resultados estéticos a medida que armonizan perfectamente con su estructura facial e identidad personal.
+              En Dental Valez, somos la solución a ese problema. Hemos diseñado una experiencia clínica completamente libre de estrés para transformar tus inseguridades en resultados estéticos impecables. Deja el miedo en la puerta; es momento de recuperar tu confianza y volver a sonreír con total libertad.
             </p>
           </div>
 
