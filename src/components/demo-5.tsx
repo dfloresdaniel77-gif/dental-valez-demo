@@ -125,7 +125,7 @@ export default function DemoFive() {
               type="submit"
               disabled={isSubmitting}
               containerClassName="w-full mt-8 rounded"
-              className="w-full bg-[#2a2a2a] text-white py-4 px-8 text-sm uppercase tracking-widest font-medium transition-all duration-300 flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#111111] text-white py-4 px-8 text-sm uppercase tracking-widest font-medium transition-all duration-300 flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
