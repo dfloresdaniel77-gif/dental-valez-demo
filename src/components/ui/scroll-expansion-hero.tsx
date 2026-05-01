@@ -10,6 +10,7 @@ import {
 } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { useLenis } from 'lenis/react';
 
 interface ScrollExpandMediaProps {
   mediaType?: 'video' | 'image';
@@ -147,23 +148,37 @@ const ScrollExpandMedia = ({
       window.removeEventListener('touchend', handleTouchEnd as EventListener);
     };
   }, [scrollProgress, mediaFullyExpanded, touchStartY]);
+  const lenis = useLenis();
+
   useEffect(() => {
     if (!mediaFullyExpanded) {
       document.body.style.overflow = 'hidden';
-      // Stop Lenis from scrolling the page
-      window.dispatchEvent(new Event('stopLenis'));
-      // Ensure we are at the top when locked
-      window.scrollTo(0, 0);
+      if (lenis) {
+        lenis.stop();
+        lenis.scrollTo(0, { immediate: true });
+      } else {
+        // Fallback if lenis is not yet available
+        window.dispatchEvent(new Event('stopLenis'));
+        window.scrollTo(0, 0);
+      }
     } else {
       document.body.style.overflow = '';
-      window.dispatchEvent(new Event('startLenis'));
+      if (lenis) {
+        lenis.start();
+      } else {
+        window.dispatchEvent(new Event('startLenis'));
+      }
     }
 
     return () => {
       document.body.style.overflow = '';
-      window.dispatchEvent(new Event('startLenis'));
+      if (lenis) {
+        lenis.start();
+      } else {
+        window.dispatchEvent(new Event('startLenis'));
+      }
     };
-  }, [mediaFullyExpanded]);
+  }, [mediaFullyExpanded, lenis]);
 
   useEffect(() => {
     const checkIfMobile = (): void => {
