@@ -16,11 +16,11 @@ export default function DemoThree() {
     },
     {
       title: "Implantes de Precisión",
-      imageUrl: "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?q=80&w=2486&auto=format&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?q=80&w=2486&auto=format&fit=crop",
     },
     {
       title: "Alineación Invisible",
-      imageUrl: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?q=80&w=2486&auto=format&fit=crop",
+      imageUrl: "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?q=80&w=2486&auto=format&fit=crop",
     },
     {
       title: "Diseño de Sonrisa",
