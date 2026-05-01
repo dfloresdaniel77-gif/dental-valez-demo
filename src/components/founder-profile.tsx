@@ -24,7 +24,7 @@ export default function FounderProfile() {
           <div className="space-y-4">
             <h4 className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300">Transformando Vidas</h4>
             <h2 className="text-4xl md:text-5xl font-light text-white tracking-tight leading-[1.2]">
-              "Entendemos el miedo a sonreír. Ya no tienes que <span className="italic font-serif text-gray-300">esconderte</span> nunca más."
+              "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-300 underline decoration-1 underline-offset-[6px]">No se tiene que esconder nunca más</span>."
             </h2>
           </div>
 
