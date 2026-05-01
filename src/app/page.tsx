@@ -25,11 +25,6 @@ export default function Home() {
         <FounderProfile />
       </div>
 
-      {/* Services Section */}
-      <div id="servicios">
-        <DemoThree />
-      </div>
-
       {/* Transformations Slider Section */}
       <DemoFour />
 
@@ -41,6 +36,11 @@ export default function Home() {
       {/* Booking Section (Custom Form) */}
       <div id="contacto">
         <DemoFive />
+      </div>
+
+      {/* Services Section */}
+      <div id="servicios">
+        <DemoThree />
       </div>
 
       {/* Luxury Footer */}
