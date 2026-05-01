@@ -61,7 +61,7 @@ export function ShimmerText({
   children,
   className,
   variant = "default",
-  duration = 2.5,
+  duration = 1.8,
   delay = 0,
 }: ShimmerTextProps) {
   return (
@@ -72,7 +72,7 @@ export function ShimmerText({
         className
       )}
       style={{
-        backgroundImage: "linear-gradient(110deg, var(--shimmer-base), 45%, var(--shimmer-glow), 55%, var(--shimmer-base))",
+        backgroundImage: "linear-gradient(110deg, var(--shimmer-base) 35%, var(--shimmer-glow) 48%, var(--shimmer-glow) 52%, var(--shimmer-base) 65%)",
         backgroundColor: "var(--shimmer-base)",
         WebkitTextFillColor: "transparent",
       }}
@@ -83,7 +83,7 @@ export function ShimmerText({
         duration: duration,
         delay: delay,
         ease: "linear",
-        repeatDelay: 1.5
+        repeatDelay: 1.0
       }}
     >
       {children}
