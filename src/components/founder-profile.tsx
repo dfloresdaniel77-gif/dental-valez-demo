@@ -10,7 +10,7 @@ export default function FounderProfile() {
         {/* Left: Image */}
         <div className="relative w-full aspect-[3/4] md:aspect-[4/5] overflow-hidden max-w-md mx-auto lg:mx-0">
           <Image 
-            src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=1000&auto=format&fit=crop"
+            src="/founder-no-tattoos.png"
             alt="Lead Doctor Portrait"
             fill
             className="object-cover object-center grayscale hover:grayscale-0 transition-all duration-1000"
