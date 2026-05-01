@@ -73,6 +73,7 @@ export function ShimmerText({
       )}
       style={{
         backgroundImage: "linear-gradient(110deg, var(--shimmer-base), 45%, var(--shimmer-glow), 55%, var(--shimmer-base))",
+        backgroundColor: "var(--shimmer-base)",
         WebkitTextFillColor: "transparent",
       }}
       initial={{ backgroundPosition: "200% center" }}
