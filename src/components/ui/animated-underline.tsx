@@ -20,7 +20,7 @@ export const UnderlineGroup = ({ children }: { children: ReactNode }) => {
 export const AnimatedUnderline = ({ 
   children, 
   className,
-  underlineColor = "after:bg-gray-300" 
+  underlineColor = "from-gray-300 to-gray-300" 
 }: { 
   children: ReactNode;
   className?: string;
@@ -42,10 +42,10 @@ export const AnimatedUnderline = ({
     <span 
       onMouseEnter={handleMouseEnter}
       className={cn(
-        "relative inline-block after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:transition-transform after:ease-in-out after:duration-300 cursor-pointer", 
+        "cursor-pointer inline bg-gradient-to-r bg-no-repeat [background-position:0_100%] transition-[background-size] duration-300 ease-in-out", 
         isGrouped 
-          ? (isActive ? "after:origin-bottom-left after:scale-x-100" : "after:origin-bottom-right after:scale-x-0")
-          : "after:origin-bottom-right after:scale-x-0 hover:after:origin-bottom-left hover:after:scale-x-100",
+          ? (isActive ? "[background-size:100%_1px]" : "[background-size:0%_1px]")
+          : "[background-size:0%_1px] hover:[background-size:100%_1px]",
         underlineColor,
         className
       )}
