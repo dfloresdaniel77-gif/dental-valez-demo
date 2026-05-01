@@ -77,7 +77,8 @@ export function ShimmerText({
         WebkitTextFillColor: "transparent",
       }}
       initial={{ backgroundPosition: "200% center" }}
-      animate={{ backgroundPosition: ["200% center", "-50% center"] }}
+      whileInView={{ backgroundPosition: ["200% center", "-50% center"] }}
+      viewport={{ once: true, amount: 0.5 }}
       transition={{
         repeat: Infinity,
         duration: duration,
