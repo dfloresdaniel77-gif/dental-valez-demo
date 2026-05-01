@@ -72,7 +72,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
         <h2 className='text-4xl md:text-6xl lg:text-[6rem] font-extralight tracking-tighter text-black leading-[1.2] md:leading-[1.1] flex flex-col items-center w-full'>
           <span>Elevando</span>
           <div className="w-full flex justify-center mt-2 md:mt-4">
-            <AnimatedTextCycle 
+              <AnimatedTextCycle 
               words={[
                   "tu confianza",
                   "el estándar",
@@ -80,7 +80,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
                   "el cuidado sin compromisos",
                   "la tecnología avanzada"
               ]}
-              interval={3500}
+              interval={2500}
               className={"text-gray-400 italic font-serif font-light text-center w-full max-w-[90vw] whitespace-normal md:whitespace-nowrap"} 
             />
           </div>
