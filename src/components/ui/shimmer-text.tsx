@@ -61,45 +61,31 @@ export function ShimmerText({
   children,
   className,
   variant = "default",
-  duration = 1.5,
-  delay = 1.5,
+  duration = 2.5,
+  delay = 0,
 }: ShimmerTextProps) {
   return (
-    <div className="group overflow-hidden">
-      <div>
-        <motion.div
-          className={cn(
-            "inline-block [--shimmer-contrast:rgba(255,255,255,0.6)] dark:[--shimmer-contrast:rgba(0,0,0,0.5)]",
-            variantMap[variant],
-            className,
-          )}
-          style={{
-            WebkitTextFillColor: "transparent",
-            background:
-              "linear-gradient(to right, currentColor 0%, var(--shimmer-contrast) 40%, var(--shimmer-contrast) 60%, currentColor 100%)",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "200% auto",
-          } as React.CSSProperties}
-          initial={{
-            backgroundPosition: "200% center",
-          }}
-          animate={{
-            backgroundPosition: ["200% center", "-200% center"],
-          }}
-          transition={{
-            duration: duration,
-            delay: delay,
-            repeat: Infinity,
-            repeatDelay: 1.5,
-            ease: "linear",
-          }}
-        >
-          <span>{children}</span>
-        </motion.div>
-      </div>
-    </div>
+    <motion.span
+      className={cn(
+        "inline-block text-transparent bg-clip-text [-webkit-background-clip:text] bg-no-repeat",
+        "bg-[length:250%_100%] [--shimmer-base:currentColor] [--shimmer-glow:white]",
+        className
+      )}
+      style={{
+        backgroundImage: "linear-gradient(110deg, var(--shimmer-base), 45%, var(--shimmer-glow), 55%, var(--shimmer-base))",
+      }}
+      initial={{ backgroundPosition: "200% center" }}
+      animate={{ backgroundPosition: ["200% center", "-50% center"] }}
+      transition={{
+        repeat: Infinity,
+        duration: duration,
+        delay: delay,
+        ease: "linear",
+        repeatDelay: 1.5
+      }}
+    >
+      {children}
+    </motion.span>
   );
 }
 
