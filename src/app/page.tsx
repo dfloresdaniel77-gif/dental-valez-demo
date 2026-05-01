@@ -20,6 +20,11 @@ export default function Home() {
         <DemoTwo />
       </section>
 
+      {/* Founder Profile Section */}
+      <div id="nuestro-enfoque">
+        <FounderProfile />
+      </div>
+
       {/* Services Section */}
       <div id="servicios">
         <DemoThree />
@@ -38,10 +43,6 @@ export default function Home() {
         <DemoFive />
       </div>
 
-      {/* Founder Profile Section */}
-      <div id="nuestro-enfoque">
-        <FounderProfile />
-      </div>
 
       {/* Luxury Footer */}
       <footer className="w-full bg-[#f5f4f3] px-8 py-16 md:py-24 border-t border-gray-200">
