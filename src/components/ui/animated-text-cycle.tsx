@@ -17,7 +17,7 @@ export default function AnimatedTextCycle({
   const [width, setWidth] = useState("auto");
   const measureRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(containerRef, { once: false, amount: 0.1 });
+  const isInView = useInView(containerRef, { once: true, amount: 0.1 });
 
   // Get the width of the current word
   useEffect(() => {
