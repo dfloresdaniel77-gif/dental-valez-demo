@@ -69,19 +69,21 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
         <span className='text-xs uppercase tracking-[0.3em] text-gray-400 mb-12 font-medium'>
           La Filosofía Dental Valez
         </span>
-        <h2 className='text-5xl md:text-7xl lg:text-[7rem] font-extralight tracking-tighter text-black leading-[1.2] md:leading-[1.1]'>
-          Elevando <br className="hidden md:block"/>
-          <AnimatedTextCycle 
-            words={[
-                "el estándar",
-                "la excelencia estética",
-                "el cuidado sin compromisos",
-                "la tecnología avanzada",
-                "la experiencia a medida"
-            ]}
-            interval={3500}
-            className={"text-gray-400 italic font-serif font-light"} 
-          />
+        <h2 className='text-4xl md:text-6xl lg:text-[6rem] font-extralight tracking-tighter text-black leading-[1.2] md:leading-[1.1] flex flex-col items-center w-full'>
+          <span>Elevando</span>
+          <div className="w-full flex justify-center mt-2 md:mt-4">
+            <AnimatedTextCycle 
+              words={[
+                  "el estándar",
+                  "la excelencia estética",
+                  "el cuidado sin compromisos",
+                  "la tecnología avanzada",
+                  "la experiencia a medida"
+              ]}
+              interval={2500}
+              className={"text-gray-400 italic font-serif font-light text-center w-full max-w-[90vw] whitespace-normal md:whitespace-nowrap"} 
+            />
+          </div>
         </h2>
         
         <p className='text-xl md:text-2xl text-gray-500 font-light max-w-2xl mt-16 leading-relaxed'>

@@ -101,7 +101,6 @@ export default function AnimatedTextCycle({
             initial="hidden"
             animate="visible"
             exit="exit"
-            style={{ whiteSpace: "nowrap" }}
           >
             {words[currentIndex]}
           </motion.span>
