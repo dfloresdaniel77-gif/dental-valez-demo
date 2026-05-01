@@ -67,12 +67,13 @@ export function ShimmerText({
   return (
     <motion.span
       className={cn(
-        "inline-block text-transparent bg-clip-text [-webkit-background-clip:text] bg-no-repeat",
+        "inline-block bg-clip-text [-webkit-background-clip:text] bg-no-repeat",
         "bg-[length:250%_100%] [--shimmer-base:currentColor] [--shimmer-glow:white]",
         className
       )}
       style={{
         backgroundImage: "linear-gradient(110deg, var(--shimmer-base), 45%, var(--shimmer-glow), 55%, var(--shimmer-base))",
+        WebkitTextFillColor: "transparent",
       }}
       initial={{ backgroundPosition: "200% center" }}
       animate={{ backgroundPosition: ["200% center", "-50% center"] }}
