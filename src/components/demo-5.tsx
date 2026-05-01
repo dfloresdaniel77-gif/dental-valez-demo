@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AnimatedInput } from "@/components/ui/animated-input";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 export default function DemoFive() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -113,17 +114,19 @@ export default function DemoFive() {
               </p>
             )}
 
-            <button 
+            <HoverBorderGradient
+              as="button"
               type="submit" 
               disabled={isSubmitting}
-              className="w-full mt-8 bg-white text-black py-4 px-8 text-sm uppercase tracking-widest font-medium hover:bg-white/80 hover:shadow-2xl transition-all duration-300 rounded disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
+              containerClassName="w-full mt-8 rounded"
+              className="w-full bg-[#2a2a2a] text-white py-4 px-8 text-sm uppercase tracking-widest font-medium transition-all duration-300 flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
-                <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 "Solicitar Cita"
               )}
-            </button>
+            </HoverBorderGradient>
           </form>
         )}
       </div>
