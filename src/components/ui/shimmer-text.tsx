@@ -76,17 +76,17 @@ export function ShimmerText({
           style={{
             WebkitTextFillColor: "transparent",
             background:
-              "currentColor linear-gradient(to right, currentColor 0%, var(--shimmer-contrast) 40%, var(--shimmer-contrast) 60%, currentColor 100%)",
+              "linear-gradient(to right, currentColor 0%, var(--shimmer-contrast) 40%, var(--shimmer-contrast) 60%, currentColor 100%)",
             WebkitBackgroundClip: "text",
             backgroundClip: "text",
             backgroundRepeat: "no-repeat",
-            backgroundSize: "50% 200%",
+            backgroundSize: "200% auto",
           } as React.CSSProperties}
           initial={{
-            backgroundPositionX: "250%",
+            backgroundPosition: "200% center",
           }}
           animate={{
-            backgroundPositionX: ["-100%", "250%"],
+            backgroundPosition: ["200% center", "-200% center"],
           }}
           transition={{
             duration: duration,
