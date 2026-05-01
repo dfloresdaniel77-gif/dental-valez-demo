@@ -80,7 +80,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
                   "el cuidado sin compromisos",
                   "la tecnología avanzada"
               ]}
-              interval={2500}
+              interval={3500}
               className={"text-gray-400 italic font-serif font-light text-center w-full max-w-[90vw] whitespace-normal md:whitespace-nowrap"} 
             />
           </div>
