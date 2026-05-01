@@ -25,6 +25,12 @@ export default function DemoFive() {
       Teléfono: phone
     };
 
+    if (!name) {
+      setErrorMsg("Por favor, proporciona tu nombre completo.");
+      setIsSubmitting(false);
+      return;
+    }
+
     if (!email && !phone) {
       setErrorMsg("Por favor, proporciona un correo electrónico o número de teléfono.");
       setIsSubmitting(false);
@@ -49,13 +55,13 @@ export default function DemoFive() {
     }
   };
   return (
-    <section className="relative w-full bg-[#2a2a2a] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
+    <section className="relative w-full bg-[#111111] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
       <div className="max-w-xl w-full mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-white text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
-            Comienza Tu Viaje
+          <h2 className="text-white text-4xl md:text-5xl font-light tracking-tight mb-4">
+            Comienza Tu <span className="italic font-serif text-gray-400">Viaje</span>
           </h2>
-          <p className="text-gray-200 font-light text-lg tracking-wide">
+          <p className="text-gray-400 font-light text-lg tracking-wide max-w-md mx-auto">
             Programa una consulta privada y descubre el futuro del cuidado dental premium.
           </p>
         </div>
@@ -73,7 +79,7 @@ export default function DemoFive() {
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-10">
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-10">
             <AnimatedInput
               label="Nombre Completo"
               name="Nombre"
