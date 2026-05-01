@@ -192,7 +192,7 @@ const ScrollExpandMedia = ({
       <section className='relative flex flex-col items-center justify-start min-h-[100dvh]'>
         <div className='relative w-full flex flex-col items-center min-h-[100dvh]'>
           <motion.div
-            className='absolute inset-0 z-0 h-full w-full'
+            className='absolute top-0 left-0 z-0 h-[100dvh] w-full overflow-hidden'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 - visualProgress }}
             transition={{ duration: 0.1 }}
@@ -342,7 +342,7 @@ const ScrollExpandMedia = ({
             </div>
 
             <motion.section
-              className='flex flex-col w-full px-8 py-10 md:px-16 lg:py-20'
+              className='flex flex-col w-full px-8 py-10 md:px-16 lg:py-20 bg-[#f5f4f3] relative z-20'
               initial={{ opacity: 0 }}
               animate={{ opacity: showContent ? 1 : 0 }}
               transition={{ duration: 0.7 }}
