@@ -1,21 +1,28 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatedInput } from "@/components/ui/animated-input";
 
 export default function DemoFive() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMsg("");
     
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
-    const email = data.Email as string;
-    const phone = data.Teléfono as string;
+    // We already have the state, but we can still construct data for the API
+    const data = {
+      Nombre: name,
+      Email: email,
+      Teléfono: phone
+    };
 
     if (!email && !phone) {
       setErrorMsg("Por favor, proporciona un correo electrónico o número de teléfono.");
@@ -66,39 +73,22 @@ export default function DemoFive() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-10">
-            <div className="relative group">
-              <input 
-                type="text" 
-                id="fullName" 
-                name="Nombre"
-                className="w-full bg-transparent border-b border-gray-700 py-3 text-lg text-white focus:outline-none focus:border-white transition-colors peer placeholder-transparent"
-                placeholder="Nombre Completo"
-                required 
-              />
-              <label 
-                htmlFor="fullName" 
-                className="absolute left-0 top-3 text-gray-400 text-lg transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white cursor-text"
-              >
-                Nombre Completo
-              </label>
-            </div>
+            <AnimatedInput 
+              label="Nombre Completo"
+              name="Nombre"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
 
             <div className="flex flex-col gap-6">
-              <div className="relative group">
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="Email"
-                  className="w-full bg-transparent border-b border-gray-700 py-3 text-lg text-white focus:outline-none focus:border-white transition-colors peer placeholder-transparent"
-                  placeholder="Correo Electrónico"
-                />
-                <label 
-                  htmlFor="email" 
-                  className="absolute left-0 top-3 text-gray-400 text-lg transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white cursor-text"
-                >
-                  Correo Electrónico
-                </label>
-              </div>
+              <AnimatedInput 
+                label="Correo Electrónico"
+                name="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
               <div className="flex items-center justify-center pt-2">
                 <div className="h-px bg-gray-800 flex-grow"></div>
@@ -106,20 +96,14 @@ export default function DemoFive() {
                 <div className="h-px bg-gray-800 flex-grow"></div>
               </div>
 
-              <div className="relative group pb-2">
-                <input 
-                  type="tel" 
-                  id="phone" 
+              <div className="pb-2">
+                <AnimatedInput 
+                  label="Número de Teléfono"
                   name="Teléfono"
-                  className="w-full bg-transparent border-b border-gray-700 py-3 text-lg text-white focus:outline-none focus:border-white transition-colors peer placeholder-transparent"
-                  placeholder="Teléfono"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                 />
-                <label 
-                  htmlFor="phone" 
-                  className="absolute left-0 top-3 text-gray-400 text-lg transition-all peer-focus:-top-6 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white cursor-text"
-                >
-                  Número de Teléfono
-                </label>
               </div>
             </div>
 
