@@ -8,7 +8,7 @@ export default function DemoFive() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -17,7 +17,7 @@ export default function DemoFive() {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMsg("");
-    
+
     // We already have the state, but we can still construct data for the API
     const data = {
       Nombre: name,
@@ -74,7 +74,7 @@ export default function DemoFive() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-10">
-            <AnimatedInput 
+            <AnimatedInput
               label="Nombre Completo"
               name="Nombre"
               value={name}
@@ -83,7 +83,7 @@ export default function DemoFive() {
             />
 
             <div className="flex flex-col gap-6">
-              <AnimatedInput 
+              <AnimatedInput
                 label="Correo Electrónico"
                 name="Email"
                 type="email"
@@ -98,7 +98,7 @@ export default function DemoFive() {
               </div>
 
               <div className="pb-2">
-                <AnimatedInput 
+                <AnimatedInput
                   label="Número de Teléfono"
                   name="Teléfono"
                   type="tel"
@@ -116,7 +116,7 @@ export default function DemoFive() {
 
             <HoverBorderGradient
               as="button"
-              type="submit" 
+              type="submit"
               disabled={isSubmitting}
               containerClassName="w-full mt-8 rounded"
               className="w-full bg-[#2a2a2a] text-white py-4 px-8 text-sm uppercase tracking-widest font-medium transition-all duration-300 flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"

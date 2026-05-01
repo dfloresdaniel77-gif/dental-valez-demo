@@ -70,7 +70,7 @@ export function HoverBorderGradient({
     >
       <div
         className={cn(
-          'z-10 w-auto rounded-[inherit] bg-[#2a2a2a] text-white',
+          'z-10 w-auto rounded-[inherit] bg-[#111111] text-white',
           className
         )}
       >
@@ -94,7 +94,7 @@ export function HoverBorderGradient({
         }}
         transition={{ ease: 'linear', duration: duration ?? 1 }}
       />
-      <div className='absolute inset-0.5 z-1 flex-none rounded-[inherit] bg-[#2a2a2a]' />
+      <div className='absolute inset-0.5 z-1 flex-none rounded-[inherit] bg-[#111111]' />
     </Element>
   )
 }
