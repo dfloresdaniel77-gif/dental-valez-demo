@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { AnimatedUnderline } from "./ui/animated-underline";
 
 export default function FounderProfile() {
   return (
@@ -22,9 +23,13 @@ export default function FounderProfile() {
         {/* Right: Content */}
         <div className="flex flex-col space-y-10 max-w-2xl">
           <div className="space-y-4">
-            <h4 className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300">Transformando Vidas</h4>
+            <h4 className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300">
+              <AnimatedUnderline>Transformando Vidas</AnimatedUnderline>
+            </h4>
             <h2 className="text-4xl md:text-5xl font-light text-white tracking-tight leading-[1.2]">
-              "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-300 underline decoration-1 underline-offset-[6px]">No se tiene que esconder nunca más</span>."
+              <AnimatedUnderline>
+                "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-300">No se tiene que esconder nunca más</span>."
+              </AnimatedUnderline>
             </h2>
           </div>
 
@@ -32,17 +37,25 @@ export default function FounderProfile() {
 
           <div className="space-y-6 text-gray-200 font-light leading-relaxed">
             <p>
-              Sabemos que vivir con una sonrisa que no te gusta es agotador. Taparte la boca al reír, evitar salir en las fotos y sentir ansiedad o miedo por ir al dentista son cargas que nadie debería tener que soportar.
+              <AnimatedUnderline className="inline">
+                Sabemos que vivir con una sonrisa que no te gusta es agotador. Taparte la boca al reír, evitar salir en las fotos y sentir ansiedad o miedo por ir al dentista son cargas que nadie debería tener que soportar.
+              </AnimatedUnderline>
             </p>
             <p>
-              En Dental Valez, creemos en una experiencia clínica completamente libre de estrés para transformar tus inseguridades en resultados estéticos impecables. Deja el miedo en la puerta; es momento de recuperar tu confianza y volver a sonreír con total libertad.
+              <AnimatedUnderline className="inline">
+                En Dental Valez, creemos en una experiencia clínica completamente libre de estrés para transformar tus inseguridades en resultados estéticos impecables. Deja el miedo en la puerta; es momento de recuperar tu confianza y volver a sonreír con total libertad.
+              </AnimatedUnderline>
             </p>
           </div>
 
           {/* Signature or Name */}
           <div className="pt-8">
-            <h3 className="text-xl font-medium tracking-widest uppercase text-white">Dental Valez</h3>
-            <p className="text-xs uppercase tracking-widest text-gray-300 mt-2">Visión y Equipo Clínico</p>
+            <h3 className="text-xl font-medium tracking-widest uppercase text-white">
+              <AnimatedUnderline>Dental Valez</AnimatedUnderline>
+            </h3>
+            <p className="text-xs uppercase tracking-widest text-gray-300 mt-2">
+              <AnimatedUnderline>Visión y Equipo Clínico</AnimatedUnderline>
+            </p>
           </div>
         </div>
 
