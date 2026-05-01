@@ -43,7 +43,7 @@ export default function DemoThree() {
 
       <div className="w-full max-w-7xl px-8 z-10 mb-16 text-center md:text-left">
         <p className="text-xs md:text-sm uppercase tracking-[0.2em] text-gray-500 font-medium">
-          Lo que ofrecemos
+          Nosotros te la damos:
         </p>
       </div>
 
