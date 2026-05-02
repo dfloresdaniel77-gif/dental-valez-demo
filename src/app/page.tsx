@@ -18,7 +18,7 @@ export default function Home() {
       </header>
 
       {/* Header and Hero Section */}
-      <section className="w-full">
+      <section id="inicio" className="w-full">
         <DemoTwo />
       </section>
 
@@ -33,7 +33,9 @@ export default function Home() {
       </div>
 
       {/* Transformations Slider Section */}
-      <DemoFour />
+      <div id="transformaciones">
+        <DemoFour />
+      </div>
 
       {/* Testimonials Section */}
       <div id="historias">
@@ -54,9 +56,11 @@ export default function Home() {
             <div className="text-gray-500 text-sm tracking-wide lowercase">Estudio Dental</div>
           </div>
           
-          <div className="flex space-x-8 text-sm font-light text-gray-500">
-            <a href="#servicios" className="hover:text-black transition-colors">Servicios</a>
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm font-light text-gray-500">
+            <a href="#inicio" className="hover:text-black transition-colors">Inicio</a>
             <a href="#nuestro-enfoque" className="hover:text-black transition-colors">Nuestro Enfoque</a>
+            <a href="#servicios" className="hover:text-black transition-colors">Servicios</a>
+            <a href="#transformaciones" className="hover:text-black transition-colors">Transformaciones</a>
             <a href="#historias" className="hover:text-black transition-colors">Historias de Pacientes</a>
             <a href="#contacto" className="hover:text-black transition-colors">Contacto</a>
           </div>
