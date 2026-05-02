@@ -12,7 +12,9 @@ export default function Home() {
       {/* Dental Valez Header */}
       <header className="fixed top-0 left-0 w-full z-[100] px-8 py-6 flex justify-between items-center pointer-events-none mix-blend-difference">
         <div className="text-white font-bold text-xl tracking-widest uppercase">Dental Valez</div>
-        <div className="text-white text-sm tracking-wide lowercase">Estudio Dental</div>
+        <a href="#contacto" className="text-white text-xs md:text-sm tracking-widest uppercase border border-white/50 px-5 py-2 rounded-full hover:bg-white hover:text-black transition-colors pointer-events-auto duration-300">
+          Contacto
+        </a>
       </header>
 
       {/* Header and Hero Section */}
