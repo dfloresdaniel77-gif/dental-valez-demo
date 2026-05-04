@@ -17,7 +17,7 @@ export default function FounderProfile() {
   });
   
   // Soft parallax translation
-  const y = useTransform(scrollYProgress, [0, 1], [-30, 30]);
+  const y = useTransform(scrollYProgress, [0, 1], [-100, 100]);
 
   return (
     <UnderlineGroup>
@@ -26,13 +26,15 @@ export default function FounderProfile() {
           reverseLayout={true}
           title={
             <>
-              <div className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300 mb-4 block">
+              <div className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-400 mb-4 block">
                 <AnimatedUnderline>
                   <ShimmerText duration={3}>Transformando Vidas</ShimmerText>
                 </AnimatedUnderline>
               </div>
               <AnimatedUnderline>
-                "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-300">Ya no tienes por qué esconderlo</span>."
+                <ShimmerText duration={3} className="text-gray-400">
+                  "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-500">Ya no tienes por qué esconderlo</span>."
+                </ShimmerText>
               </AnimatedUnderline>
             </>
           }
