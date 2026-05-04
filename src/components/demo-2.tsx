@@ -59,15 +59,17 @@ const sampleMediaContent: MediaContentCollection = {
 import AnimatedTextCycle from '@/components/ui/animated-text-cycle';
 import { motion } from 'framer-motion';
 
-const BlurReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
-  <motion.div
-    initial={{ y: 20, opacity: 0, filter: "blur(12px)" }}
-    whileInView={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-    viewport={{ once: true, margin: "-10%" }}
-    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay }}
-  >
-    {children}
-  </motion.div>
+const UltimateReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
+  <div className="overflow-hidden py-1">
+    <motion.div
+      initial={{ y: "100%", opacity: 0, filter: "blur(12px)" }}
+      whileInView={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+      viewport={{ margin: "-10%" }}
+      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay }}
+    >
+      {children}
+    </motion.div>
+  </div>
 );
 
 const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
@@ -78,18 +80,18 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
       
       {/* Centered Minimal Header */}
       <div className='w-full flex flex-col items-center justify-center text-center pb-16'>
-        <BlurReveal delay={0.1}>
+        <UltimateReveal delay={0.1}>
           <span className='text-xs uppercase tracking-[0.3em] text-gray-400 mb-12 font-medium block'>
             La Filosofía Dental Valez
           </span>
-        </BlurReveal>
+        </UltimateReveal>
         
         <h2 className='text-4xl md:text-6xl lg:text-[6rem] font-extralight tracking-tighter text-black leading-[1.2] md:leading-[1.1] flex flex-col items-center w-full mt-4'>
-          <BlurReveal delay={0.2}>
+          <UltimateReveal delay={0.2}>
             <span>Elevando</span>
-          </BlurReveal>
+          </UltimateReveal>
           
-          <BlurReveal delay={0.3}>
+          <UltimateReveal delay={0.3}>
             <div className="w-full flex justify-center mt-2 md:mt-4">
                 <AnimatedTextCycle 
                 words={[
@@ -103,14 +105,14 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
                 className={"text-gray-400 italic font-serif font-light text-center w-full max-w-[90vw] whitespace-normal md:whitespace-nowrap"} 
               />
             </div>
-          </BlurReveal>
+          </UltimateReveal>
         </h2>
         
-        <BlurReveal delay={0.4}>
+        <UltimateReveal delay={0.4}>
           <p className='text-xl md:text-2xl text-gray-500 font-light max-w-2xl mt-16 leading-relaxed'>
              {currentMedia.about.overview}
           </p>
-        </BlurReveal>
+        </UltimateReveal>
       </div>
     </div>
   );
