@@ -41,7 +41,7 @@ const sampleMediaContent: MediaContentCollection = {
     },
   },
   image: {
-    src: '/luxury_dental_tools.png', // Dark, glossy macro shot of dental tools
+    src: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1280&auto=format&fit=crop', // Real dark clinical/medical photo
     background:
       'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=1920&auto=format&fit=crop', // Dental tools/room
     title: 'El Arte de la Odontología',
