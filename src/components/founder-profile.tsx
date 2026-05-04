@@ -47,24 +47,14 @@ export default function FounderProfile() {
         }
       >
         <div
-          className="relative transition-all duration-700 w-full h-full max-w-sm mx-auto"
+          className="relative transition-all duration-700 w-full h-full"
           style={{
-            transform: isHovered ? "translateX(4px) translateY(-4px)" : "translateX(0) translateY(0)",
+            transform: isHovered ? "scale(1.02)" : "scale(1)",
             transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
           }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          {/* Frame outline */}
-          <div
-            className="absolute -inset-3 border transition-all duration-700 md:-inset-4 pointer-events-none"
-            style={{
-              borderColor: isHovered ? "rgba(255, 255, 255, 0.15)" : "transparent",
-              transform: isHovered ? "scale(1.01)" : "scale(1)",
-              transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-            }}
-          />
-
           {/* Image container */}
           <div className="relative w-full h-full overflow-hidden rounded-xl">
             <div

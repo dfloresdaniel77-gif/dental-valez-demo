@@ -83,7 +83,7 @@ const SectionWithMockup: React.FC<SectionWithMockupProps> = ({
                                 left: reverseLayout ? 'auto' : '-20%',
                                 right: reverseLayout ? '-20%' : 'auto',
                                 transform: reverseLayout ? 'translate(0, 0)' : 'translateY(10%)',
-                                filter: 'blur(2px)'
+                                filter: 'blur(40px)'
                             }}
                             initial={{ y: reverseLayout ? 0 : 0 }}
                             whileInView={{ y: reverseLayout ? -20 : -30 }}
