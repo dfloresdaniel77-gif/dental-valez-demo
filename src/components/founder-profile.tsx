@@ -56,6 +56,15 @@ export default function FounderProfile() {
         >
           {/* Image container */}
           <div className="relative w-full h-full overflow-hidden rounded-xl">
+            {/* Animated Inner Frame */}
+            <div
+              className="absolute inset-4 border border-white/10 transition-all duration-700 pointer-events-none z-30 rounded-[16px]"
+              style={{
+                borderColor: isHovered ? "rgba(255, 255, 255, 0.3)" : "transparent",
+                transform: isHovered ? "scale(0.96)" : "scale(1)",
+                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+              }}
+            />
             <div
               className="absolute -inset-1 transition-all duration-700 z-10 pointer-events-none"
               style={{
