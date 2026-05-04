@@ -1,75 +1,88 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { AnimatedUnderline, UnderlineGroup } from "./ui/animated-underline";
 import SectionWithMockup from "./ui/section-with-mockup";
-import ShimmerText from "./ui/shimmer-text";
+
+const MaskedReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
+  <div className="overflow-hidden py-1">
+    <motion.div
+      initial={{ y: "100%" }}
+      whileInView={{ y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay }}
+    >
+      {children}
+    </motion.div>
+  </div>
+);
 
 export default function FounderProfile() {
   const [isHovered, setIsHovered] = useState(false);
-  const containerRef = useRef(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-  
-  // Soft parallax translation
-  const y = useTransform(scrollYProgress, [0, 1], [-100, 100]);
 
   return (
     <UnderlineGroup>
-      <div ref={containerRef}>
-        <SectionWithMockup
-          reverseLayout={true}
-          title={
-            <>
-              <div className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-400 mb-4 block">
-                <AnimatedUnderline>
-                  <ShimmerText duration={3}>Transformando Vidas</ShimmerText>
-                </AnimatedUnderline>
+      <SectionWithMockup
+        reverseLayout={true}
+        title={
+          <>
+            <MaskedReveal delay={0.1}>
+              <div className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300 mb-4 block">
+                <AnimatedUnderline>Transformando Vidas</AnimatedUnderline>
               </div>
+            </MaskedReveal>
+            <MaskedReveal delay={0.2}>
               <AnimatedUnderline>
-                <ShimmerText duration={3} className="text-gray-400">
-                  "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-500">Ya no tienes por qué esconderlo</span>."
-                </ShimmerText>
+                "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-300">Ya no tienes por qué esconderlo</span>."
               </AnimatedUnderline>
-            </>
-          }
-          description={
-            <div className="space-y-6 text-gray-200 font-light leading-relaxed mt-4">
+            </MaskedReveal>
+          </>
+        }
+        description={
+          <div className="space-y-6 text-gray-200 font-light leading-relaxed mt-4">
+            <MaskedReveal delay={0.3}>
               <div className="w-16 h-[1px] bg-gray-500 mb-6"></div>
+            </MaskedReveal>
+            <MaskedReveal delay={0.4}>
               <p>
                 <AnimatedUnderline className="inline">
                   Sabemos que vivir con una sonrisa que no te gusta es agotador. Taparte la boca al reír, evitar salir en las fotos y sentir ansiedad o miedo por ir al dentista son cargas que nadie debería tener que soportar.
                 </AnimatedUnderline>
               </p>
+            </MaskedReveal>
+            <MaskedReveal delay={0.5}>
               <p>
                 <AnimatedUnderline className="inline">
                   En Dental Valez, creemos en una experiencia clínica completamente libre de estrés para transformar tus inseguridades en resultados estéticos impecables. Deja el miedo en la puerta; es momento de recuperar tu confianza y volver a sonreír con total libertad.
                 </AnimatedUnderline>
               </p>
-              <div className="pt-8">
+            </MaskedReveal>
+            <div className="pt-8">
+              <MaskedReveal delay={0.6}>
                 <h3 className="text-xl font-medium tracking-widest uppercase text-white">
                   <AnimatedUnderline>Dental Valez</AnimatedUnderline>
                 </h3>
+              </MaskedReveal>
+              <MaskedReveal delay={0.7}>
                 <p className="text-xs uppercase tracking-widest text-gray-300 mt-2">
                   <AnimatedUnderline>Visión y Equipo Clínico</AnimatedUnderline>
                 </p>
-              </div>
+              </MaskedReveal>
             </div>
-          }
+          </div>
+        }
+      >
+        <div
+          className="relative transition-all duration-700 w-full h-full"
+          style={{
+            transform: isHovered ? "scale(1.02)" : "scale(1)",
+            transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
-          <motion.div
-            className="relative w-full h-full"
-            style={{ y }}
-            animate={{ scale: isHovered ? 1.02 : 1 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
           {/* Image container */}
           <div className="relative w-full h-full overflow-hidden rounded-xl">
             {/* Animated Inner Frame with Corner Accents */}
@@ -145,9 +158,8 @@ export default function FounderProfile() {
             {/* Subtle overlay to soften */}
             <div className="absolute inset-0 bg-black/10 mix-blend-multiply z-10 pointer-events-none"></div>
           </div>
-        </motion.div>
+        </div>
       </SectionWithMockup>
-      </div>
     </UnderlineGroup>
   );
 }

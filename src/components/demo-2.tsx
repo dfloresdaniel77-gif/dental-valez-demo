@@ -57,7 +57,21 @@ const sampleMediaContent: MediaContentCollection = {
 };
 
 import AnimatedTextCycle from '@/components/ui/animated-text-cycle';
-import ShimmerText from '@/components/ui/shimmer-text';
+import { motion } from 'framer-motion';
+
+const MaskedReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
+  <div className="overflow-hidden py-1">
+    <motion.div
+      initial={{ y: "100%" }}
+      whileInView={{ y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay }}
+    >
+      {children}
+    </motion.div>
+  </div>
+);
+
 const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
   const currentMedia = sampleMediaContent[mediaType];
 
@@ -66,29 +80,39 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
       
       {/* Centered Minimal Header */}
       <div className='w-full flex flex-col items-center justify-center text-center pb-16'>
-        <span className='text-xs uppercase tracking-[0.3em] text-gray-400 mb-12 font-medium'>
-          La Filosofía Dental Valez
-        </span>
-        <h2 className='text-4xl md:text-6xl lg:text-[6rem] font-extralight tracking-tighter text-black leading-[1.2] md:leading-[1.1] flex flex-col items-center w-full'>
-          <ShimmerText duration={3}>Elevando</ShimmerText>
-          <div className="w-full flex justify-center mt-2 md:mt-4">
-              <AnimatedTextCycle 
-              words={[
-                  "tu confianza",
-                  "el estándar",
-                  "la excelencia estética",
-                  "el cuidado sin compromisos",
-                  "la tecnología avanzada"
-              ]}
-              interval={2500}
-              className={"text-gray-400 italic font-serif font-light text-center w-full max-w-[90vw] whitespace-normal md:whitespace-nowrap"} 
-            />
-          </div>
+        <MaskedReveal delay={0.1}>
+          <span className='text-xs uppercase tracking-[0.3em] text-gray-400 mb-12 font-medium block'>
+            La Filosofía Dental Valez
+          </span>
+        </MaskedReveal>
+        
+        <h2 className='text-4xl md:text-6xl lg:text-[6rem] font-extralight tracking-tighter text-black leading-[1.2] md:leading-[1.1] flex flex-col items-center w-full mt-4'>
+          <MaskedReveal delay={0.2}>
+            <span>Elevando</span>
+          </MaskedReveal>
+          
+          <MaskedReveal delay={0.3}>
+            <div className="w-full flex justify-center mt-2 md:mt-4">
+                <AnimatedTextCycle 
+                words={[
+                    "tu confianza",
+                    "el estándar",
+                    "la excelencia estética",
+                    "el cuidado sin compromisos",
+                    "la tecnología avanzada"
+                ]}
+                interval={2500}
+                className={"text-gray-400 italic font-serif font-light text-center w-full max-w-[90vw] whitespace-normal md:whitespace-nowrap"} 
+              />
+            </div>
+          </MaskedReveal>
         </h2>
         
-        <p className='text-xl md:text-2xl text-gray-500 font-light max-w-2xl mt-16 leading-relaxed'>
-           {currentMedia.about.overview}
-        </p>
+        <MaskedReveal delay={0.4}>
+          <p className='text-xl md:text-2xl text-gray-500 font-light max-w-2xl mt-16 leading-relaxed'>
+             {currentMedia.about.overview}
+          </p>
+        </MaskedReveal>
       </div>
     </div>
   );
