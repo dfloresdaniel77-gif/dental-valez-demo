@@ -6,17 +6,15 @@ import { motion } from "framer-motion";
 import { AnimatedUnderline, UnderlineGroup } from "./ui/animated-underline";
 import SectionWithMockup from "./ui/section-with-mockup";
 
-const MaskedReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
-  <div className="overflow-hidden py-1">
-    <motion.div
-      initial={{ y: "100%" }}
-      whileInView={{ y: 0 }}
-      viewport={{ once: true, margin: "-10%" }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay }}
-    >
-      {children}
-    </motion.div>
-  </div>
+const BlurReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
+  <motion.div
+    initial={{ y: 20, opacity: 0, filter: "blur(12px)" }}
+    whileInView={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+    viewport={{ once: true, margin: "-10%" }}
+    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay }}
+  >
+    {children}
+  </motion.div>
 );
 
 export default function FounderProfile() {
@@ -28,48 +26,48 @@ export default function FounderProfile() {
         reverseLayout={true}
         title={
           <>
-            <MaskedReveal delay={0.1}>
+            <BlurReveal delay={0.1}>
               <div className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300 mb-4 block">
                 <AnimatedUnderline>Transformando Vidas</AnimatedUnderline>
               </div>
-            </MaskedReveal>
-            <MaskedReveal delay={0.2}>
+            </BlurReveal>
+            <BlurReveal delay={0.2}>
               <AnimatedUnderline>
                 "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-300">Ya no tienes por qué esconderlo</span>."
               </AnimatedUnderline>
-            </MaskedReveal>
+            </BlurReveal>
           </>
         }
         description={
           <div className="space-y-6 text-gray-200 font-light leading-relaxed mt-4">
-            <MaskedReveal delay={0.3}>
+            <BlurReveal delay={0.3}>
               <div className="w-16 h-[1px] bg-gray-500 mb-6"></div>
-            </MaskedReveal>
-            <MaskedReveal delay={0.4}>
+            </BlurReveal>
+            <BlurReveal delay={0.4}>
               <p>
                 <AnimatedUnderline className="inline">
                   Sabemos que vivir con una sonrisa que no te gusta es agotador. Taparte la boca al reír, evitar salir en las fotos y sentir ansiedad o miedo por ir al dentista son cargas que nadie debería tener que soportar.
                 </AnimatedUnderline>
               </p>
-            </MaskedReveal>
-            <MaskedReveal delay={0.5}>
+            </BlurReveal>
+            <BlurReveal delay={0.5}>
               <p>
                 <AnimatedUnderline className="inline">
                   En Dental Valez, creemos en una experiencia clínica completamente libre de estrés para transformar tus inseguridades en resultados estéticos impecables. Deja el miedo en la puerta; es momento de recuperar tu confianza y volver a sonreír con total libertad.
                 </AnimatedUnderline>
               </p>
-            </MaskedReveal>
+            </BlurReveal>
             <div className="pt-8">
-              <MaskedReveal delay={0.6}>
+              <BlurReveal delay={0.6}>
                 <h3 className="text-xl font-medium tracking-widest uppercase text-white">
                   <AnimatedUnderline>Dental Valez</AnimatedUnderline>
                 </h3>
-              </MaskedReveal>
-              <MaskedReveal delay={0.7}>
+              </BlurReveal>
+              <BlurReveal delay={0.7}>
                 <p className="text-xs uppercase tracking-widest text-gray-300 mt-2">
                   <AnimatedUnderline>Visión y Equipo Clínico</AnimatedUnderline>
                 </p>
-              </MaskedReveal>
+              </BlurReveal>
             </div>
           </div>
         }
