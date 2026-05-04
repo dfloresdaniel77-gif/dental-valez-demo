@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 import SmoothScrolling from "@/components/smooth-scrolling";
+import GlobalPreloader from "@/components/ui/global-preloader";
 
 export const metadata: Metadata = {
   title: "Dental Valez",
@@ -30,6 +31,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <GlobalPreloader />
         <SmoothScrolling>{children}</SmoothScrolling>
       </body>
     </html>
