@@ -56,7 +56,7 @@ export default function FounderProfile() {
         >
           {/* Image container */}
           <div className="relative w-full h-full overflow-hidden rounded-xl">
-            {/* Animated Inner Frame */}
+            {/* Animated Inner Frame with Corner Accents */}
             <div
               className="absolute inset-4 border border-white/10 transition-all duration-700 pointer-events-none z-30 rounded-[16px]"
               style={{
@@ -64,7 +64,50 @@ export default function FounderProfile() {
                 transform: isHovered ? "scale(0.96)" : "scale(1)",
                 transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
               }}
-            />
+            >
+              {/* Corner accents */}
+              <div
+                className="absolute -left-px -top-px h-5 w-px bg-white/80 transition-all duration-500"
+                style={{
+                  opacity: isHovered ? 1 : 0,
+                  transform: isHovered ? "scaleY(1)" : "scaleY(0)",
+                  transformOrigin: "top",
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                  transitionDelay: "50ms",
+                }}
+              />
+              <div
+                className="absolute -left-px -top-px h-px w-5 bg-white/80 transition-all duration-500"
+                style={{
+                  opacity: isHovered ? 1 : 0,
+                  transform: isHovered ? "scaleX(1)" : "scaleX(0)",
+                  transformOrigin: "left",
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                  transitionDelay: "100ms",
+                }}
+              />
+              <div
+                className="absolute -bottom-px -right-px h-5 w-px bg-white/80 transition-all duration-500"
+                style={{
+                  opacity: isHovered ? 1 : 0,
+                  transform: isHovered ? "scaleY(1)" : "scaleY(0)",
+                  transformOrigin: "bottom",
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                  transitionDelay: "150ms",
+                }}
+              />
+              <div
+                className="absolute -bottom-px -right-px h-px w-5 bg-white/80 transition-all duration-500"
+                style={{
+                  opacity: isHovered ? 1 : 0,
+                  transform: isHovered ? "scaleX(1)" : "scaleX(0)",
+                  transformOrigin: "right",
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                  transitionDelay: "200ms",
+                }}
+              />
+            </div>
+
             <div
               className="absolute -inset-1 transition-all duration-700 z-10 pointer-events-none"
               style={{
@@ -85,48 +128,6 @@ export default function FounderProfile() {
             />
             {/* Subtle overlay to soften */}
             <div className="absolute inset-0 bg-black/10 mix-blend-multiply z-10 pointer-events-none"></div>
-            
-            {/* Corner accents */}
-            <div
-              className="absolute left-2 top-2 h-5 w-px bg-white/80 transition-all duration-500 z-20 pointer-events-none"
-              style={{
-                opacity: isHovered ? 1 : 0,
-                transform: isHovered ? "scaleY(1)" : "scaleY(0)",
-                transformOrigin: "top",
-                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                transitionDelay: "50ms",
-              }}
-            />
-            <div
-              className="absolute left-2 top-2 h-px w-5 bg-white/80 transition-all duration-500 z-20 pointer-events-none"
-              style={{
-                opacity: isHovered ? 1 : 0,
-                transform: isHovered ? "scaleX(1)" : "scaleX(0)",
-                transformOrigin: "left",
-                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                transitionDelay: "100ms",
-              }}
-            />
-            <div
-              className="absolute bottom-2 right-2 h-5 w-px bg-white/80 transition-all duration-500 z-20 pointer-events-none"
-              style={{
-                opacity: isHovered ? 1 : 0,
-                transform: isHovered ? "scaleY(1)" : "scaleY(0)",
-                transformOrigin: "bottom",
-                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                transitionDelay: "150ms",
-              }}
-            />
-            <div
-              className="absolute bottom-2 right-2 h-px w-5 bg-white/80 transition-all duration-500 z-20 pointer-events-none"
-              style={{
-                opacity: isHovered ? 1 : 0,
-                transform: isHovered ? "scaleX(1)" : "scaleX(0)",
-                transformOrigin: "right",
-                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                transitionDelay: "200ms",
-              }}
-            />
           </div>
         </div>
       </SectionWithMockup>
