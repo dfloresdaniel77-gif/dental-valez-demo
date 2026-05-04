@@ -11,7 +11,6 @@ export default function FounderProfile() {
     <UnderlineGroup>
       <SectionWithMockup
         reverseLayout={true}
-        secondaryImageSrc="/founder-no-tattoos.png"
         title={
           <>
             <div className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300 mb-4 block">
