@@ -1,59 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { AnimatedUnderline, UnderlineGroup } from "./ui/animated-underline";
 import SectionWithMockup from "./ui/section-with-mockup";
+import ShimmerText from "./ui/shimmer-text";
 
 export default function FounderProfile() {
   const [isHovered, setIsHovered] = useState(false);
+  const containerRef = useRef(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+  
+  // Soft parallax translation
+  const y = useTransform(scrollYProgress, [0, 1], [-30, 30]);
+
   return (
     <UnderlineGroup>
-      <SectionWithMockup
-        reverseLayout={true}
-        title={
-          <>
-            <div className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300 mb-4 block">
-              <AnimatedUnderline>Transformando Vidas</AnimatedUnderline>
-            </div>
-            <AnimatedUnderline>
-              "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-300">Ya no tienes por qué esconderlo</span>."
-            </AnimatedUnderline>
-          </>
-        }
-        description={
-          <div className="space-y-6 text-gray-200 font-light leading-relaxed mt-4">
-            <div className="w-16 h-[1px] bg-gray-500 mb-6"></div>
-            <p>
-              <AnimatedUnderline className="inline">
-                Sabemos que vivir con una sonrisa que no te gusta es agotador. Taparte la boca al reír, evitar salir en las fotos y sentir ansiedad o miedo por ir al dentista son cargas que nadie debería tener que soportar.
+      <div ref={containerRef}>
+        <SectionWithMockup
+          reverseLayout={true}
+          title={
+            <>
+              <div className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-300 mb-4 block">
+                <AnimatedUnderline>
+                  <ShimmerText duration={3}>Transformando Vidas</ShimmerText>
+                </AnimatedUnderline>
+              </div>
+              <AnimatedUnderline>
+                "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-300">Ya no tienes por qué esconderlo</span>."
               </AnimatedUnderline>
-            </p>
-            <p>
-              <AnimatedUnderline className="inline">
-                En Dental Valez, creemos en una experiencia clínica completamente libre de estrés para transformar tus inseguridades en resultados estéticos impecables. Deja el miedo en la puerta; es momento de recuperar tu confianza y volver a sonreír con total libertad.
-              </AnimatedUnderline>
-            </p>
-            <div className="pt-8">
-              <h3 className="text-xl font-medium tracking-widest uppercase text-white">
-                <AnimatedUnderline>Dental Valez</AnimatedUnderline>
-              </h3>
-              <p className="text-xs uppercase tracking-widest text-gray-300 mt-2">
-                <AnimatedUnderline>Visión y Equipo Clínico</AnimatedUnderline>
+            </>
+          }
+          description={
+            <div className="space-y-6 text-gray-200 font-light leading-relaxed mt-4">
+              <div className="w-16 h-[1px] bg-gray-500 mb-6"></div>
+              <p>
+                <AnimatedUnderline className="inline">
+                  Sabemos que vivir con una sonrisa que no te gusta es agotador. Taparte la boca al reír, evitar salir en las fotos y sentir ansiedad o miedo por ir al dentista son cargas que nadie debería tener que soportar.
+                </AnimatedUnderline>
               </p>
+              <p>
+                <AnimatedUnderline className="inline">
+                  En Dental Valez, creemos en una experiencia clínica completamente libre de estrés para transformar tus inseguridades en resultados estéticos impecables. Deja el miedo en la puerta; es momento de recuperar tu confianza y volver a sonreír con total libertad.
+                </AnimatedUnderline>
+              </p>
+              <div className="pt-8">
+                <h3 className="text-xl font-medium tracking-widest uppercase text-white">
+                  <AnimatedUnderline>Dental Valez</AnimatedUnderline>
+                </h3>
+                <p className="text-xs uppercase tracking-widest text-gray-300 mt-2">
+                  <AnimatedUnderline>Visión y Equipo Clínico</AnimatedUnderline>
+                </p>
+              </div>
             </div>
-          </div>
-        }
-      >
-        <div
-          className="relative transition-all duration-700 w-full h-full"
-          style={{
-            transform: isHovered ? "scale(1.02)" : "scale(1)",
-            transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-          }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          }
         >
+          <motion.div
+            className="relative w-full h-full"
+            style={{ y }}
+            animate={{ scale: isHovered ? 1.02 : 1 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
           {/* Image container */}
           <div className="relative w-full h-full overflow-hidden rounded-xl">
             {/* Animated Inner Frame with Corner Accents */}
@@ -129,8 +143,9 @@ export default function FounderProfile() {
             {/* Subtle overlay to soften */}
             <div className="absolute inset-0 bg-black/10 mix-blend-multiply z-10 pointer-events-none"></div>
           </div>
-        </div>
+        </motion.div>
       </SectionWithMockup>
+      </div>
     </UnderlineGroup>
   );
 }

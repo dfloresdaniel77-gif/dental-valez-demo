@@ -57,7 +57,7 @@ const sampleMediaContent: MediaContentCollection = {
 };
 
 import AnimatedTextCycle from '@/components/ui/animated-text-cycle';
-
+import ShimmerText from '@/components/ui/shimmer-text';
 const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
   const currentMedia = sampleMediaContent[mediaType];
 
@@ -70,7 +70,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
           La Filosofía Dental Valez
         </span>
         <h2 className='text-4xl md:text-6xl lg:text-[6rem] font-extralight tracking-tighter text-black leading-[1.2] md:leading-[1.1] flex flex-col items-center w-full'>
-          <span>Elevando</span>
+          <ShimmerText duration={3}>Elevando</ShimmerText>
           <div className="w-full flex justify-center mt-2 md:mt-4">
               <AnimatedTextCycle 
               words={[
