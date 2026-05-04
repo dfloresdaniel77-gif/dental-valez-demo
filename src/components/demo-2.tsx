@@ -41,7 +41,7 @@ const sampleMediaContent: MediaContentCollection = {
     },
   },
   image: {
-    src: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=1280&auto=format&fit=crop', // Modern clinic interior
+    src: 'https://images.unsplash.com/photo-1629909615184-74f495363b67?q=80&w=1280&auto=format&fit=crop', // Clean modern clinic room (no people)
     background:
       'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=1920&auto=format&fit=crop', // Dental tools/room
     title: 'El Arte de la Odontología',
