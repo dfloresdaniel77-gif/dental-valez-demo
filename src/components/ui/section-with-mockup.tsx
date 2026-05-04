@@ -24,7 +24,7 @@ const SectionWithMockup: React.FC<SectionWithMockupProps> = ({
     const containerVariants: Variants = {
         hidden: {},
         visible: {
-             transition: {
+            transition: {
                 staggerChildren: 0.2,
             }
         },
@@ -47,18 +47,18 @@ const SectionWithMockup: React.FC<SectionWithMockupProps> = ({
         <section className="relative py-24 md:py-48 bg-[#111111] overflow-hidden min-h-screen flex items-center">
             <div className="container max-w-[1220px] w-full px-6 md:px-10 relative z-10 mx-auto">
                 <motion.div
-                     className={`grid grid-cols-1 gap-16 md:gap-8 w-full items-center ${layoutClasses}`}
-                     variants={containerVariants}
-                     initial="hidden"
-                     whileInView="visible"
-                     viewport={{ once: true, amount: 0.2 }}
+                    className={`grid grid-cols-1 gap-16 md:gap-8 w-full items-center ${layoutClasses}`}
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
                 >
                     {/* Text Content */}
                     <motion.div
                         className={`flex flex-col items-start gap-4 mt-10 md:mt-0 max-w-[546px] mx-auto md:mx-0 md:pl-8 ${textOrderClass}`}
                         variants={itemVariants}
                     >
-                         <div className="space-y-2 md:space-y-1">
+                        <div className="space-y-2 md:space-y-1">
                             <h2 className="text-white text-3xl md:text-[40px] font-semibold leading-tight md:leading-[53px]">
                                 {title}
                             </h2>
@@ -76,8 +76,8 @@ const SectionWithMockup: React.FC<SectionWithMockupProps> = ({
                     >
                         {/* Decorative Background Element */}
                         <motion.div
-                             className={`absolute w-[300px] h-[317px] md:w-[472px] md:h-[500px] bg-[#090909] rounded-[32px] z-0`}
-                             style={{
+                            className={`absolute w-[300px] h-[317px] md:w-[472px] md:h-[500px] bg-[#090909] rounded-[32px] z-0`}
+                            style={{
                                 top: reverseLayout ? 'auto' : '10%',
                                 bottom: reverseLayout ? '10%' : 'auto',
                                 left: reverseLayout ? 'auto' : '-20%',
@@ -102,11 +102,11 @@ const SectionWithMockup: React.FC<SectionWithMockupProps> = ({
 
                         {/* Main Mockup Card */}
                         <motion.div
-                            className="relative w-full h-[405px] md:h-[637px] bg-[#ffffff0a] rounded-[32px] backdrop-blur-[15px] backdrop-brightness-[100%] border-0 z-10 overflow-hidden"
+                            className="relative w-full h-[405px] md:h-[637px] bg-[#ffffff0a] rounded-[32px] backdrop-blur-[15px] backdrop-brightness-[100%] border-0 z-10 overflow-hidden shadow-[60px_20px_120px_rgba(0,0,0,0.85)]"
                             initial={{ y: reverseLayout ? 0 : 0 }}
                             whileInView={{ y: reverseLayout ? 20 : 30 }}
-                             transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
-                             viewport={{ once: true, amount: 0.5 }}
+                            transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
+                            viewport={{ once: true, amount: 0.5 }}
                         >
                             <div className="p-0 h-full w-full flex items-center justify-center">
                                 {children ? children : (
