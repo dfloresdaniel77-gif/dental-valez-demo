@@ -57,6 +57,7 @@ const sampleMediaContent: MediaContentCollection = {
 };
 
 import AnimatedTextCycle from '@/components/ui/animated-text-cycle';
+import ShimmerText from '@/components/ui/shimmer-text';
 import { motion } from 'framer-motion';
 
 const UltimateReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
@@ -88,7 +89,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
         
         <h2 className='text-4xl md:text-6xl lg:text-[6rem] font-extralight tracking-tighter text-black leading-[1.2] md:leading-[1.1] flex flex-col items-center w-full mt-4'>
           <UltimateReveal delay={0.2}>
-            <span>Elevando</span>
+            <ShimmerText duration={3}>Elevando</ShimmerText>
           </UltimateReveal>
           
           <UltimateReveal delay={0.3}>
