@@ -238,18 +238,19 @@ const Demo = () => {
       <UltimateHero
         mediaType={mediaType as 'video' | 'image'}
         mediaSrc={currentMedia.src}
+        secondMediaSrc="https://images.unsplash.com/photo-1606265752439-1f18756aa5fc?w=2400&auto=format&fit=crop"
         bgImageSrc={currentMedia.background}
         title={currentMedia.title}
         date={currentMedia.date}
-        scrollToExpand="Desplázate para el efecto Handover"
+        scrollToExpand="Desplázate para ver la Fusión"
       >
         <div className="py-20 text-center">
             <h3 className="text-5xl font-bold mb-8 italic font-serif">Option 1: The Handover</h3>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                ¿Sentiste cómo te atrapó al principio? 
-                Ese es el motor original. Después, al llegar al 50%, el control 
-                pasó suavemente al scroll nativo de tu navegador. 
-                Es una mezcla de autoridad y libertad.
+                ¿Viste el cambio de imagen? 
+                Al llegar al 50%, no solo cambió la física del scroll, 
+                sino que una nueva imagen emergió. 
+                Esta es la verdadera fusión de ambos conceptos.
             </p>
         </div>
       </UltimateHero>

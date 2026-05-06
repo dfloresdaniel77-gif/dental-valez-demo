@@ -14,6 +14,7 @@ import { useLenis } from "lenis/react";
 
 interface UltimateHeroProps {
   mediaSrc: string;
+  secondMediaSrc?: string;
   mediaType?: "image" | "video";
   posterSrc?: string;
   title?: string;
@@ -26,6 +27,7 @@ interface UltimateHeroProps {
 
 export const UltimateHero: React.FC<UltimateHeroProps> = ({
   mediaSrc,
+  secondMediaSrc,
   mediaType = "image",
   posterSrc,
   title,
@@ -134,26 +136,25 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
   const textXLeft = useTransform(visualProgress, [0, 0.8], ["0vw", "-100vw"]);
   const textXRight = useTransform(visualProgress, [0, 0.8], ["0vw", "100vw"]);
 
+  // Cross-fade progress: 0 at start, 1 at 50%, back to 0 at end? 
+  // No, let's fade FROM mediaSrc TO secondMediaSrc around 0.5
+  const mediaFade = useTransform(visualProgress, [0.4, 0.6], [1, 0]);
+  const secondMediaFade = useTransform(visualProgress, [0.4, 0.6], [0, 1]);
+
   const firstWord = title ? title.split(" ")[0] : "";
   const restOfTitle = title ? title.split(" ").slice(1).join(" ") : "";
 
   return (
     <section 
       ref={sectionRef} 
-      className={cn(
-        "relative transition-colors duration-700",
-        isMobile ? "h-auto" : "h-[300vh] bg-[#111111]"
-      )}
+      className="relative h-[300vh] bg-[#111111]"
     >
-      <div className={cn(
-        "sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center",
-        isMobile && "relative h-auto py-20"
-      )}>
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         
         {/* Background Layer */}
         <motion.div 
           className="absolute inset-0 z-0"
-          style={{ opacity: isMobile ? 1 : opacity }}
+          style={{ opacity }}
         >
           <Image src={bgImageSrc} alt="BG" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-black/20" />
@@ -170,11 +171,22 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
             }}
             className="relative flex items-center justify-center shadow-2xl"
           >
-            {mediaType === "video" ? (
-              <video src={mediaSrc} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" />
-            ) : (
-              <Image src={mediaSrc} alt="Hero" fill className="object-cover" />
+            {/* Primary Media (Fades out) */}
+            <motion.div style={{ opacity: mediaFade }} className="absolute inset-0">
+                {mediaType === "video" ? (
+                    <video src={mediaSrc} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                ) : (
+                    <Image src={mediaSrc} alt="Hero" fill className="object-cover" />
+                )}
+            </motion.div>
+
+            {/* Secondary Media (Fades in) */}
+            {secondMediaSrc && (
+                <motion.div style={{ opacity: secondMediaFade }} className="absolute inset-0">
+                    <Image src={secondMediaSrc} alt="Hero 2" fill className="object-cover" />
+                </motion.div>
             )}
+
             <motion.div className="absolute inset-0 bg-black" style={{ opacity: useTransform(visualProgress, [0, 1], [0.6, 0.3]) }} />
             
             {/* Split Title inside Media */}
