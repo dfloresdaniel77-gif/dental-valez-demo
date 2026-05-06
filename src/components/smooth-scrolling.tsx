@@ -1,18 +1,13 @@
 "use client";
 
 import { ReactLenis, useLenis } from "lenis/react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 function LenisControls() {
   const lenis = useLenis();
 
   useEffect(() => {
     if (!lenis) return;
-
-    // Disable smooth scrolling on mobile
-    if (window.innerWidth <= 768) {
-      lenis.stop();
-    }
 
     const stopLenis = () => {
       lenis.stop();
@@ -39,6 +34,17 @@ export default function SmoothScrolling({
 }: {
   children: React.ReactNode;
 }) {
+  const [isDesktop, setIsDesktop] = useState(true);
+  
+  useEffect(() => {
+    setIsDesktop(window.innerWidth > 768);
+  }, []);
+
+  // On mobile, completely bypass Lenis to avoid any potential CSS/overflow conflicts
+  if (!isDesktop) {
+    return <>{children}</>;
+  }
+
   return (
     <ReactLenis
       root

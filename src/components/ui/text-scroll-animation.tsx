@@ -43,12 +43,12 @@ const CharacterV1 = ({
   const isSpace = char === " ";
   const distanceFromCenter = index - centerIndex;
 
-  // Since scrollYProgress now perfectly maps to 0 (entering screen) to 1 (center of screen),
-  // we can use a clean 0 to 1 mapping.
-  const x = useTransform(scrollYProgress, [0, 1], [distanceFromCenter * 150, 0]);
-  const rotateZ = useTransform(scrollYProgress, [0, 1], [distanceFromCenter * 20, 0]);
+  // Simplify transforms for mobile to avoid heavy visual shifting during scroll
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const x = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [distanceFromCenter * 150, 0]);
+  const rotateZ = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [distanceFromCenter * 20, 0]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [0, 1]);
-  const scale = useTransform(scrollYProgress, [0, 1], [3, 1]);
+  const scale = useTransform(scrollYProgress, [0, 1], isMobile ? [1, 1] : [3, 1]);
 
   return (
     <motion.span

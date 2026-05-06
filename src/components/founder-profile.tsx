@@ -29,8 +29,9 @@ export default function FounderProfile() {
     offset: ["start end", "end start"]
   });
   
-  // Soft parallax translation
-  const y = useTransform(scrollYProgress, [0, 1], [-100, 100]);
+  // Soft parallax translation - Disable on mobile to prevent "pulling"
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const y = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [-100, 100]);
 
   return (
     <UnderlineGroup>
