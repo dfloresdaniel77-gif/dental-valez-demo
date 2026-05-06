@@ -9,9 +9,9 @@ import Testimonials from "@/components/testimonials";
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#ece8e1] text-black">
-      {/* Dental Valez Header */}
+      {/* Dental Velez Header */}
       <header className="fixed top-0 left-0 w-full z-[100] px-8 py-6 flex justify-between items-center pointer-events-none mix-blend-difference">
-        <div className="text-white font-bold text-xl tracking-widest uppercase">Dental Valez</div>
+        <div className="text-white font-bold text-xl tracking-widest uppercase">Dental Velez</div>
         <a href="#contacto" className="text-white text-xs md:text-sm tracking-widest uppercase border border-white/50 px-5 py-2 rounded-full hover:bg-white hover:text-black transition-colors pointer-events-auto duration-300">
           Contacto
         </a>
@@ -52,7 +52,7 @@ export default function Home() {
       <footer className="w-full bg-[#ece8e1] px-8 py-16 md:py-24 border-t border-gray-200">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col items-center md:items-start space-y-2">
-            <div className="text-black font-bold text-2xl tracking-widest uppercase">Dental Valez</div>
+            <div className="text-black font-bold text-2xl tracking-widest uppercase">Dental Velez</div>
             <div className="text-gray-500 text-sm tracking-wide lowercase">Estudio Dental</div>
           </div>
           
@@ -66,7 +66,7 @@ export default function Home() {
           </div>
           
           <div className="text-gray-400 text-xs font-light">
-            &copy; {new Date().getFullYear()} Dental Valez. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} Dental Velez. Todos los derechos reservados.
           </div>
         </div>
       </footer>

@@ -70,14 +70,14 @@ export default function FounderProfile() {
               <UltimateReveal delay={0.5}>
                 <p>
                   <AnimatedUnderline className="inline">
-                    En Dental Valez, creemos en una experiencia clínica completamente libre de estrés para transformar tus inseguridades en resultados estéticos impecables. Deja el miedo en la puerta; es momento de recuperar tu confianza y volver a sonreír con total libertad.
+                    En Dental Velez, creemos en una experiencia clínica completamente libre de estrés para transformar tus inseguridades en resultados estéticos impecables. Deja el miedo en la puerta; es momento de recuperar tu confianza y volver a sonreír con total libertad.
                   </AnimatedUnderline>
                 </p>
               </UltimateReveal>
               <div className="pt-8">
                 <UltimateReveal delay={0.6}>
                   <h3 className="text-xl font-medium tracking-widest uppercase text-white">
-                    <AnimatedUnderline>Dental Valez</AnimatedUnderline>
+                    <AnimatedUnderline>Dental Velez</AnimatedUnderline>
                   </h3>
                 </UltimateReveal>
                 <UltimateReveal delay={0.7}>

@@ -49,7 +49,7 @@ export default function GlobalPreloader() {
           exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
         >
           <div className="text-sm md:text-base font-semibold tracking-[0.4em] uppercase text-gray-300">
-            <ShimmerText duration={1.5}>Dental Valez</ShimmerText>
+            <ShimmerText duration={1.5}>Dental Velez</ShimmerText>
           </div>
           {/* Subtle loading line below the text */}
           <motion.div 

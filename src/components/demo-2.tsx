@@ -31,7 +31,7 @@ const sampleMediaContent: MediaContentCollection = {
     background:
       'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=1920&auto=format&fit=crop', // updated bg
     title: 'Experiencia Dental Inmersiva',
-    date: 'Dental Valez',
+    date: 'Dental Velez',
     scrollToExpand: 'Desplázate para Explorar',
     about: {
       overview:
@@ -45,7 +45,7 @@ const sampleMediaContent: MediaContentCollection = {
     background:
       'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=1920&auto=format&fit=crop', // Dental tools/room
     title: 'El Arte de la Odontología',
-    date: 'Dental Valez',
+    date: 'Dental Velez',
     scrollToExpand: 'Desplázate para Explorar',
     about: {
       overview:
@@ -83,7 +83,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
       <div className='w-full flex flex-col items-center justify-center text-center pb-16'>
         <UltimateReveal delay={0.1}>
           <span className='text-xs uppercase tracking-[0.3em] text-gray-400 mb-12 font-medium block'>
-            La Filosofía Dental Valez
+            La Filosofía Dental Velez
           </span>
         </UltimateReveal>
         

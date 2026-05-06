@@ -16,7 +16,7 @@ import SmoothScrolling from "@/components/smooth-scrolling";
 import GlobalPreloader from "@/components/ui/global-preloader";
 
 export const metadata: Metadata = {
-  title: "Dental Valez",
+  title: "Dental Velez",
   description: "Estudio Dental de Lujo",
 };
 
