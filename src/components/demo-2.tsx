@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Sparkles, Activity, ShieldCheck, Star } from 'lucide-react';
 import ScrollExpandMedia from '@/components/ui/scroll-expansion-hero';
+import StickyScrollHero from '@/components/ui/sticky-scroll-hero';
 
 interface MediaAbout {
   overview: string;
@@ -227,8 +228,7 @@ export const ImageExpansion = () => {
   );
 };
 
-import ScrollExpandMedia from '@/components/ui/scroll-expansion-hero';
-import StickyScrollHero from '@/components/ui/sticky-scroll-hero';
+
 
 const Demo = () => {
   const [mediaType] = useState('image'); 
