@@ -249,10 +249,10 @@ const ScrollExpandMedia = ({
       ref={sectionRef}
       className='transition-colors duration-700 ease-in-out overflow-x-hidden'
     >
-      <section className='relative flex flex-col items-center justify-start min-h-[100vh]'>
-        <div className='relative w-full flex flex-col items-center min-h-[100vh]'>
+      <section className='relative flex flex-col items-center justify-start min-h-screen'>
+        <div className='relative w-full flex flex-col items-center min-h-screen'>
           <motion.div
-            className='absolute top-0 left-0 z-0 h-[100vh] w-full overflow-hidden'
+            className='absolute top-0 left-0 z-0 h-screen w-full overflow-hidden'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 - visualProgress }}
             transition={{ duration: 0.1 }}
@@ -272,7 +272,7 @@ const ScrollExpandMedia = ({
           </motion.div>
 
           <div className='container mx-auto flex flex-col items-center justify-start relative z-10'>
-            <div className='flex flex-col items-center justify-center w-full h-[100dvh] relative'>
+            <div className='flex flex-col items-center justify-center w-full h-screen relative'>
               <div
                 className='absolute z-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-none rounded-2xl'
                 style={{
