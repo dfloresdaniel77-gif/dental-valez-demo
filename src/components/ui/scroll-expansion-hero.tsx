@@ -117,20 +117,25 @@ const ScrollExpandMedia = ({
       setTouchStartY(0);
     };
 
-    window.addEventListener('wheel', handleWheel as unknown as EventListener, {
-      passive: false,
-    });
-    window.addEventListener(
-      'touchstart',
-      handleTouchStart as unknown as EventListener,
-      { passive: false }
-    );
-    window.addEventListener(
-      'touchmove',
-      handleTouchMove as unknown as EventListener,
-      { passive: false }
-    );
-    window.addEventListener('touchend', handleTouchEnd as EventListener);
+    if (!isMobileState) {
+      window.addEventListener('wheel', handleWheel as unknown as EventListener, {
+        passive: false,
+      });
+      window.addEventListener(
+        'touchstart',
+        handleTouchStart as unknown as EventListener,
+        { passive: false }
+      );
+      window.addEventListener(
+        'touchmove',
+        handleTouchMove as unknown as EventListener,
+        { passive: false }
+      );
+      window.addEventListener('touchend', handleTouchEnd as EventListener);
+    } else {
+      // On mobile, just end listener is enough (or nothing)
+      window.addEventListener('touchend', handleTouchEnd as EventListener);
+    }
 
     return () => {
       window.removeEventListener(
@@ -147,7 +152,7 @@ const ScrollExpandMedia = ({
       );
       window.removeEventListener('touchend', handleTouchEnd as EventListener);
     };
-  }, [scrollProgress, mediaFullyExpanded, touchStartY]);
+  }, [scrollProgress, mediaFullyExpanded, touchStartY, isMobileState]);
   const lenis = useLenis();
 
   useEffect(() => {
@@ -244,10 +249,10 @@ const ScrollExpandMedia = ({
       ref={sectionRef}
       className='transition-colors duration-700 ease-in-out overflow-x-hidden'
     >
-      <section className='relative flex flex-col items-center justify-start min-h-[100dvh]'>
-        <div className='relative w-full flex flex-col items-center min-h-[100dvh]'>
+      <section className='relative flex flex-col items-center justify-start min-h-[100vh]'>
+        <div className='relative w-full flex flex-col items-center min-h-[100vh]'>
           <motion.div
-            className='absolute top-0 left-0 z-0 h-[100dvh] w-full overflow-hidden'
+            className='absolute top-0 left-0 z-0 h-[100vh] w-full overflow-hidden'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 - visualProgress }}
             transition={{ duration: 0.1 }}
