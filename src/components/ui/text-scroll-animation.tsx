@@ -75,8 +75,9 @@ export const AnimatedTextScroll = ({
     offset: ["start 90%", "center center"]
   });
 
-  const characters = text.split("");
-  const centerIndex = Math.floor(characters.length / 2);
+  const words = text.split(" ");
+  const centerIndex = Math.floor(text.length / 2);
+  let globalCharIndex = 0;
 
   return (
     <div
@@ -87,18 +88,42 @@ export const AnimatedTextScroll = ({
       )}
     >
       <div
-        className="w-full max-w-5xl text-center text-[2.5rem] leading-[1.1] md:text-5xl lg:text-7xl font-bold uppercase tracking-tighter text-black"
-        style={{ perspective: "1000px" }}
+        className="w-full max-w-6xl text-center text-4xl md:text-5xl lg:text-7xl font-bold uppercase tracking-tighter text-black leading-tight"
+        style={{ perspective: "500px" }}
       >
-        {characters.map((char, index) => (
-          <CharacterV1
-            key={index}
-            char={char}
-            index={index}
-            centerIndex={centerIndex}
-            scrollYProgress={scrollYProgress}
-          />
-        ))}
+        {words.map((word, wIndex) => {
+          const chars = word.split("");
+          return (
+            <React.Fragment key={wIndex}>
+              <span className="inline-block whitespace-nowrap">
+                {chars.map((char) => {
+                  const charComponent = (
+                    <CharacterV1
+                      key={globalCharIndex}
+                      char={char}
+                      index={globalCharIndex}
+                      centerIndex={centerIndex}
+                      scrollYProgress={scrollYProgress}
+                    />
+                  );
+                  globalCharIndex++;
+                  return charComponent;
+                })}
+              </span>
+              {/* Add a space after each word except the last one */}
+              {wIndex < words.length - 1 && (
+                <CharacterV1
+                  char=" "
+                  index={globalCharIndex++}
+                  centerIndex={centerIndex}
+                  scrollYProgress={scrollYProgress}
+                />
+              )}
+              {/* Force line break after 'la' (the 3rd word) on mobile */}
+              {wIndex === 2 && <br className="md:hidden" />}
+            </React.Fragment>
+          );
+        })}
       </div>
     </div>
   );
