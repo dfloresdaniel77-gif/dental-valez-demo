@@ -241,14 +241,14 @@ const Demo = () => {
         bgImageSrc={currentMedia.background}
         title={currentMedia.title}
         date={currentMedia.date}
-        scrollToExpand="Prueba el Zoom 3D (Scroll + Trap)"
+        scrollToExpand="Enfoca tu nueva sonrisa (Scroll para revelar)"
       >
         <div className="py-20 text-center">
-            <h3 className="text-5xl font-bold mb-8 italic font-serif">Option 2: 3D Depth</h3>
-            <p className="text-xl text-gray-100 max-w-2xl mx-auto drop-shadow-lg">
-                Aquí el scroll mueve el "marco", pero tu dedo controla el zoom interno. 
-                Siente cómo la imagen se acerca a ti de forma independiente. 
-                Es una profundidad 3D real sin necesidad de gafas.
+            <h3 className="text-5xl font-bold mb-8 italic font-serif text-white">Option 3: Lens Blur</h3>
+            <p className="text-xl text-white/80 max-w-2xl mx-auto drop-shadow-lg font-light leading-relaxed">
+                Este es el alma del diseño original fusionada con la tecnología del nuevo. 
+                Comienzas en un sueño desenfocado, y es tu propio movimiento el que 
+                trae la claridad a la pantalla. Es una metáfora de la transformación que ofrecemos.
             </p>
         </div>
       </UltimateHero>

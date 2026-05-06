@@ -36,28 +36,28 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
 }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Sticky Logic for the 3D Depth Engine
+  // Sticky Logic for the Lens Blur Engine
   const { scrollYProgress: containerScroll } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"]
   });
 
-  // 1. Frame expansion (happens first 60%)
+  // 1. Frame expansion
   const width = useTransform(containerScroll, [0, 0.6], ["300px", "100vw"]);
   const height = useTransform(containerScroll, [0, 0.6], ["400px", "100vh"]);
   const radius = useTransform(containerScroll, [0, 0.5], ["24px", "0px"]);
   
-  // 2. 3D Zoom Effect (happens over the whole scroll)
-  // We zoom from 1.0 to 1.5 to create that deep immersion
-  const imgScale = useTransform(containerScroll, [0, 1], [1, 1.6]);
-  const imgZ = useTransform(containerScroll, [0, 1], [0, 100]); // Moves "toward" the camera
+  // 2. The Lens Blur Reveal (The 'Trap' Soul)
+  // Starts blurry and dark, then clears as you expand
+  const blurValue = useTransform(containerScroll, [0, 0.5], [20, 0]);
+  const brightnessValue = useTransform(containerScroll, [0, 0.5], [0.4, 1]);
+  const imgScale = useTransform(containerScroll, [0, 0.6], [1.3, 1]); // Settles from zoom
   
   // 3. UI Elements
   const textXLeft = useTransform(containerScroll, [0, 0.5], ["0vw", "-100vw"]);
   const textXRight = useTransform(containerScroll, [0, 0.5], ["0vw", "100vw"]);
   const bgOpacity = useTransform(containerScroll, [0, 0.2], [1, 0]);
   const contentOpacity = useTransform(containerScroll, [0.7, 0.9], [0, 1]);
-  const contentY = useTransform(containerScroll, [0.7, 0.9], [50, 0]);
 
   const firstWord = title ? title.split(" ")[0] : "";
   const restOfTitle = title ? title.split(" ").slice(1).join(" ") : "";
@@ -65,7 +65,7 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
   return (
     <section 
       ref={sectionRef} 
-      className="relative h-[300vh] bg-[#111111] perspective-1000"
+      className="relative h-[300vh] bg-[#111111]"
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         
@@ -78,7 +78,7 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
           <div className="absolute inset-0 bg-black/20" />
         </motion.div>
 
-        {/* Media Container (The Frame) */}
+        {/* Media Container (The Lens) */}
         <div className="relative z-10 w-full h-full flex items-center justify-center">
           <motion.div
             style={{
@@ -86,11 +86,11 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
               height,
               borderRadius: radius,
               overflow: "hidden",
-              z: imgZ, // Perspective shift
+              filter: useTransform(blurValue, (v) => `blur(${v}px) brightness(${brightnessValue.get()})`),
             }}
             className="relative flex items-center justify-center shadow-2xl"
           >
-            {/* The Image (The Depth) */}
+            {/* The Image inside */}
             <motion.div 
               style={{ scale: imgScale }} 
               className="absolute inset-0"
@@ -102,7 +102,7 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
                 )}
             </motion.div>
 
-            <motion.div className="absolute inset-0 bg-black/40" />
+            <motion.div className="absolute inset-0 bg-black/20" />
             
             {/* Split Title inside Media */}
             <div className="relative z-20 flex flex-col items-center">
@@ -122,12 +122,12 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
           </motion.h2>
         </div>
 
-        {/* Revealed Content (Now using the same sticky scroll) */}
+        {/* Revealed Content */}
         <motion.div 
-          style={{ opacity: contentOpacity, y: contentY }}
+          style={{ opacity: contentOpacity }}
           className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none"
         >
-            <div className="max-w-4xl p-8 pointer-events-auto bg-black/20 backdrop-blur-md rounded-3xl">
+            <div className="max-w-4xl p-8 pointer-events-auto bg-white/10 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl">
                 {children}
             </div>
         </motion.div>
