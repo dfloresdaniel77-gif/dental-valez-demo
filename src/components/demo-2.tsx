@@ -227,19 +227,15 @@ export const ImageExpansion = () => {
   );
 };
 
+import StickyScrollHero from '@/components/ui/sticky-scroll-hero';
+
 const Demo = () => {
-  const [mediaType, setMediaType] = useState('image'); // default to image for dental demo
+  const [mediaType] = useState('image'); 
   const currentMedia = sampleMediaContent[mediaType];
 
-  useEffect(() => {
-    // window.scrollTo(0, 0);
-    const resetEvent = new Event('resetSection');
-    window.dispatchEvent(resetEvent);
-  }, [mediaType]);
-
   return (
-    <div className='min-h-screen'>
-      {/* Removed the video/image toggle buttons for a cleaner demo presentation */}
+    <div className='w-full'>
+      {/* 1. Original Hero (The 'Trap' effect) */}
       <ScrollExpandMedia
         mediaType={mediaType as 'video' | 'image'}
         mediaSrc={currentMedia.src}
@@ -251,6 +247,25 @@ const Demo = () => {
       >
         <MediaContent mediaType={mediaType as 'video' | 'image'} />
       </ScrollExpandMedia>
+
+      {/* 2. New 'Magical' Hero (The Native Sticky effect) */}
+      <StickyScrollHero
+        mediaType={mediaType as 'video' | 'image'}
+        mediaSrc={currentMedia.src}
+        bgImageSrc={currentMedia.background}
+        title="La Magia de la Tecnología"
+        date="Dental Velez"
+        scrollToExpand="Desplázate para el segundo efecto"
+      >
+        <div className="py-40 text-center">
+            <h3 className="text-5xl font-bold mb-8 italic font-serif">Esta es la versión 'Magical'</h3>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                Este segundo efecto es 100% nativo y utiliza una técnica de 'Sticky Scroll'. 
+                Es más estable en móviles, pero tiene una sensación diferente al original.
+                ¡Ahora puedes ver ambos y decidir cómo mezclarlos!
+            </p>
+        </div>
+      </StickyScrollHero>
     </div>
   );
 };
