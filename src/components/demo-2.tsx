@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Sparkles, Activity, ShieldCheck, Star } from 'lucide-react';
-import ScrollExpandMedia from '@/components/ui/scroll-expansion-hero';
-import StickyScrollHero from '@/components/ui/sticky-scroll-hero';
+import MasterSequenceHero from '@/components/ui/master-sequence-hero';
+import FounderProfile from '@/components/founder-profile';
 
 interface MediaAbout {
   overview: string;
@@ -236,36 +236,14 @@ const Demo = () => {
 
   return (
     <div className='w-full'>
-      {/* 1. Original Hero (The 'Trap' effect) */}
-      <ScrollExpandMedia
-        mediaType={mediaType as 'video' | 'image'}
+      <MasterSequenceHero
         mediaSrc={currentMedia.src}
-        posterSrc={mediaType === 'video' ? currentMedia.poster : undefined}
         bgImageSrc={currentMedia.background}
         title={currentMedia.title}
         date={currentMedia.date}
-        scrollToExpand={currentMedia.scrollToExpand}
       >
-        <MediaContent mediaType={mediaType as 'video' | 'image'} />
-      </ScrollExpandMedia>
-
-      {/* 2. New 'Magical' Hero (The Native Sticky effect) */}
-      <StickyScrollHero
-        mediaType={mediaType as 'video' | 'image'}
-        mediaSrc={currentMedia.src}
-        bgImageSrc={currentMedia.background}
-        title="La Magia de la Tecnología"
-        date="Dental Velez"
-        scrollToExpand="Desplázate para el segundo efecto"
-      >
-        <div className="py-40 text-center">
-            <h3 className="text-5xl font-bold mb-8 italic font-serif">Esta es la versión 'Magical'</h3>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                Este segundo efecto es 100% nativo y utiliza una técnica de 'Sticky Scroll'. 
-                Es más estable en móviles, pero tiene una sensación diferente al original.
-            </p>
-        </div>
-      </StickyScrollHero>
+        <FounderProfile />
+      </MasterSequenceHero>
     </div>
   );
 };
