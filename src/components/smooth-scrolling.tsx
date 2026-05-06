@@ -38,10 +38,12 @@ export default function SmoothScrolling({
     <ReactLenis
       root
       options={{
-        lerp: 0.15, // Higher lerp makes it snappier and less laggy
-        wheelMultiplier: 1.1, // Slightly faster wheel response
+        lerp: 0.15,
+        wheelMultiplier: 1.1,
         smoothWheel: true,
-        syncTouch: false, // Must be false for native-feeling mobile scroll
+        syncTouch: false,
+        // Disable on mobile to prevent conflicts with native touch/address bar behavior
+        enabled: typeof window !== 'undefined' && window.innerWidth > 768,
       }}
     >
       <LenisControls />

@@ -151,8 +151,10 @@ const ScrollExpandMedia = ({
   const lenis = useLenis();
 
   useEffect(() => {
-    // ON MOBILE: Never lock the scroll. The animation will be driven by native scroll instead.
-    if (isMobileState) {
+    // Check mobile status immediately to prevent a "lock-then-unlock" flash on mount
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    
+    if (isMobile) {
       document.body.style.overflow = '';
       if (lenis) {
         lenis.start();
@@ -189,7 +191,7 @@ const ScrollExpandMedia = ({
         window.dispatchEvent(new Event('startLenis'));
       }
     };
-  }, [mediaFullyExpanded, isMobileState, lenis]);
+  }, [mediaFullyExpanded, lenis]);
 
   // Drive animation via native scroll on mobile
   useEffect(() => {
