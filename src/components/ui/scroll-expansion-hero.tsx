@@ -192,3 +192,5 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
     </section>
   );
 };
+
+export default ScrollExpandMedia;
