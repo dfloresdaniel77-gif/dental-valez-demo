@@ -43,12 +43,17 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // 1. The Trap Phase (0% to 25% expansion)
+  // 1. The Trap Phase (The First Hero Page Experience)
+  // This allows the "back and forth" between the Card and the Background
   useEffect(() => {
     if (phase !== "trap") return;
 
     const handleWheel = (e: WheelEvent) => {
       if (phase !== "trap") return;
+      
+      // If we are scrolling UP and at the start, don't prevent default
+      if (e.deltaY < 0 && scrollProgress <= 0) return;
+      
       e.preventDefault();
       const delta = e.deltaY / 1500;
       const nextProgress = Math.min(Math.max(scrollProgress + delta, 0), 1);
@@ -73,8 +78,14 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
       element.addEventListener("touchmove", handleTouchMove, { passive: false });
     }
 
-    document.body.style.overflow = "hidden";
-    if (lenis) lenis.stop();
+    // Lock body only if we are in the middle of the expansion
+    if (scrollProgress > 0 && scrollProgress < 1) {
+        document.body.style.overflow = "hidden";
+        if (lenis) lenis.stop();
+    } else {
+        document.body.style.overflow = "";
+        if (lenis) lenis.start();
+    }
 
     return () => {
       if (element) {
@@ -104,31 +115,36 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
     offset: ["start start", "end end"],
   });
 
-  // visualProgress combines both worlds
-  // Mapping the flow from scrollYProgress [0, 1] to our sequence [0.25, 1]
+  // sequenceProgress maps the entire journey
+  // 0.0 - 0.25: Trap Expansion (First Hero Page)
+  // 0.25 - 0.5: Mega Zoom (Second Hero kicks in)
+  // 0.5 - 0.75: Zoom Out / Settle
+  // 0.75 - 1.0: Reveal Founder Profile
   const sequenceProgress = useTransform(
     scrollYProgress,
     [0, 1],
     [scrollProgress * 0.25, 1]
   );
 
-  // 1. Expansion Phase (0% to 25% of the total scroll)
+  // Phase 1: Expansion (First Hero)
   const width = useTransform(sequenceProgress, [0, 0.25], ["300px", "100vw"]);
   const height = useTransform(sequenceProgress, [0, 0.25], ["400px", "100vh"]);
   const radius = useTransform(sequenceProgress, [0, 0.2], ["24px", "0px"]);
+  const bgOpacity = useTransform(sequenceProgress, [0, 0.2], [1, 0]); // Background fades as card fills screen
+  
+  // Titles and Text
   const titleOpacity = useTransform(sequenceProgress, [0, 0.15], [1, 0]);
   const titleXLeft = useTransform(sequenceProgress, [0, 0.2], ["0vw", "-100vw"]);
   const titleXRight = useTransform(sequenceProgress, [0, 0.2], ["0vw", "100vw"]);
 
-  // 2. The Zoom Surge (25% to 50%)
-  const imgScale = useTransform(sequenceProgress, [0.25, 0.5, 0.75], [1, 1.6, 1]);
-  const elevandoOpacity = useTransform(sequenceProgress, [0.3, 0.5, 0.7], [0, 1, 0]);
-  const elevandoY = useTransform(sequenceProgress, [0.3, 0.5, 0.7], [50, 0, -50]);
+  // Phase 2 & 3: Mega Zoom & Settle (Second Hero)
+  const imgScale = useTransform(sequenceProgress, [0.25, 0.5, 0.75], [1, 1.8, 1]);
+  const elevandoOpacity = useTransform(sequenceProgress, [0.35, 0.5, 0.65], [0, 1, 0]);
+  const elevandoY = useTransform(sequenceProgress, [0.35, 0.5, 0.65], [50, 0, -50]);
 
-  // 3. The Transition to Content (75% to 100%)
-  const contentOpacity = useTransform(sequenceProgress, [0.75, 0.9], [0, 1]);
-  const contentY = useTransform(sequenceProgress, [0.75, 0.9], [100, 0]);
-  const mediaOpacity = useTransform(sequenceProgress, [0.8, 1], [1, 0]);
+  // Phase 4: Reveal Content
+  const contentOpacity = useTransform(sequenceProgress, [0.8, 0.95], [0, 1]);
+  const mediaFinalOpacity = useTransform(sequenceProgress, [0.85, 1], [1, 0]);
 
   const firstWord = title ? title.split(" ")[0] : "";
   const restOfTitle = title ? title.split(" ").slice(1).join(" ") : "";
@@ -140,37 +156,37 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         
-        {/* Background Layer (Entrance only) */}
+        {/* Background Layer (The First Hero's Background) */}
         <motion.div 
           className="absolute inset-0 z-0"
-          style={{ opacity: useTransform(scrollYProgress, [0, 0.1], [1, 0]) }}
+          style={{ opacity: bgOpacity }}
         >
-          <Image src={bgImageSrc} alt="BG" fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-black/20" />
+          <Image src={bgImageSrc} alt="Background" fill className="object-cover" priority />
+          <div className="absolute inset-0 bg-black/40" />
         </motion.div>
 
-        {/* The Master Media Container */}
+        {/* Foreground Layer (The Expanding Card / The Hero Content) */}
         <motion.div
           style={{
             width,
             height,
             borderRadius: radius,
-            opacity: mediaOpacity,
+            opacity: mediaFinalOpacity,
           }}
           className="relative z-10 overflow-hidden shadow-2xl flex items-center justify-center"
         >
           <motion.div style={{ scale: imgScale }} className="absolute inset-0">
             <Image src={mediaSrc} alt="Hero" fill className="object-cover" />
           </motion.div>
-          <div className="absolute inset-0 bg-black/30" />
+          <div className="absolute inset-0 bg-black/20" />
 
-          {/* Title inside Media (Expansion Phase) */}
+          {/* Phase 1 Overlay Text */}
           <div className="relative z-20 flex flex-col items-center">
              <motion.p style={{ x: titleXLeft }} className="text-white text-xl tracking-widest uppercase">{date}</motion.p>
-             <motion.p style={{ x: titleXRight }} className="text-white/60 text-xs tracking-widest uppercase mt-2">Desplázate para comenzar</motion.p>
+             <motion.p style={{ x: titleXRight }} className="text-white/60 text-xs tracking-widest uppercase mt-2">Desplázate para Explorar</motion.p>
           </div>
 
-          {/* Phase 2: "Elevando el Estándar" (Zoom Phase) */}
+          {/* Phase 2 Overlay: Elevando el Estándar */}
           <motion.div 
             style={{ opacity: elevandoOpacity, y: elevandoY }}
             className="absolute inset-0 z-30 flex flex-col items-center justify-center text-center px-6"
@@ -191,7 +207,7 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
           </motion.div>
         </motion.div>
 
-        {/* Floating Entrance Titles (Phase 1) */}
+        {/* Phase 1 Floating Entrance Titles */}
         <div className="absolute z-20 flex flex-col items-center gap-4 text-center pointer-events-none">
           <motion.h2 style={{ x: titleXLeft, opacity: titleOpacity }} className="text-6xl md:text-8xl font-bold text-white uppercase tracking-tighter drop-shadow-2xl">
             {firstWord}
@@ -201,9 +217,9 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
           </motion.h2>
         </div>
 
-        {/* Final Phase: Content Reveal (Phase 3) */}
+        {/* Phase 4 Content Reveal */}
         <motion.div 
-          style={{ opacity: contentOpacity, y: contentY }}
+          style={{ opacity: contentOpacity }}
           className="absolute inset-0 z-40 overflow-y-auto bg-[#ece8e1]"
         >
            <div className="w-full">
