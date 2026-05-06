@@ -51,7 +51,7 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
 
   // 1. The Trap Phase Logic (JS Listeners)
   useEffect(() => {
-    if (phase !== "trap" || isMobile) return;
+    if (phase !== "trap") return;
 
     const handleWheel = (e: WheelEvent) => {
       if (phase !== "trap") return;
@@ -72,8 +72,9 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
     const handleTouchMove = (e: TouchEvent) => {
       if (phase !== "trap" || touchStartY === null) return;
       const deltaY = touchStartY - e.touches[0].clientY;
-      const delta = deltaY / 1000;
+      const delta = deltaY / (isMobile ? 400 : 1000); // Faster on mobile
       const nextProgress = Math.min(Math.max(scrollProgress + delta, 0), 1);
+      
       setScrollProgress(nextProgress);
       if (nextProgress >= 0.5) setPhase("sticky");
     };
@@ -99,6 +100,18 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
       if (lenis) lenis.start();
     };
   }, [phase, scrollProgress, touchStartY, isMobile, lenis]);
+
+  // Reset logic: Re-engage trap when at the top
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY < 10 && phase === "sticky") {
+        setPhase("trap");
+        setScrollProgress(0.5);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [phase]);
 
   // 2. The Sticky Phase Logic (Native Scroll)
   const { scrollYProgress: containerScroll } = useScroll({
@@ -150,9 +163,9 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
         <div className="relative z-10 w-full h-full flex items-center justify-center">
           <motion.div
             style={{
-              width: isMobile ? "90vw" : width,
-              height: isMobile ? "60vh" : height,
-              borderRadius: isMobile ? "16px" : radius,
+              width,
+              height,
+              borderRadius: radius,
               overflow: "hidden",
             }}
             className="relative flex items-center justify-center shadow-2xl"
