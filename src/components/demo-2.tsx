@@ -227,7 +227,8 @@ export const ImageExpansion = () => {
   );
 };
 
-import UltimateHero from '@/components/ui/ultimate-hero';
+import ScrollExpandMedia from '@/components/ui/scroll-expansion-hero';
+import StickyScrollHero from '@/components/ui/sticky-scroll-hero';
 
 const Demo = () => {
   const [mediaType] = useState('image'); 
@@ -235,23 +236,36 @@ const Demo = () => {
 
   return (
     <div className='w-full'>
-      <UltimateHero
+      {/* 1. Original Hero (The 'Trap' effect) */}
+      <ScrollExpandMedia
         mediaType={mediaType as 'video' | 'image'}
         mediaSrc={currentMedia.src}
+        posterSrc={mediaType === 'video' ? currentMedia.poster : undefined}
         bgImageSrc={currentMedia.background}
         title={currentMedia.title}
         date={currentMedia.date}
-        scrollToExpand="Enfoca tu nueva sonrisa (Scroll para revelar)"
+        scrollToExpand={currentMedia.scrollToExpand}
       >
-        <div className="py-20 text-center">
-            <h3 className="text-5xl font-bold mb-8 italic font-serif text-white">Option 3: Lens Blur</h3>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto drop-shadow-lg font-light leading-relaxed">
-                Este es el alma del diseño original fusionada con la tecnología del nuevo. 
-                Comienzas en un sueño desenfocado, y es tu propio movimiento el que 
-                trae la claridad a la pantalla. Es una metáfora de la transformación que ofrecemos.
+        <MediaContent mediaType={mediaType as 'video' | 'image'} />
+      </ScrollExpandMedia>
+
+      {/* 2. New 'Magical' Hero (The Native Sticky effect) */}
+      <StickyScrollHero
+        mediaType={mediaType as 'video' | 'image'}
+        mediaSrc={currentMedia.src}
+        bgImageSrc={currentMedia.background}
+        title="La Magia de la Tecnología"
+        date="Dental Velez"
+        scrollToExpand="Desplázate para el segundo efecto"
+      >
+        <div className="py-40 text-center">
+            <h3 className="text-5xl font-bold mb-8 italic font-serif">Esta es la versión 'Magical'</h3>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                Este segundo efecto es 100% nativo y utiliza una técnica de 'Sticky Scroll'. 
+                Es más estable en móviles, pero tiene una sensación diferente al original.
             </p>
         </div>
-      </UltimateHero>
+      </StickyScrollHero>
     </div>
   );
 };
