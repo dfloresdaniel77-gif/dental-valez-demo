@@ -37,6 +37,19 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
   const [isMobileState, setIsMobileState] = useState(false);
 
   useEffect(() => {
+    const handleGlobalScroll = () => {
+      // If the user scrolls back to the very top, re-enable the hero trap
+      if (window.scrollY < 10 && mediaFullyExpanded) {
+        setMediaFullyExpanded(false);
+        setScrollProgress(1.1); // Start near the end so it doesn't snap
+      }
+    };
+
+    window.addEventListener('scroll', handleGlobalScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleGlobalScroll);
+  }, [mediaFullyExpanded]);
+
+  useEffect(() => {
     const handleWheel = (e: WheelEvent): void => {
       if (mediaFullyExpanded) return;
       e.preventDefault();
