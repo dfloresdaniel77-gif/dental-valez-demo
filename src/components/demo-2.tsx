@@ -227,7 +227,7 @@ export const ImageExpansion = () => {
   );
 };
 
-import StickyScrollHero from '@/components/ui/sticky-scroll-hero';
+import UltimateHero from '@/components/ui/ultimate-hero';
 
 const Demo = () => {
   const [mediaType] = useState('image'); 
@@ -235,37 +235,24 @@ const Demo = () => {
 
   return (
     <div className='w-full'>
-      {/* 1. Original Hero (The 'Trap' effect) */}
-      <ScrollExpandMedia
+      <UltimateHero
         mediaType={mediaType as 'video' | 'image'}
         mediaSrc={currentMedia.src}
-        posterSrc={mediaType === 'video' ? currentMedia.poster : undefined}
         bgImageSrc={currentMedia.background}
         title={currentMedia.title}
         date={currentMedia.date}
-        scrollToExpand={currentMedia.scrollToExpand}
+        scrollToExpand="Desplázate para el efecto Handover"
       >
-        <MediaContent mediaType={mediaType as 'video' | 'image'} />
-      </ScrollExpandMedia>
-
-      {/* 2. New 'Magical' Hero (The Native Sticky effect) */}
-      <StickyScrollHero
-        mediaType={mediaType as 'video' | 'image'}
-        mediaSrc={currentMedia.src}
-        bgImageSrc={currentMedia.background}
-        title="La Magia de la Tecnología"
-        date="Dental Velez"
-        scrollToExpand="Desplázate para el segundo efecto"
-      >
-        <div className="py-40 text-center">
-            <h3 className="text-5xl font-bold mb-8 italic font-serif">Esta es la versión 'Magical'</h3>
+        <div className="py-20 text-center">
+            <h3 className="text-5xl font-bold mb-8 italic font-serif">Option 1: The Handover</h3>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                Este segundo efecto es 100% nativo y utiliza una técnica de 'Sticky Scroll'. 
-                Es más estable en móviles, pero tiene una sensación diferente al original.
-                ¡Ahora puedes ver ambos y decidir cómo mezclarlos!
+                ¿Sentiste cómo te atrapó al principio? 
+                Ese es el motor original. Después, al llegar al 50%, el control 
+                pasó suavemente al scroll nativo de tu navegador. 
+                Es una mezcla de autoridad y libertad.
             </p>
         </div>
-      </StickyScrollHero>
+      </UltimateHero>
     </div>
   );
 };
