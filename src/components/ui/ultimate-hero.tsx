@@ -27,70 +27,37 @@ interface UltimateHeroProps {
 
 export const UltimateHero: React.FC<UltimateHeroProps> = ({
   mediaSrc,
-  secondMediaSrc,
   mediaType = "image",
-  posterSrc,
   title,
   date,
   scrollToExpand,
-  textBlend = false,
   bgImageSrc,
   children,
 }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [internalScale, setInternalScale] = useState(1.1); // Zoomed in slightly at start
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const lenis = useLenis();
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  // Option 2: Trap logic controls the INTERNAL SCALE only
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      // Only trap zoom if we are at the top of the section
-      if (window.scrollY > 100) return;
-      
-      const delta = e.deltaY / 2000;
-      setInternalScale(prev => Math.min(Math.max(prev + delta, 1), 1.8));
-    };
-
-    const handleTouchStart = (e: TouchEvent) => setTouchStartY(e.touches[0].clientY);
-    const handleTouchMove = (e: TouchEvent) => {
-      if (touchStartY === null || window.scrollY > 100) return;
-      const deltaY = touchStartY - e.touches[0].clientY;
-      const delta = deltaY / 1500;
-      setInternalScale(prev => Math.min(Math.max(prev + delta, 1), 1.8));
-    };
-
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("touchmove", handleTouchMove, { passive: false });
-
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchmove", handleTouchMove);
-    };
-  }, [touchStartY, isMobile]);
-
-  // Sticky Logic for the Frame
+  // Sticky Logic for the 3D Depth Engine
   const { scrollYProgress: containerScroll } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"]
   });
 
+  // 1. Frame expansion (happens first 60%)
   const width = useTransform(containerScroll, [0, 0.6], ["300px", "100vw"]);
   const height = useTransform(containerScroll, [0, 0.6], ["400px", "100vh"]);
   const radius = useTransform(containerScroll, [0, 0.5], ["24px", "0px"]);
+  
+  // 2. 3D Zoom Effect (happens over the whole scroll)
+  // We zoom from 1.0 to 1.5 to create that deep immersion
+  const imgScale = useTransform(containerScroll, [0, 1], [1, 1.6]);
+  const imgZ = useTransform(containerScroll, [0, 1], [0, 100]); // Moves "toward" the camera
+  
+  // 3. UI Elements
   const textXLeft = useTransform(containerScroll, [0, 0.5], ["0vw", "-100vw"]);
   const textXRight = useTransform(containerScroll, [0, 0.5], ["0vw", "100vw"]);
   const bgOpacity = useTransform(containerScroll, [0, 0.2], [1, 0]);
+  const contentOpacity = useTransform(containerScroll, [0.7, 0.9], [0, 1]);
+  const contentY = useTransform(containerScroll, [0.7, 0.9], [50, 0]);
 
   const firstWord = title ? title.split(" ")[0] : "";
   const restOfTitle = title ? title.split(" ").slice(1).join(" ") : "";
@@ -98,7 +65,7 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
   return (
     <section 
       ref={sectionRef} 
-      className="relative h-[250vh] bg-[#111111]"
+      className="relative h-[300vh] bg-[#111111] perspective-1000"
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         
@@ -111,7 +78,7 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
           <div className="absolute inset-0 bg-black/20" />
         </motion.div>
 
-        {/* Media Container */}
+        {/* Media Container (The Frame) */}
         <div className="relative z-10 w-full h-full flex items-center justify-center">
           <motion.div
             style={{
@@ -119,14 +86,14 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
               height,
               borderRadius: radius,
               overflow: "hidden",
+              z: imgZ, // Perspective shift
             }}
             className="relative flex items-center justify-center shadow-2xl"
           >
-            {/* The Image inside zooms with the Trap data */}
+            {/* The Image (The Depth) */}
             <motion.div 
-              style={{ scale: internalScale }} 
+              style={{ scale: imgScale }} 
               className="absolute inset-0"
-              transition={{ type: "spring", stiffness: 100, damping: 20 }}
             >
                 {mediaType === "video" ? (
                     <video src={mediaSrc} autoPlay muted loop playsInline className="w-full h-full object-cover" />
@@ -155,14 +122,15 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
           </motion.h2>
         </div>
 
-        {/* Children Content */}
-        <AnimatePresence>
-          {internalScale > 1.4 && (
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="absolute inset-0 z-30 flex items-center justify-center bg-black/20 backdrop-blur-md">
-                <div className="max-w-4xl p-8">{children}</div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Revealed Content (Now using the same sticky scroll) */}
+        <motion.div 
+          style={{ opacity: contentOpacity, y: contentY }}
+          className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none"
+        >
+            <div className="max-w-4xl p-8 pointer-events-auto bg-black/20 backdrop-blur-md rounded-3xl">
+                {children}
+            </div>
+        </motion.div>
       </div>
     </section>
   );
