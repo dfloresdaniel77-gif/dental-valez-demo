@@ -19,17 +19,20 @@ export default function AnimatedTextCycle({
   const containerRef = useRef<HTMLSpanElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.1 });
 
-  // Get the width of the current word
+  // Calculate and set the maximum width once to prevent layout reflow during cycling
   useEffect(() => {
     if (measureRef.current) {
       const elements = measureRef.current.children;
-      if (elements.length > currentIndex) {
-        // Add a small buffer (10px) to prevent text wrapping
-        const newWidth = elements[currentIndex].getBoundingClientRect().width;
-        setWidth(`${newWidth}px`);
+      let maxWidth = 0;
+      for (let i = 0; i < elements.length; i++) {
+        const w = elements[i].getBoundingClientRect().width;
+        if (w > maxWidth) maxWidth = w;
+      }
+      if (maxWidth > 0) {
+        setWidth(`${maxWidth + 10}px`); // Buffer to prevent wrapping
       }
     }
-  }, [currentIndex]);
+  }, [words]);
 
   useEffect(() => {
     if (!isInView) return;
