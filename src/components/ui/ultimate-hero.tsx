@@ -38,8 +38,7 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
   children,
 }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [phase, setPhase] = useState<"trap" | "sticky">("trap");
+  const [internalScale, setInternalScale] = useState(1.1); // Zoomed in slightly at start
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const lenis = useLenis();
@@ -51,95 +50,47 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // 1. The Trap Phase Logic (JS Listeners)
+  // Option 2: Trap logic controls the INTERNAL SCALE only
   useEffect(() => {
-    if (phase !== "trap") return;
-
     const handleWheel = (e: WheelEvent) => {
-      if (phase !== "trap") return;
-      e.preventDefault();
+      // Only trap zoom if we are at the top of the section
+      if (window.scrollY > 100) return;
       
-      const delta = e.deltaY / 1500;
-      const nextProgress = Math.min(Math.max(scrollProgress + delta, 0), 1);
-      
-      setScrollProgress(nextProgress);
-      
-      // The Handover: Once we reach 50% expansion, switch to sticky phase
-      if (nextProgress >= 0.5) {
-        setPhase("sticky");
-      }
+      const delta = e.deltaY / 2000;
+      setInternalScale(prev => Math.min(Math.max(prev + delta, 1), 1.8));
     };
 
     const handleTouchStart = (e: TouchEvent) => setTouchStartY(e.touches[0].clientY);
     const handleTouchMove = (e: TouchEvent) => {
-      if (phase !== "trap" || touchStartY === null) return;
+      if (touchStartY === null || window.scrollY > 100) return;
       const deltaY = touchStartY - e.touches[0].clientY;
-      const delta = deltaY / (isMobile ? 400 : 1000); // Faster on mobile
-      const nextProgress = Math.min(Math.max(scrollProgress + delta, 0), 1);
-      
-      setScrollProgress(nextProgress);
-      if (nextProgress >= 0.5) setPhase("sticky");
+      const delta = deltaY / 1500;
+      setInternalScale(prev => Math.min(Math.max(prev + delta, 1), 1.8));
     };
 
-    const element = sectionRef.current;
-    if (element) {
-      element.addEventListener("wheel", handleWheel, { passive: false });
-      element.addEventListener("touchstart", handleTouchStart);
-      element.addEventListener("touchmove", handleTouchMove, { passive: false });
-    }
-
-    // Lock body during trap phase
-    document.body.style.overflow = "hidden";
-    if (lenis) lenis.stop();
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
 
     return () => {
-      if (element) {
-        element.removeEventListener("wheel", handleWheel);
-        element.removeEventListener("touchstart", handleTouchStart);
-        element.removeEventListener("touchmove", handleTouchMove);
-      }
-      document.body.style.overflow = "";
-      if (lenis) lenis.start();
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
     };
-  }, [phase, scrollProgress, touchStartY, isMobile, lenis]);
+  }, [touchStartY, isMobile]);
 
-  // Reset logic: Re-engage trap when at the top
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY < 10 && phase === "sticky") {
-        setPhase("trap");
-        setScrollProgress(0.5);
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [phase]);
-
-  // 2. The Sticky Phase Logic (Native Scroll)
+  // Sticky Logic for the Frame
   const { scrollYProgress: containerScroll } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"]
   });
 
-  // visualProgress combines both phases
-  // If in trap phase, use the state. If in sticky, use the container scroll.
-  const visualProgress = useTransform(
-    containerScroll,
-    [0, 0.2, 1],
-    [scrollProgress, 0.5, 1] // Maps the native scroll from 0.2 to 1 into the second half of expansion
-  );
-
-  const opacity = useTransform(visualProgress, [0, 0.2], [1, 0]);
-  const width = useTransform(visualProgress, [0, 1], ["300px", "100vw"]);
-  const height = useTransform(visualProgress, [0, 1], ["400px", "100vh"]);
-  const radius = useTransform(visualProgress, [0, 0.8], ["24px", "0px"]);
-  const textXLeft = useTransform(visualProgress, [0, 0.8], ["0vw", "-100vw"]);
-  const textXRight = useTransform(visualProgress, [0, 0.8], ["0vw", "100vw"]);
-
-  // Cross-fade progress: 0 at start, 1 at 50%, back to 0 at end? 
-  // No, let's fade FROM mediaSrc TO secondMediaSrc around 0.5
-  const mediaFade = useTransform(visualProgress, [0.4, 0.6], [1, 0]);
-  const secondMediaFade = useTransform(visualProgress, [0.4, 0.6], [0, 1]);
+  const width = useTransform(containerScroll, [0, 0.6], ["300px", "100vw"]);
+  const height = useTransform(containerScroll, [0, 0.6], ["400px", "100vh"]);
+  const radius = useTransform(containerScroll, [0, 0.5], ["24px", "0px"]);
+  const textXLeft = useTransform(containerScroll, [0, 0.5], ["0vw", "-100vw"]);
+  const textXRight = useTransform(containerScroll, [0, 0.5], ["0vw", "100vw"]);
+  const bgOpacity = useTransform(containerScroll, [0, 0.2], [1, 0]);
 
   const firstWord = title ? title.split(" ")[0] : "";
   const restOfTitle = title ? title.split(" ").slice(1).join(" ") : "";
@@ -147,14 +98,14 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
   return (
     <section 
       ref={sectionRef} 
-      className="relative h-[300vh] bg-[#111111]"
+      className="relative h-[250vh] bg-[#111111]"
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         
         {/* Background Layer */}
         <motion.div 
           className="absolute inset-0 z-0"
-          style={{ opacity }}
+          style={{ opacity: bgOpacity }}
         >
           <Image src={bgImageSrc} alt="BG" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-black/20" />
@@ -171,8 +122,12 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
             }}
             className="relative flex items-center justify-center shadow-2xl"
           >
-            {/* Primary Media (Fades out) */}
-            <motion.div style={{ opacity: mediaFade }} className="absolute inset-0">
+            {/* The Image inside zooms with the Trap data */}
+            <motion.div 
+              style={{ scale: internalScale }} 
+              className="absolute inset-0"
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+            >
                 {mediaType === "video" ? (
                     <video src={mediaSrc} autoPlay muted loop playsInline className="w-full h-full object-cover" />
                 ) : (
@@ -180,14 +135,7 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
                 )}
             </motion.div>
 
-            {/* Secondary Media (Fades in) */}
-            {secondMediaSrc && (
-                <motion.div style={{ opacity: secondMediaFade }} className="absolute inset-0">
-                    <Image src={secondMediaSrc} alt="Hero 2" fill className="object-cover" />
-                </motion.div>
-            )}
-
-            <motion.div className="absolute inset-0 bg-black" style={{ opacity: useTransform(visualProgress, [0, 1], [0.6, 0.3]) }} />
+            <motion.div className="absolute inset-0 bg-black/40" />
             
             {/* Split Title inside Media */}
             <div className="relative z-20 flex flex-col items-center">
@@ -199,18 +147,18 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
 
         {/* Floating Titles */}
         <div className="absolute z-20 flex flex-col items-center gap-4 text-center pointer-events-none">
-          <motion.h2 style={{ x: textXLeft, opacity: useTransform(visualProgress, [0, 0.5], [1, 0]) }} className="text-6xl md:text-8xl font-bold text-white uppercase tracking-tighter">
+          <motion.h2 style={{ x: textXLeft, opacity: useTransform(containerScroll, [0, 0.4], [1, 0]) }} className="text-6xl md:text-8xl font-bold text-white uppercase tracking-tighter">
             {firstWord}
           </motion.h2>
-          <motion.h2 style={{ x: textXRight, opacity: useTransform(visualProgress, [0, 0.5], [1, 0]) }} className="text-6xl md:text-8xl font-bold text-white uppercase tracking-tighter">
+          <motion.h2 style={{ x: textXRight, opacity: useTransform(containerScroll, [0, 0.4], [1, 0]) }} className="text-6xl md:text-8xl font-bold text-white uppercase tracking-tighter">
             {restOfTitle}
           </motion.h2>
         </div>
 
         {/* Children Content */}
         <AnimatePresence>
-          {scrollProgress > 0.9 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-30 flex items-center justify-center bg-white/5 backdrop-blur-sm">
+          {internalScale > 1.4 && (
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="absolute inset-0 z-30 flex items-center justify-center bg-black/20 backdrop-blur-md">
                 <div className="max-w-4xl p-8">{children}</div>
             </motion.div>
           )}

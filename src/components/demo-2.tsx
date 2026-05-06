@@ -238,19 +238,17 @@ const Demo = () => {
       <UltimateHero
         mediaType={mediaType as 'video' | 'image'}
         mediaSrc={currentMedia.src}
-        secondMediaSrc="https://images.unsplash.com/photo-1606265752439-1f18756aa5fc?w=2400&auto=format&fit=crop"
         bgImageSrc={currentMedia.background}
         title={currentMedia.title}
         date={currentMedia.date}
-        scrollToExpand="Desplázate para ver la Fusión"
+        scrollToExpand="Prueba el Zoom 3D (Scroll + Trap)"
       >
         <div className="py-20 text-center">
-            <h3 className="text-5xl font-bold mb-8 italic font-serif">Option 1: The Handover</h3>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                ¿Viste el cambio de imagen? 
-                Al llegar al 50%, no solo cambió la física del scroll, 
-                sino que una nueva imagen emergió. 
-                Esta es la verdadera fusión de ambos conceptos.
+            <h3 className="text-5xl font-bold mb-8 italic font-serif">Option 2: 3D Depth</h3>
+            <p className="text-xl text-gray-100 max-w-2xl mx-auto drop-shadow-lg">
+                Aquí el scroll mueve el "marco", pero tu dedo controla el zoom interno. 
+                Siente cómo la imagen se acerca a ti de forma independiente. 
+                Es una profundidad 3D real sin necesidad de gafas.
             </p>
         </div>
       </UltimateHero>
