@@ -9,6 +9,11 @@ function LenisControls() {
   useEffect(() => {
     if (!lenis) return;
 
+    // Disable smooth scrolling on mobile
+    if (window.innerWidth <= 768) {
+      lenis.stop();
+    }
+
     const stopLenis = () => {
       lenis.stop();
     };
@@ -42,8 +47,6 @@ export default function SmoothScrolling({
         wheelMultiplier: 1.1,
         smoothWheel: true,
         syncTouch: false,
-        // Disable on mobile to prevent conflicts with native touch/address bar behavior
-        enabled: typeof window !== 'undefined' && window.innerWidth > 768,
       }}
     >
       <LenisControls />
