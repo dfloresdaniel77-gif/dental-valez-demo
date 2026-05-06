@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Sparkles, Activity, ShieldCheck, Star } from 'lucide-react';
 import MasterSequenceHero from '@/components/ui/master-sequence-hero';
 import FounderProfile from '@/components/founder-profile';
+import ScrollExpandMedia from '@/components/ui/scroll-expansion-hero';
 
 interface MediaAbout {
   overview: string;
