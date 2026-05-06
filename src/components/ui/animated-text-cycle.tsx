@@ -14,22 +14,27 @@ export default function AnimatedTextCycle({
   className = "",
 }: AnimatedTextCycleProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [width, setWidth] = useState("auto");
+  const [dimensions, setDimensions] = useState({ width: "auto", height: "auto" });
   const measureRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLSpanElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.1 });
 
-  // Calculate and set the maximum width once to prevent layout reflow during cycling
+  // Calculate and set fixed dimensions once to prevent any layout reflow during cycling
   useEffect(() => {
     if (measureRef.current) {
       const elements = measureRef.current.children;
       let maxWidth = 0;
+      let maxHeight = 0;
       for (let i = 0; i < elements.length; i++) {
-        const w = elements[i].getBoundingClientRect().width;
-        if (w > maxWidth) maxWidth = w;
+        const rect = elements[i].getBoundingClientRect();
+        if (rect.width > maxWidth) maxWidth = rect.width;
+        if (rect.height > maxHeight) maxHeight = rect.height;
       }
       if (maxWidth > 0) {
-        setWidth(`${maxWidth + 10}px`); // Buffer to prevent wrapping
+        setDimensions({ 
+          width: `${maxWidth + 10}px`, 
+          height: `${maxHeight}px` 
+        });
       }
     }
   }, [words]);
@@ -90,18 +95,18 @@ export default function AnimatedTextCycle({
       {/* Visible animated word */}
       <motion.span 
         ref={containerRef}
-        className="relative inline-block"
+        className="relative inline-block align-middle"
         animate={{ 
-          width,
+          width: dimensions.width,
+          height: dimensions.height,
           transition: { 
             type: "spring",
             stiffness: 150,
             damping: 15,
-            mass: 1.2,
           }
         }}
       >
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={currentIndex}
             className={`inline-block font-bold ${className}`}

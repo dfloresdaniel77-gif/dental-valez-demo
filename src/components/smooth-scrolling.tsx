@@ -34,11 +34,16 @@ export default function SmoothScrolling({
 }: {
   children: React.ReactNode;
 }) {
-  const [isDesktop, setIsDesktop] = useState(true);
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
   
   useEffect(() => {
     setIsDesktop(window.innerWidth > 768);
   }, []);
+
+  // Avoid rendering anything that could cause a layout shift until we've detected the device
+  if (isDesktop === null) {
+    return <div style={{ opacity: 0 }}>{children}</div>;
+  }
 
   // On mobile, completely bypass Lenis to avoid any potential CSS/overflow conflicts
   if (!isDesktop) {
