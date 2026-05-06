@@ -40,35 +40,43 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
+    // Force scroll to top on load to ensure sequence starts at 0
+    window.scrollTo(0, 0);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // 1. The Trap Phase (The First Hero Page Experience)
-  // This allows the "back and forth" between the Card and the Background
+  // 1. The Trap Phase (Expansion)
   useEffect(() => {
     if (phase !== "trap") return;
 
     const handleWheel = (e: WheelEvent) => {
       if (phase !== "trap") return;
       
-      // If we are scrolling UP and at the start, don't prevent default
+      // Allow normal scroll if we are at the top and scrolling up
       if (e.deltaY < 0 && scrollProgress <= 0) return;
       
       e.preventDefault();
-      const delta = e.deltaY / 1500;
+      const delta = e.deltaY / 1200; // Slightly faster for responsiveness
       const nextProgress = Math.min(Math.max(scrollProgress + delta, 0), 1);
       setScrollProgress(nextProgress);
-      if (nextProgress >= 1) setPhase("flow");
+      
+      if (nextProgress >= 1) {
+        setPhase("flow");
+        document.body.style.overflow = "";
+      }
     };
 
     const handleTouchStart = (e: TouchEvent) => setTouchStartY(e.touches[0].clientY);
     const handleTouchMove = (e: TouchEvent) => {
       if (phase !== "trap" || touchStartY === null) return;
       const deltaY = touchStartY - e.touches[0].clientY;
-      const delta = deltaY / (isMobile ? 400 : 1000);
+      const delta = deltaY / (isMobile ? 300 : 800);
       const nextProgress = Math.min(Math.max(scrollProgress + delta, 0), 1);
       setScrollProgress(nextProgress);
-      if (nextProgress >= 1) setPhase("flow");
+      if (nextProgress >= 1) {
+        setPhase("flow");
+        document.body.style.overflow = "";
+      }
     };
 
     const element = sectionRef.current;
@@ -78,13 +86,10 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
       element.addEventListener("touchmove", handleTouchMove, { passive: false });
     }
 
-    // Lock body only if we are in the middle of the expansion
-    if (scrollProgress > 0 && scrollProgress < 1) {
+    // Only lock body if we are actually in the expansion phase
+    if (phase === "trap" && scrollProgress > 0 && scrollProgress < 1) {
         document.body.style.overflow = "hidden";
         if (lenis) lenis.stop();
-    } else {
-        document.body.style.overflow = "";
-        if (lenis) lenis.start();
     }
 
     return () => {
@@ -98,7 +103,7 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
     };
   }, [phase, scrollProgress, touchStartY, isMobile, lenis]);
 
-  // Reset logic: Re-engage trap when at the very top
+  // Reset logic: Re-engage trap when at the top
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY < 10 && phase === "flow") {
@@ -110,41 +115,37 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [phase]);
 
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress: nativeScroll } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  // sequenceProgress maps the entire journey
-  // 0.0 - 0.25: Trap Expansion (First Hero Page)
-  // 0.25 - 0.5: Mega Zoom (Second Hero kicks in)
-  // 0.5 - 0.75: Zoom Out / Settle
-  // 0.75 - 1.0: Reveal Founder Profile
-  const sequenceProgress = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [scrollProgress * 0.25, 1]
-  );
+  // Master Timeline Mapping
+  // 0.0 - 0.2: Trap Expansion (First Hero)
+  // 0.2 - 0.6: Zoom Surge (Second Hero / Elevando)
+  // 0.6 - 0.8: Transition Settle
+  // 0.8 - 1.0: Founder Profile Reveal
 
-  // Phase 1: Expansion (First Hero)
-  const width = useTransform(sequenceProgress, [0, 0.25], ["300px", "100vw"]);
-  const height = useTransform(sequenceProgress, [0, 0.25], ["400px", "100vh"]);
-  const radius = useTransform(sequenceProgress, [0, 0.2], ["24px", "0px"]);
-  const bgOpacity = useTransform(sequenceProgress, [0, 0.2], [1, 0]); // Background fades as card fills screen
+  // Expansion logic (Purely driven by Trap Progress)
+  const width = useTransform(nativeScroll, [0, 0.1], [scrollProgress < 1 ? "300px" : "100vw", "100vw"]);
+  const height = useTransform(nativeScroll, [0, 0.1], [scrollProgress < 1 ? "400px" : "100vh", "100vh"]);
+  const radius = useTransform(nativeScroll, [0, 0.1], [scrollProgress < 1 ? "24px" : "0px", "0px"]);
   
-  // Titles and Text
-  const titleOpacity = useTransform(sequenceProgress, [0, 0.15], [1, 0]);
-  const titleXLeft = useTransform(sequenceProgress, [0, 0.2], ["0vw", "-100vw"]);
-  const titleXRight = useTransform(sequenceProgress, [0, 0.2], ["0vw", "100vw"]);
+  // Custom interpolate function to handle the Trap + Scroll mix
+  const visualProgress = useTransform(nativeScroll, [0, 0.2, 0.6, 1], [scrollProgress * 0.2, 0.2, 0.6, 1]);
 
-  // Phase 2 & 3: Mega Zoom & Settle (Second Hero)
-  const imgScale = useTransform(sequenceProgress, [0.25, 0.5, 0.75], [1, 1.8, 1]);
-  const elevandoOpacity = useTransform(sequenceProgress, [0.35, 0.5, 0.65], [0, 1, 0]);
-  const elevandoY = useTransform(sequenceProgress, [0.35, 0.5, 0.65], [50, 0, -50]);
+  // Visual Properties
+  const bgOpacity = useTransform(visualProgress, [0, 0.15], [1, 0]);
+  const imgScale = useTransform(visualProgress, [0.2, 0.5, 0.7], [1, 1.8, 1]);
+  const elevandoOpacity = useTransform(visualProgress, [0.3, 0.5, 0.7], [0, 1, 0]);
+  const elevandoY = useTransform(visualProgress, [0.3, 0.5, 0.7], [100, 0, -100]);
+  
+  const titleOpacity = useTransform(visualProgress, [0, 0.15], [1, 0]);
+  const titleXLeft = useTransform(visualProgress, [0, 0.2], ["0vw", "-100vw"]);
+  const titleXRight = useTransform(visualProgress, [0, 0.2], ["0vw", "100vw"]);
 
-  // Phase 4: Reveal Content
-  const contentOpacity = useTransform(sequenceProgress, [0.8, 0.95], [0, 1]);
-  const mediaFinalOpacity = useTransform(sequenceProgress, [0.85, 1], [1, 0]);
+  const contentOpacity = useTransform(visualProgress, [0.8, 0.95], [0, 1]);
+  const finalMediaOpacity = useTransform(visualProgress, [0.9, 1], [1, 0]);
 
   const firstWord = title ? title.split(" ")[0] : "";
   const restOfTitle = title ? title.split(" ").slice(1).join(" ") : "";
@@ -156,37 +157,37 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         
-        {/* Background Layer (The First Hero's Background) */}
+        {/* Layer 0: Background Image (Only visible at start) */}
         <motion.div 
           className="absolute inset-0 z-0"
           style={{ opacity: bgOpacity }}
         >
           <Image src={bgImageSrc} alt="Background" fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-black/50" />
         </motion.div>
 
-        {/* Foreground Layer (The Expanding Card / The Hero Content) */}
+        {/* Layer 1: The Main Media Container (The Expansion & Zoom) */}
         <motion.div
           style={{
-            width,
-            height,
-            borderRadius: radius,
-            opacity: mediaFinalOpacity,
+            width: scrollProgress < 1 ? width : "100vw",
+            height: scrollProgress < 1 ? height : "100vh",
+            borderRadius: scrollProgress < 1 ? radius : "0px",
+            opacity: finalMediaOpacity,
           }}
-          className="relative z-10 overflow-hidden shadow-2xl flex items-center justify-center"
+          className="relative z-10 overflow-hidden shadow-2xl flex items-center justify-center bg-black"
         >
           <motion.div style={{ scale: imgScale }} className="absolute inset-0">
             <Image src={mediaSrc} alt="Hero" fill className="object-cover" />
           </motion.div>
           <div className="absolute inset-0 bg-black/20" />
 
-          {/* Phase 1 Overlay Text */}
+          {/* Phase 1: Card Text */}
           <div className="relative z-20 flex flex-col items-center">
-             <motion.p style={{ x: titleXLeft }} className="text-white text-xl tracking-widest uppercase">{date}</motion.p>
-             <motion.p style={{ x: titleXRight }} className="text-white/60 text-xs tracking-widest uppercase mt-2">Desplázate para Explorar</motion.p>
+             <motion.p style={{ x: titleXLeft, opacity: titleOpacity }} className="text-white text-xl tracking-widest uppercase">{date}</motion.p>
+             <motion.p style={{ x: titleXRight, opacity: titleOpacity }} className="text-white/60 text-xs tracking-widest uppercase mt-2">Desplázate para Explorar</motion.p>
           </div>
 
-          {/* Phase 2 Overlay: Elevando el Estándar */}
+          {/* Phase 2: Elevando el Estándar Text */}
           <motion.div 
             style={{ opacity: elevandoOpacity, y: elevandoY }}
             className="absolute inset-0 z-30 flex flex-col items-center justify-center text-center px-6"
@@ -207,7 +208,7 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
           </motion.div>
         </motion.div>
 
-        {/* Phase 1 Floating Entrance Titles */}
+        {/* Layer 2: Entrance Titles (Floating outside card) */}
         <div className="absolute z-20 flex flex-col items-center gap-4 text-center pointer-events-none">
           <motion.h2 style={{ x: titleXLeft, opacity: titleOpacity }} className="text-6xl md:text-8xl font-bold text-white uppercase tracking-tighter drop-shadow-2xl">
             {firstWord}
@@ -217,7 +218,7 @@ export const MasterSequenceHero: React.FC<MasterSequenceHeroProps> = ({
           </motion.h2>
         </div>
 
-        {/* Phase 4 Content Reveal */}
+        {/* Layer 3: Final Reveal (Founder Profile) */}
         <motion.div 
           style={{ opacity: contentOpacity }}
           className="absolute inset-0 z-40 overflow-y-auto bg-[#ece8e1]"
