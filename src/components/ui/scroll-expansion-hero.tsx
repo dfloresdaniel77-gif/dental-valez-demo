@@ -237,8 +237,8 @@ const ScrollExpandMedia = ({
   }, []);
 
   const visualProgress = Math.min(scrollProgress, 1);
-  const mediaWidth = 300 + visualProgress * (isMobileState ? 650 : 1250);
-  const mediaHeight = 400 + visualProgress * (isMobileState ? 200 : 400);
+  const mediaWidth = 300 + visualProgress * (isMobileState ? 1000 : 1250);
+  const mediaHeight = 400 + visualProgress * (isMobileState ? 800 : 400);
   const textTranslateX = visualProgress * (isMobileState ? 180 : 150);
 
   const firstWord = title ? title.split(' ')[0] : '';
@@ -274,13 +274,15 @@ const ScrollExpandMedia = ({
           <div className='container mx-auto flex flex-col items-center justify-start relative z-10'>
             <div className='flex flex-col items-center justify-center w-full h-screen relative'>
               <div
-                className='absolute z-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-none rounded-2xl'
+                className='absolute z-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-none'
                 style={{
                   width: `${mediaWidth}px`,
                   height: `${mediaHeight}px`,
-                  maxWidth: '95vw',
-                  maxHeight: '85vh',
-                  boxShadow: '0px 0px 50px rgba(0, 0, 0, 0.3)',
+                  maxWidth: '100vw',
+                  maxHeight: '100vh',
+                  borderRadius: `${(1 - visualProgress) * 24}px`,
+                  boxShadow: visualProgress >= 1 ? 'none' : '0px 0px 50px rgba(0, 0, 0, 0.3)',
+                  overflow: 'hidden'
                 }}
               >
                 {mediaType === 'video' ? (
