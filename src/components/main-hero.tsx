@@ -80,7 +80,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
           </span>
         </UltimateReveal>
         
-        <h2 className='text-4xl md:text-6xl lg:text-[6rem] font-extralight tracking-tighter text-black leading-[1.2] md:leading-[1.1] flex flex-col items-center w-full mt-4'>
+        <h2 className='text-4xl md:text-6xl lg:text-[6rem] font-extralight tracking-tighter text-white leading-[1.2] md:leading-[1.1] flex flex-col items-center w-full mt-4'>
           <UltimateReveal delay={0.2}>
             <ShimmerText duration={3}>Elevando</ShimmerText>
           </UltimateReveal>
@@ -96,14 +96,14 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
                     "la tecnología avanzada"
                 ]}
                 interval={2500}
-                className={"text-gray-400 italic font-serif font-light text-center w-full max-w-[90vw] whitespace-normal md:whitespace-nowrap"} 
+                className={"text-white/40 italic font-serif font-light text-center w-full max-w-[90vw] whitespace-normal md:whitespace-nowrap"} 
               />
             </div>
           </UltimateReveal>
         </h2>
         
         <UltimateReveal delay={0.4}>
-          <p className='text-xl md:text-2xl text-gray-500 font-light max-w-2xl mt-16 leading-relaxed'>
+          <p className='text-xl md:text-2xl text-white/60 font-light max-w-2xl mt-16 leading-relaxed'>
              {currentMedia.about.overview}
           </p>
         </UltimateReveal>
@@ -117,23 +117,17 @@ const MainHero = () => {
   const currentMedia = sampleMediaContent[mediaType];
 
   return (
-    <div className='min-h-screen'>
-      <ScrollExpandMedia
-        mediaType={mediaType as 'video' | 'image'}
-        mediaSrc={currentMedia.src}
-        posterSrc={mediaType === 'video' ? currentMedia.poster : undefined}
-        bgImageSrc={currentMedia.background}
-        title={currentMedia.title}
-        date={currentMedia.date}
-        scrollToExpand={currentMedia.scrollToExpand}
-      >
-        <MediaContent mediaType={mediaType as 'video' | 'image'} />
-      </ScrollExpandMedia>
-    </div>
+    <StickyScrollHero
+      mediaType={mediaType as 'video' | 'image'}
+      mediaSrc={currentMedia.src}
+      bgImageSrc={currentMedia.background}
+      title={currentMedia.title}
+      date={currentMedia.date}
+      scrollToExpand={currentMedia.scrollToExpand}
+    >
+      <MediaContent mediaType={mediaType as 'video' | 'image'} />
+    </StickyScrollHero>
   );
 };
 
 export default MainHero;
-
-
-
