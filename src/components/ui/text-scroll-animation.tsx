@@ -51,7 +51,7 @@ const CharacterV1 = ({
 
   return (
     <motion.span
-      className={cn("inline-block text-black", isSpace && "w-4")}
+      className={cn("inline-block text-white", isSpace && "w-4")}
       style={{ x, rotateZ, opacity, scale }}
     >
       {char}
@@ -88,7 +88,7 @@ export const AnimatedTextScroll = ({
       )}
     >
       <div
-        className="w-full max-w-6xl text-center text-4xl md:text-5xl lg:text-7xl font-bold uppercase tracking-tighter text-black leading-tight"
+        className="w-full max-w-6xl text-center text-4xl md:text-5xl lg:text-7xl font-bold uppercase tracking-tighter text-white leading-tight"
         style={{ perspective: "500px" }}
       >
         {words.map((word, wIndex) => {
@@ -133,13 +133,13 @@ const Skiper31 = () => {
   return (
     <ReactLenis root>
       <LenisController />
-      <main className="relative w-full bg-white">
-         <div className="absolute top-24 left-1/2 z-10 w-full -translate-x-1/2 flex justify-center text-center text-black">
-          <span className="relative text-xs uppercase tracking-widest opacity-40 after:absolute after:left-1/2 after:top-full after:h-16 after:w-px after:bg-gradient-to-b after:from-transparent after:to-black/30 after:content-['']">
+      <main className="relative w-full bg-[#111111]">
+         <div className="absolute top-24 left-1/2 z-10 w-full -translate-x-1/2 flex justify-center text-center text-white/40">
+          <span className="relative text-xs uppercase tracking-widest opacity-40 after:absolute after:left-1/2 after:top-full after:h-16 after:w-px after:bg-gradient-to-b after:from-transparent after:to-white/30 after:content-['']">
             Desplázate para ver más
           </span>
         </div >
-        <AnimatedTextScroll text={"creando sonrisas perfectas"} className="bg-[#ece8e1] h-[210vh]" />
+        <AnimatedTextScroll text={"ELEVANDO EL ESTÁNDAR"} className="bg-[#111111] h-[210vh]" />
       </main>
     </ReactLenis>
   );
