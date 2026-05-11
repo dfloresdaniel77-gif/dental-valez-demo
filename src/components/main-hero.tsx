@@ -85,12 +85,12 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
       <div className='w-full flex flex-col lg:flex-row justify-between items-start lg:items-end border-b border-gray-200 pb-16 mb-20'>
         <div className='flex flex-col'>
           <span className='text-xs uppercase tracking-[0.3em] text-gray-400 mb-8 font-medium'>La Filosofía Dental Velez</span>
-          <h2 className='text-6xl md:text-7xl lg:text-[7rem] font-extralight tracking-tighter text-black leading-[1.05]'>
-            Elevando el <br/><span className='text-gray-400 italic font-serif'>Estándar</span>
+          <h2 className='text-6xl md:text-7xl lg:text-[7rem] font-medium tracking-tighter text-black leading-[1.05] font-serif'>
+            Elevando el <br/><span className='text-gray-500 italic font-serif font-light'>Estándar</span>
           </h2>
         </div>
         
-        <p className='text-xl md:text-2xl text-gray-500 font-light max-w-xl mt-12 lg:mt-0 leading-relaxed lg:text-right'>
+        <p className='text-xl md:text-2xl text-gray-500 font-serif font-light max-w-xl mt-12 lg:mt-0 leading-relaxed lg:text-right'>
            {currentMedia.about.overview}
         </p>
       </div>
@@ -105,7 +105,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
             <Sparkles className='w-5 h-5 text-gray-800' strokeWidth={1} />
           </div>
           <div className='flex flex-col space-y-4'>
-            <h3 className='text-2xl font-light tracking-wide text-black'>Excelencia Estética</h3>
+            <h3 className='text-2xl font-serif font-normal tracking-wide text-black'>Excelencia Estética</h3>
             <p className='text-sm text-gray-500 font-light leading-relaxed'>
               Combinando la precisión clínica con el ojo de un artista para crear sonrisas notablemente naturales e impresionantes.
             </p>
@@ -119,7 +119,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
             <ShieldCheck className='w-5 h-5 text-gray-800' strokeWidth={1} />
           </div>
           <div className='flex flex-col space-y-4'>
-            <h3 className='text-2xl font-light tracking-wide text-black'>Cuidado sin Compromisos</h3>
+            <h3 className='text-2xl font-serif font-normal tracking-wide text-black'>Cuidado sin Compromisos</h3>
             <p className='text-sm text-gray-500 font-light leading-relaxed'>
               Protocolos de esterilización de grado quirúrgico integrados a la perfección en un entorno de lujo de cinco estrellas.
             </p>
@@ -133,7 +133,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
             <Activity className='w-5 h-5 text-gray-800' strokeWidth={1} />
           </div>
           <div className='flex flex-col space-y-4'>
-            <h3 className='text-2xl font-light tracking-wide text-black'>Tecnología Avanzada</h3>
+            <h3 className='text-2xl font-serif font-normal tracking-wide text-black'>Tecnología Avanzada</h3>
             <p className='text-sm text-gray-500 font-light leading-relaxed'>
               Aprovechando imágenes en 3D y diagnósticos impulsados por IA para tratamientos ultra mínimamente invasivos.
             </p>
@@ -147,7 +147,7 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
             <Star className='w-5 h-5 text-gray-800' strokeWidth={1} />
           </div>
           <div className='flex flex-col space-y-4'>
-            <h3 className='text-2xl font-light tracking-wide text-black'>Experiencia a Medida</h3>
+            <h3 className='text-2xl font-serif font-normal tracking-wide text-black'>Experiencia a Medida</h3>
             <p className='text-sm text-gray-500 font-light leading-relaxed'>
               Desde paisajes sonoros personalizados hasta conserjes dedicados, odontología diseñada completamente a su alrededor.
             </p>
