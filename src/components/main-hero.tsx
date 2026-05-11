@@ -53,7 +53,22 @@ const sampleMediaContent: MediaContentCollection = {
   },
 };
 
-// ... keep UltimateReveal, ShimmerText, etc. imports ...
+import AnimatedTextCycle from '@/components/ui/animated-text-cycle';
+import ShimmerText from '@/components/ui/shimmer-text';
+import { motion } from 'framer-motion';
+
+const UltimateReveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
+  <div className="overflow-hidden py-1">
+    <motion.div
+      initial={{ y: "100%", opacity: 0, filter: "blur(12px)" }}
+      whileInView={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+      viewport={{ margin: "-10%" }}
+      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay }}
+    >
+      {children}
+    </motion.div>
+  </div>
+);
 
 const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
   const currentMedia = sampleMediaContent[mediaType];
