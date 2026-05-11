@@ -51,7 +51,7 @@ const CharacterV1 = ({
 
   return (
     <motion.span
-      className={cn("inline-block text-white", isSpace && "w-4")}
+      className={cn("inline-block text-black", isSpace && "w-4")}
       style={{ x, rotateZ, opacity, scale }}
     >
       {char}
@@ -88,7 +88,7 @@ export const AnimatedTextScroll = ({
       )}
     >
       <div
-        className="w-full max-w-6xl text-center text-4xl md:text-5xl lg:text-7xl font-bold uppercase tracking-tighter text-white leading-tight"
+        className="w-full max-w-6xl text-center text-4xl md:text-5xl lg:text-7xl font-bold uppercase tracking-tighter text-black leading-tight"
         style={{ perspective: "500px" }}
       >
         {words.map((word, wIndex) => {
