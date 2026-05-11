@@ -121,8 +121,6 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
   );
 };
 
-import ScrollExpandMedia from '@/components/ui/scroll-expansion-hero';
-
 const MainHero = () => {
   const [mediaType] = useState('image'); // default to image for dental demo
   const currentMedia = sampleMediaContent[mediaType];
