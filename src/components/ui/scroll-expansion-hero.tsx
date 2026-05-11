@@ -224,18 +224,34 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
                     />
                   </div>
                 )}
+                {/* Split Title inside Media */}
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
+                  <motion.p 
+                    className="text-white text-xl md:text-2xl tracking-[0.3em] uppercase drop-shadow-2xl font-light mb-2"
+                    style={{ transform: `translateX(-${textTranslateX}vw)`, opacity: 1 - visualProgress }}
+                  >
+                    {date}
+                  </motion.p>
+                  <motion.p 
+                    className="text-white/60 text-[10px] md:text-xs tracking-[0.2em] uppercase drop-shadow-xl"
+                    style={{ transform: `translateX(${textTranslateX}vw)`, opacity: 1 - visualProgress }}
+                  >
+                    {scrollToExpand || 'Desplázate para Explorar'}
+                  </motion.p>
+                </div>
               </div>
 
-              <div className={`flex items-center justify-center text-center gap-4 w-full relative z-10 transition-none flex-col ${textBlend ? 'mix-blend-difference' : 'mix-blend-normal'}`}>
+              {/* Entrance Titles (Floating outside card) */}
+              <div className={`absolute inset-0 flex items-center justify-center text-center gap-4 w-full z-30 transition-none flex-col ${textBlend ? 'mix-blend-difference' : 'mix-blend-normal'}`}>
                 <motion.h2
-                  className='text-4xl md:text-5xl lg:text-6xl font-bold text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] transition-none'
-                  style={{ transform: `translateX(-${textTranslateX}vw)` }}
+                  className='text-5xl md:text-7xl lg:text-9xl font-bold text-white uppercase tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] transition-none'
+                  style={{ transform: `translateX(-${textTranslateX}vw)`, opacity: 1 - visualProgress }}
                 >
                   {firstWord}
                 </motion.h2>
                 <motion.h2
-                  className='text-4xl md:text-5xl lg:text-6xl font-bold text-center text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] transition-none'
-                  style={{ transform: `translateX(${textTranslateX}vw)` }}
+                  className='text-5xl md:text-7xl lg:text-9xl font-bold text-center text-white uppercase tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] transition-none'
+                  style={{ transform: `translateX(${textTranslateX}vw)`, opacity: 1 - visualProgress }}
                 >
                   {restOfTitle}
                 </motion.h2>
