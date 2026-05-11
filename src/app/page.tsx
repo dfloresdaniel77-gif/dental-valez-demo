@@ -1,5 +1,5 @@
 import DemoOne from "@/components/demo-1";
-import DemoTwo from "@/components/demo-2";
+import MainHero from "@/components/main-hero";
 import DemoThree from "@/components/demo-3";
 import DemoFour from "@/components/demo-4";
 import DemoFive from "@/components/demo-5";
@@ -17,9 +17,8 @@ export default function Home() {
         </a>
       </header>
 
-      {/* Header and Hero Section */}
       <section id="inicio" className="w-full">
-        <DemoTwo />
+        <MainHero />
       </section>
 
       {/* Founder Profile Section */}
