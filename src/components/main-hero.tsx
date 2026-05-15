@@ -105,14 +105,14 @@ const MediaContent = ({ mediaType }: { mediaType: 'video' | 'image' }) => {
                     "la tecnología avanzada"
                 ]}
                 interval={2500}
-                className={"text-gray-400 italic font-serif font-light text-center w-full max-w-[90vw] whitespace-normal md:whitespace-nowrap"} 
+                className={"text-stone-700 italic font-serif font-light text-center w-full max-w-[90vw] whitespace-normal md:whitespace-nowrap"} 
               />
             </div>
           </UltimateReveal>
         </h2>
         
         <UltimateReveal delay={0.4}>
-          <p className='text-xl md:text-2xl text-gray-500 font-serif font-light max-w-2xl mt-16 leading-relaxed'>
+          <p className='text-xl md:text-2xl text-stone-600 font-serif font-light max-w-2xl mt-16 leading-relaxed'>
              {currentMedia.about.overview}
           </p>
         </UltimateReveal>
