@@ -114,10 +114,10 @@ export const UltimateHero: React.FC<UltimateHeroProps> = ({
 
         {/* Floating Titles */}
         <div className="absolute z-20 flex flex-col items-center gap-4 text-center pointer-events-none">
-          <motion.h2 style={{ x: textXLeft, opacity: useTransform(containerScroll, [0, 0.4], [1, 0]) }} className="text-4xl md:text-6xl lg:text-[6.5rem] font-serif font-medium text-white uppercase tracking-tighter leading-tight drop-shadow-xl">
+          <motion.h2 style={{ x: textXLeft, opacity: useTransform(containerScroll, [0, 0.4], [1, 0]) }} className="text-3xl md:text-5xl lg:text-6xl font-serif font-light text-white uppercase tracking-wide leading-tight drop-shadow-md">
             {firstWord}
           </motion.h2>
-          <motion.h2 style={{ x: textXRight, opacity: useTransform(containerScroll, [0, 0.4], [1, 0]) }} className="text-4xl md:text-6xl lg:text-[6.5rem] font-serif font-medium text-white uppercase tracking-tighter leading-tight drop-shadow-xl">
+          <motion.h2 style={{ x: textXRight, opacity: useTransform(containerScroll, [0, 0.4], [1, 0]) }} className="text-3xl md:text-5xl lg:text-6xl font-serif font-light text-white uppercase tracking-wide leading-tight drop-shadow-md">
             {restOfTitle}
           </motion.h2>
         </div>
