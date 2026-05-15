@@ -164,7 +164,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
   const visualProgress = Math.min(scrollProgress, 1);
   const mediaWidth = 300 + visualProgress * (isMobileState ? 1000 : 1250);
   const mediaHeight = 400 + visualProgress * (isMobileState ? 800 : 400);
-  const textTranslateX = visualProgress * (isMobileState ? 180 : 150);
+  const textTranslateX = visualProgress * (isMobileState ? 100 : 80);
 
   const firstWord = title ? title.split(' ')[0] : '';
   const restOfTitle = title ? title.split(' ').slice(1).join(' ') : '';
@@ -228,7 +228,10 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
                   {date && (
                     <motion.p
                       className='text-white text-xl md:text-2xl tracking-[0.3em] uppercase drop-shadow-2xl font-light mb-2'
-                      style={{ transform: `translateX(-${textTranslateX}vw)` }}
+                      style={{ 
+                        transform: `translateX(-${textTranslateX}vw)`,
+                        opacity: Math.max(1 - visualProgress * 1.5, 0)
+                      }}
                     >
                       {date}
                     </motion.p>
@@ -236,7 +239,10 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
                   {scrollToExpand && (
                     <motion.p
                       className='text-white/60 text-[10px] md:text-xs tracking-[0.2em] uppercase drop-shadow-xl'
-                      style={{ transform: `translateX(${textTranslateX}vw)` }}
+                      style={{ 
+                        transform: `translateX(${textTranslateX}vw)`,
+                        opacity: Math.max(1 - visualProgress * 1.5, 0)
+                      }}
                     >
                       {scrollToExpand}
                     </motion.p>
@@ -251,13 +257,19 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
               >
                 <motion.h2
                   className='text-3xl md:text-5xl lg:text-6xl font-serif font-light text-white uppercase tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] transition-none'
-                  style={{ transform: `translateX(-${textTranslateX}vw)` }}
+                  style={{ 
+                    transform: `translateX(-${textTranslateX}vw)`,
+                    opacity: Math.max(1 - visualProgress * 1.5, 0)
+                  }}
                 >
                   {firstWord}
                 </motion.h2>
                 <motion.h2
                   className='text-3xl md:text-5xl lg:text-6xl font-serif font-light text-center text-white uppercase tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] transition-none leading-tight'
-                  style={{ transform: `translateX(${textTranslateX}vw)` }}
+                  style={{ 
+                    transform: `translateX(${textTranslateX}vw)`,
+                    opacity: Math.max(1 - visualProgress * 1.5, 0)
+                  }}
                 >
                   {restOfTitle}
                 </motion.h2>
