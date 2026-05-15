@@ -128,4 +128,12 @@
     @apply font-sans;
     scroll-behavior: auto !important;
   }
+  ::selection {
+    background-color: #57534e;
+    color: #ffffff;
+  }
+  ::-moz-selection {
+    background-color: #57534e;
+    color: #ffffff;
+  }
 }
