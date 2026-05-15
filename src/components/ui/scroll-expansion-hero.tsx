@@ -250,13 +250,13 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
                 }`}
               >
                 <motion.h2
-                  className='text-5xl md:text-7xl lg:text-9xl font-bold text-white uppercase tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] transition-none'
+                  className='text-4xl md:text-6xl lg:text-[6.5rem] font-serif font-medium text-white uppercase tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] transition-none'
                   style={{ transform: `translateX(-${textTranslateX}vw)` }}
                 >
                   {firstWord}
                 </motion.h2>
                 <motion.h2
-                  className='text-5xl md:text-7xl lg:text-9xl font-bold text-center text-white uppercase tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] transition-none'
+                  className='text-4xl md:text-6xl lg:text-[6.5rem] font-serif font-medium text-center text-white uppercase tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] transition-none leading-[1.1]'
                   style={{ transform: `translateX(${textTranslateX}vw)` }}
                 >
                   {restOfTitle}
