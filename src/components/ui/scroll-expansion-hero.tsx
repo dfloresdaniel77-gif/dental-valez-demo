@@ -165,6 +165,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
   const mediaWidth = 300 + visualProgress * (isMobileState ? 1000 : 1250);
   const mediaHeight = 400 + visualProgress * (isMobileState ? 800 : 400);
   const textTranslateX = visualProgress * (isMobileState ? 100 : 80);
+  const imgScale = 1.3 - (visualProgress * 0.3);
 
   const firstWord = title ? title.split(' ')[0] : '';
   const restOfTitle = title ? title.split(' ').slice(1).join(' ') : '';
@@ -212,7 +213,8 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
                     muted
                     loop
                     playsInline
-                    className='w-full h-full object-cover rounded-xl'
+                    className='w-full h-full object-cover rounded-xl transition-all duration-[400ms] ease-out'
+                    style={{ transform: `scale(${imgScale})` }}
                   />
                 ) : (
                   <div className='relative w-full h-full'>
@@ -220,7 +222,8 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
                       src={mediaSrc}
                       alt={title || 'Media content'}
                       fill
-                      className='w-full h-full object-cover rounded-xl'
+                      className='w-full h-full object-cover rounded-xl transition-all duration-[400ms] ease-out'
+                      style={{ transform: `scale(${imgScale})` }}
                     />
                   </div>
                 )}
