@@ -54,10 +54,10 @@ export default function SmoothScrolling({
     <ReactLenis
       root
       options={{
-        lerp: 0.15,
-        wheelMultiplier: 1.1,
+        lerp: 0.05,
+        wheelMultiplier: 0.7,
         smoothWheel: true,
-        syncTouch: false,
+        syncTouch: true,
       }}
     >
       <LenisControls />
