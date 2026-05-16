@@ -49,6 +49,7 @@
 }
 
 :root {
+  --hero-vh: 100vh;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -129,6 +130,9 @@
     scroll-behavior: auto !important;
   }
   @media (min-width: 1024px) {
+    :root {
+      --hero-vh: 111.111111vh;
+    }
     html {
       zoom: 0.9;
     }
