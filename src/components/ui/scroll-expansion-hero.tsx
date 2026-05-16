@@ -193,7 +193,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
           <div className='container mx-auto flex flex-col items-center justify-start relative z-10'>
             <div className='flex flex-col items-center justify-center w-full h-screen relative'>
               <div
-                className='absolute z-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-none'
+                className='absolute z-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-[400ms] ease-out'
                 style={{
                   width: `${mediaWidth}px`,
                   height: `${mediaHeight}px`,
@@ -224,7 +224,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
                     />
                   </div>
                 )}
-                <div className='flex flex-col items-center text-center relative z-10 mt-4 transition-none'>
+                <div className='flex flex-col items-center text-center relative z-10 mt-4 transition-all duration-[400ms] ease-out'>
                   {date && (
                     <motion.p
                       className='text-white text-xl md:text-2xl tracking-[0.3em] uppercase drop-shadow-2xl font-light mb-2'
@@ -251,12 +251,12 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
               </div>
 
               <div
-                className={`flex items-center justify-center text-center gap-4 w-full relative z-10 transition-none flex-col ${
+                className={`flex items-center justify-center text-center gap-4 w-full relative z-10 transition-all duration-[400ms] ease-out flex-col ${
                   textBlend ? 'mix-blend-difference' : 'mix-blend-normal'
                 }`}
               >
                 <motion.h2
-                  className='text-3xl md:text-5xl lg:text-6xl font-serif font-light text-white uppercase tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] transition-none'
+                  className='text-3xl md:text-5xl lg:text-6xl font-serif font-light text-white uppercase tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] transition-all duration-[400ms] ease-out'
                   style={{ 
                     transform: `translateX(-${textTranslateX}vw)`,
                     opacity: Math.max(1 - visualProgress * 1.5, 0)
@@ -265,7 +265,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
                   {firstWord}
                 </motion.h2>
                 <motion.h2
-                  className='text-3xl md:text-5xl lg:text-6xl font-serif font-light text-center text-white uppercase tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] transition-none leading-tight'
+                  className='text-3xl md:text-5xl lg:text-6xl font-serif font-light text-center text-white uppercase tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] transition-all duration-[400ms] ease-out leading-tight'
                   style={{ 
                     transform: `translateX(${textTranslateX}vw)`,
                     opacity: Math.max(1 - visualProgress * 1.5, 0)
