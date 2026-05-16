@@ -172,10 +172,10 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
 
   return (
     <div ref={sectionRef} className='transition-colors duration-700 ease-in-out overflow-x-hidden'>
-      <section className='relative flex flex-col items-center justify-start min-h-screen'>
-        <div className='relative w-full flex flex-col items-center min-h-screen'>
+      <section className='relative flex flex-col items-center justify-start min-h-[100dvh]'>
+        <div className={cn('relative w-full flex flex-col items-center min-h-[100dvh]', !mediaFullyExpanded && 'h-[100dvh] overflow-hidden')}>
           <motion.div
-            className='absolute top-0 left-0 z-0 h-screen w-full overflow-hidden'
+            className='absolute top-0 left-0 z-0 h-[100dvh] w-full overflow-hidden'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 - visualProgress }}
             transition={{ duration: 0.1 }}
@@ -184,15 +184,15 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
               src={bgImageSrc}
               alt='Background'
               fill
-              className='w-screen h-screen'
+              className='w-full h-full'
               style={{ objectFit: 'cover', objectPosition: 'center' }}
               priority
             />
             <div className='absolute inset-0 bg-black/10' />
           </motion.div>
 
-          <div className='container mx-auto flex flex-col items-center justify-start relative z-10'>
-            <div className='flex flex-col items-center justify-center w-full h-screen relative'>
+          <div className='container mx-auto flex flex-col items-center justify-start relative z-10 w-full h-full'>
+            <div className='flex flex-col items-center justify-center w-full h-[100dvh] relative'>
               <div
                 className='absolute z-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-[400ms] ease-out'
                 style={{
