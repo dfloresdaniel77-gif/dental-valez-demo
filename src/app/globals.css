@@ -131,7 +131,7 @@
   }
   @media (min-width: 1024px) {
     :root {
-      --hero-vh: 111.111111vh;
+      --hero-vh: 115vh;
     }
     html {
       zoom: 0.9;
