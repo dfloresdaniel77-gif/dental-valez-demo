@@ -73,7 +73,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
       {/* Scroll track defines the scroll animation distance */}
       <div 
         ref={trackRef} 
-        className="relative w-full h-[140vh] md:h-[180vh]"
+        className="relative w-full h-[140vh] md:h-[180vh] bg-[#111111]"
       >
         {/* Sticky viewport container */}
         <div 
@@ -82,7 +82,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
         >
           {/* Background Dentist Image */}
           <motion.div
-            className="absolute top-0 left-0 z-0 w-full h-full overflow-hidden pointer-events-none"
+            className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
             style={{ opacity: bgOpacity }}
           >
             <Image
