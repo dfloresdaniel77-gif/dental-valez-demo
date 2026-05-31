@@ -82,7 +82,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
         >
           {/* Background Dentist Image */}
           <motion.div
-            className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
+            className="absolute top-0 left-0 z-0 w-full h-full overflow-hidden pointer-events-none"
             style={{ opacity: bgOpacity }}
           >
             <Image
