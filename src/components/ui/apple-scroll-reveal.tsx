@@ -103,15 +103,17 @@ export const AppleScrollReveal = ({ texts, images }: ScrollRevealProps) => {
                 <motion.div
                   key={index}
                   style={{ opacity, y: translateY }}
-                  className="absolute inset-0 flex items-center justify-center"
+                  // Crucial Hack: The motion.div creates a stacking context. By giving it the exact page background color,
+                  // the mix-blend-darken perfectly obliterates the white background of the image into the beige canvas.
+                  // Then, since this canvas matches the page background, it slides up invisibly, leaving only the tool!
+                  className="absolute inset-0 flex items-center justify-center bg-[#ece8e1]"
                 >
                   {/* Container that rotates the tool upright and scales it massively */}
-                  <div className="relative w-full aspect-square rotate-[-40deg] scale-[1.7] md:scale-[2]">
+                  <div className="relative w-full aspect-square rotate-[45deg] scale-[1.7] md:scale-[2]">
                     <Image
                       src={src}
                       alt={`Dental tool ${index + 1}`}
                       fill
-                      // mix-blend-darken + contrast/brightness perfectly erases any slightly off-white AI background!
                       className="object-contain mix-blend-darken [filter:contrast(1.15)_brightness(1.05)]"
                       priority
                     />
