@@ -8,6 +8,7 @@ import {
   ReviewStars,
 } from "@/components/blocks/animated-cards-stack";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollReveal, RevealItem } from "@/components/ui/scroll-reveal";
 
 const TESTIMONIALS = [
   {
@@ -55,16 +56,20 @@ const TESTIMONIALS = [
 export default function Testimonials() {
   return (
     <section className="bg-[#ece8e1] text-black py-32 md:py-48 flex flex-col items-center justify-center overflow-clip">
-      <div className="w-full max-w-4xl flex flex-col items-center text-center px-8">
-        <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.3] text-black/90">
-          Lo que dicen nuestros <br className="hidden md:block" />
-          <span className="italic font-serif text-black/60">pacientes</span>
-        </h2>
-        <p className="mx-auto mt-6 max-w-2xl text-center text-gray-500 font-light text-lg md:text-xl">
-          La verdadera medida de nuestro trabajo no recae en los espejos, sino en
-          la risa desinhibida de las personas que confían en nosotros.
-        </p>
-      </div>
+      <ScrollReveal className="w-full max-w-4xl flex flex-col items-center text-center px-8">
+        <RevealItem delay={0.1}>
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.3] text-black/90">
+            Lo que dicen nuestros <br className="hidden md:block" />
+            <span className="italic font-serif text-black/60">pacientes</span>
+          </h2>
+        </RevealItem>
+        <RevealItem delay={0.2}>
+          <p className="mx-auto mt-6 max-w-2xl text-center text-stone-500 font-light text-lg md:text-xl">
+            La verdadera medida de nuestro trabajo no recae en los espejos, sino en
+            la risa desinhibida de las personas que confían en nosotros.
+          </p>
+        </RevealItem>
+      </ScrollReveal>
 
       <ContainerScroll className="container mx-auto h-[300vh] w-full">
         <div className="sticky left-0 top-0 h-svh w-full py-12 flex items-center justify-center">

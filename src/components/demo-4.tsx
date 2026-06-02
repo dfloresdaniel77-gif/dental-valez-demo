@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import ShimmerText from "@/components/ui/shimmer-text";
 import { GripVertical } from "lucide-react";
+import { ScrollReveal, RevealItem } from "@/components/ui/scroll-reveal";
 
 export default function DemoFour() {
   const [sliderPosition, setSliderPosition] = useState(50);
@@ -38,30 +39,35 @@ export default function DemoFour() {
 
   return (
     <section className="relative w-full bg-[#ece8e1] flex flex-col items-center py-32 px-8">
-      <div className="max-w-4xl w-full flex flex-col items-center">
+      <ScrollReveal className="max-w-4xl w-full flex flex-col items-center">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
-            <ShimmerText className="text-stone-700">Transformaciones</ShimmerText>
-          </h2>
-          <p className="text-stone-800 font-light text-lg tracking-wide">
-            La sutil diferencia entre el cuidado estándar y el verdadero arte.
-          </p>
+          <RevealItem delay={0.1}>
+            <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
+              <ShimmerText className="text-stone-700">Transformaciones</ShimmerText>
+            </h2>
+          </RevealItem>
+          <RevealItem delay={0.2}>
+            <p className="text-stone-800 font-light text-lg tracking-wide">
+              La sutil diferencia entre el cuidado estándar y el verdadero arte.
+            </p>
+          </RevealItem>
         </div>
 
-        <div 
-          ref={containerRef}
-          className="relative w-full max-w-2xl mx-auto aspect-square md:aspect-[4/3] overflow-hidden rounded-xl shadow-2xl shadow-black/10 cursor-ew-resize select-none border border-black/10"
-          onMouseMove={handleMouseMove}
-          onTouchMove={handleTouchMove}
-          onMouseDown={(e) => {
-            setIsDragging(true);
-            handleMove(e.clientX);
-          }}
-          onTouchStart={(e) => {
-            setIsDragging(true);
-            handleMove(e.touches[0].clientX);
-          }}
-        >
+        <RevealItem delay={0.3} className="w-full max-w-2xl mx-auto">
+          <div 
+            ref={containerRef}
+            className="relative w-full aspect-square md:aspect-[4/3] overflow-hidden rounded-xl shadow-2xl shadow-black/10 cursor-ew-resize select-none border border-black/10"
+            onMouseMove={handleMouseMove}
+            onTouchMove={handleTouchMove}
+            onMouseDown={(e) => {
+              setIsDragging(true);
+              handleMove(e.clientX);
+            }}
+            onTouchStart={(e) => {
+              setIsDragging(true);
+              handleMove(e.touches[0].clientX);
+            }}
+          >
           <div className="absolute inset-0">
             <Image 
               src="/assets/after_new.png" 
@@ -101,8 +107,9 @@ export default function DemoFour() {
           <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded border border-white/10">
             Después
           </div>
-        </div>
-      </div>
+          </div>
+        </RevealItem>
+      </ScrollReveal>
     </section>
   );
 }

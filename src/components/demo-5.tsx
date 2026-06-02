@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatedInput } from "@/components/ui/animated-input";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { ScrollReveal, RevealItem } from "@/components/ui/scroll-reveal";
 
 export default function DemoFive() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -56,18 +57,18 @@ export default function DemoFive() {
   };
   return (
     <section className="relative w-full bg-[#ece8e1] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
-      <div className="max-w-xl w-full mx-auto">
-        <div className="text-center mb-16">
+      <ScrollReveal className="max-w-xl w-full mx-auto">
+        <RevealItem delay={0.1} className="text-center mb-16">
           <h2 className="text-stone-900 text-4xl md:text-5xl font-light tracking-tight mb-4">
             A Un Solo <span className="italic font-serif text-stone-700">Clic</span>
           </h2>
           <p className="text-stone-800 font-light text-lg tracking-wide max-w-md mx-auto">
             Estás a un solo clic de tu sonrisa perfecta. Llena el formulario y comencemos.
           </p>
-        </div>
+        </RevealItem>
 
         {isSubmitted ? (
-          <div className="flex flex-col items-center justify-center py-12 px-8 bg-[#f5f2ed] border border-stone-300 shadow-xl shadow-black/10 rounded-2xl animate-in fade-in zoom-in duration-500">
+          <RevealItem delay={0.2} className="flex flex-col items-center justify-center py-12 px-8 bg-[#f5f2ed] border border-stone-300 shadow-xl shadow-black/10 rounded-2xl animate-in fade-in zoom-in duration-500">
             <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mb-6">
               <svg className="w-10 h-10 text-stone-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -77,33 +78,39 @@ export default function DemoFive() {
             <p className="text-stone-800 text-center text-lg leading-relaxed max-w-md">
               Hemos recibido tu información. Nos pondremos en contacto contigo pronto para confirmar tu cita.
             </p>
-          </div>
+          </RevealItem>
         ) : (
           <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-10">
-            <AnimatedInput
-              label="Nombre Completo"
-              name="Nombre"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+            <RevealItem delay={0.2}>
+              <AnimatedInput
+                label="Nombre Completo"
+                name="Nombre"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </RevealItem>
 
             <div className="flex flex-col gap-6">
-              <AnimatedInput
-                label="Correo Electrónico"
-                name="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <RevealItem delay={0.3}>
+                <AnimatedInput
+                  label="Correo Electrónico"
+                  name="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </RevealItem>
 
-              <div className="flex items-center justify-center pt-2">
-                <div className="h-px bg-stone-300 flex-grow"></div>
-                <span className="px-4 text-stone-600 text-xs font-medium tracking-widest uppercase">O</span>
-                <div className="h-px bg-stone-300 flex-grow"></div>
-              </div>
+              <RevealItem delay={0.4}>
+                <div className="flex items-center justify-center pt-2">
+                  <div className="h-px bg-stone-300 flex-grow"></div>
+                  <span className="px-4 text-stone-600 text-xs font-medium tracking-widest uppercase">O</span>
+                  <div className="h-px bg-stone-300 flex-grow"></div>
+                </div>
+              </RevealItem>
 
-              <div className="pb-2">
+              <RevealItem delay={0.5} className="pb-2">
                 <AnimatedInput
                   label="Número de Teléfono"
                   name="Teléfono"
@@ -111,7 +118,7 @@ export default function DemoFive() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
-              </div>
+              </RevealItem>
             </div>
 
             {errorMsg && (
@@ -120,22 +127,24 @@ export default function DemoFive() {
               </p>
             )}
 
-            <HoverBorderGradient
-              as="button"
-              type="submit"
-              disabled={isSubmitting}
-              containerClassName="w-full mt-8 rounded"
-              className="w-full bg-[#111111] text-white py-4 px-8 text-sm uppercase tracking-widest font-medium transition-all duration-300 flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                "Solicitar Cita"
-              )}
-            </HoverBorderGradient>
+            <RevealItem delay={0.6}>
+              <HoverBorderGradient
+                as="button"
+                type="submit"
+                disabled={isSubmitting}
+                containerClassName="w-full mt-8 rounded"
+                className="w-full bg-[#111111] text-white py-4 px-8 text-sm uppercase tracking-widest font-medium transition-all duration-300 flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  "Solicitar Cita"
+                )}
+              </HoverBorderGradient>
+            </RevealItem>
           </form>
         )}
-      </div>
+      </ScrollReveal>
     </section>
   );
 }
