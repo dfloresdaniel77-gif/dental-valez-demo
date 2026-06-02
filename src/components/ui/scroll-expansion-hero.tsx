@@ -119,7 +119,8 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
  
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      const scrollDelta = e.deltaY / 800;
+      // Reduced divisor from 800 to 200 to make the expansion/contraction require exactly 2 scroll clicks
+      const scrollDelta = e.deltaY / 200;
       setScrollProgress((prev) => {
         const next = Math.min(Math.max(prev + scrollDelta, 0), 1.25);
         if (next >= 1.2) {
@@ -138,7 +139,8 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
       e.preventDefault();
       const currentY = e.touches[0].clientY;
       const deltaY = touchStartY - currentY;
-      const scrollDelta = deltaY / 600;
+      // Reduced divisor from 600 to 150 for touch to match the wheel speed increase
+      const scrollDelta = deltaY / 150;
       setScrollProgress((prev) => {
         const next = Math.min(Math.max(prev + scrollDelta, 0), 1.25);
         if (next >= 1.2) {
