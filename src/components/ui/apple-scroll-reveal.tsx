@@ -2,6 +2,7 @@
 
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
 
 interface ScrollRevealProps {
   texts: React.ReactNode[];
@@ -64,35 +65,34 @@ export const AppleScrollReveal = ({ texts, imageSrc }: ScrollRevealProps) => {
         </div>
 
         {/* Right Side: The Tools / Utensil Reveal */}
-        <div className="hidden h-full w-[45%] md:flex flex-col items-center justify-center">
-          {/* We animate the image container */}
+        <div className="hidden h-full w-[45%] md:flex flex-col items-center justify-center [perspective:1000px]">
+          {/* We animate the image container in 3D */}
           <motion.div
             style={{
               // The image scales up slightly as you scroll through the entire section
               scale: useTransform(scrollYProgress, [0, 1], [0.8, 1.1]),
               // It also floats up slightly
-              y: useTransform(scrollYProgress, [0, 1], [100, -50]),
+              y: useTransform(scrollYProgress, [0, 1], [150, -100]),
+              // 3D Rotations for a premium hardware feel
+              rotateX: useTransform(scrollYProgress, [0, 1], [15, -5]),
+              rotateY: useTransform(scrollYProgress, [0, 1], [-15, 5]),
               // Fade in at the very beginning
               opacity: useTransform(scrollYProgress, [0, 0.1], [0, 1]),
             }}
             className="relative w-full max-w-lg aspect-square"
           >
-            <div className="absolute inset-0 rounded-[2.5rem] bg-[#e6e2db] shadow-2xl shadow-black/5 overflow-hidden border border-white/20 flex items-center justify-center">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent z-10" />
-              
-              {/* Premium Dental Utensil SVG Art */}
-              <svg viewBox="0 0 100 100" className="w-64 h-64 text-stone-500 stroke-current z-20 opacity-80" fill="none" strokeWidth="1">
-                {/* Clean, minimalist scaler / mirror composition */}
-                <path d="M 20 80 L 50 50 A 10 10 0 1 1 60 40 A 10 10 0 1 1 50 50" strokeLinecap="round" />
-                <path d="M 40 90 L 80 50 Q 85 45 80 40" strokeLinecap="round" />
-                <circle cx="55" cy="45" r="4" fill="currentColor" fillOpacity="0.2" />
-                <path d="M 30 70 L 60 40" strokeLinecap="round" strokeDasharray="2 2" />
-              </svg>
+            <div className="absolute inset-0">
+              <Image
+                src="/images/dental_tools_premium.png"
+                alt="Premium Dental Tools"
+                fill
+                className="object-cover object-center mix-blend-multiply" 
+                priority
+              />
             </div>
             
-            {/* Decorative Apple-style blur shadows */}
-            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-stone-300 rounded-full blur-3xl opacity-50 -z-10" />
-            <div className="absolute top-10 -left-10 w-48 h-48 bg-white/50 rounded-full blur-2xl opacity-60 -z-10" />
+            {/* Decorative Apple-style blur shadows to anchor the floating tools */}
+            <div className="absolute -bottom-20 right-0 w-64 h-24 bg-stone-400 rounded-full blur-3xl opacity-30 -z-10" />
           </motion.div>
         </div>
         
