@@ -1,10 +1,11 @@
 "use client";
-
-import { motion, useScroll, useTransform } from "framer-motion";
+ 
+import { motion, useScroll, useTransform, useMotionValue } from "framer-motion";
 import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-
+import { useLenis } from "lenis/react";
+ 
 interface ScrollExpandMediaProps {
   mediaSrc: string;
   mediaType?: "image" | "video";
@@ -16,7 +17,7 @@ interface ScrollExpandMediaProps {
   bgImageSrc: string;
   children?: React.ReactNode;
 }
-
+ 
 export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
   mediaSrc,
   mediaType = "image",
@@ -30,54 +31,166 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
 }) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobileState, setIsMobileState] = useState(false);
-
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [mediaFullyExpanded, setMediaFullyExpanded] = useState(false);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+ 
+  const lenis = useLenis();
+ 
+  // Detect mobile width
   useEffect(() => {
     const checkIfMobile = (): void => setIsMobileState(window.innerWidth < 768);
     checkIfMobile();
     window.addEventListener("resize", checkIfMobile);
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
-
-  // Dynamically set --hero-vh to window.innerHeight in pixels.
-  // This guarantees that 100vh resolves to the exact screen pixel height on all viewports,
-  // resolving any zoom-related gaps and preventing jumping address bars on mobile.
+ 
+  // Dynamically set --hero-vh to window.innerHeight in pixels on mobile.
+  // On desktop screens (>= 1024px), CSS zoom is applied, so we remove the pixel-based property
+  // and let the browser's native CSS engine resolve 100vh/100dvh correctly under zoom.
   useEffect(() => {
     const handleResize = () => {
-      const vh = window.innerHeight;
-      document.documentElement.style.setProperty("--hero-vh", `${vh}px`);
+      if (window.innerWidth >= 1024) {
+        document.documentElement.style.removeProperty("--hero-vh");
+      } else {
+        const vh = window.innerHeight;
+        document.documentElement.style.setProperty("--hero-vh", `${vh}px`);
+      }
     };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  // Track scroll progress of the entire container track
-  const { scrollYProgress } = useScroll({
-    target: trackRef,
-    offset: ["start start", "end end"],
-  });
-
+ 
+  // Lock body scroll on desktop while the media is expanding
+  useEffect(() => {
+    if (isMobileState || mediaFullyExpanded) return;
+ 
+    // Reset to top and lock overflow
+    window.scrollTo(0, 0);
+    document.body.style.overflow = "hidden";
+ 
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mediaFullyExpanded, isMobileState]);
+ 
+  // Synchronize Lenis smooth scrolling state
+  useEffect(() => {
+    if (isMobileState) return;
+ 
+    if (!mediaFullyExpanded) {
+      if (lenis) lenis.stop();
+    } else {
+      if (lenis) lenis.start();
+    }
+ 
+    return () => {
+      if (lenis) lenis.start();
+    };
+  }, [mediaFullyExpanded, lenis, isMobileState]);
+ 
+  // Handle native scroll link on mobile
+  useEffect(() => {
+    if (!isMobileState) return;
+ 
+    const handleNativeScroll = () => {
+      const currentScroll = window.scrollY;
+      const progress = Math.min(currentScroll / 250, 1.25);
+      setScrollProgress(progress);
+      if (progress >= 1.2) {
+        setMediaFullyExpanded(true);
+      }
+    };
+ 
+    window.addEventListener("scroll", handleNativeScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleNativeScroll);
+  }, [isMobileState]);
+ 
+  // Handle manual wheel/touch scroll interception on desktop
+  useEffect(() => {
+    if (mediaFullyExpanded || isMobileState) return;
+ 
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const scrollDelta = e.deltaY / 800;
+      setScrollProgress((prev) => {
+        const next = Math.min(Math.max(prev + scrollDelta, 0), 1.25);
+        if (next >= 1.2) {
+          setMediaFullyExpanded(true);
+        }
+        return next;
+      });
+    };
+ 
+    const handleTouchStart = (e: TouchEvent) => {
+      setTouchStartY(e.touches[0].clientY);
+    };
+ 
+    const handleTouchMove = (e: TouchEvent) => {
+      if (touchStartY === null) return;
+      e.preventDefault();
+      const currentY = e.touches[0].clientY;
+      const deltaY = touchStartY - currentY;
+      const scrollDelta = deltaY / 600;
+      setScrollProgress((prev) => {
+        const next = Math.min(Math.max(prev + scrollDelta, 0), 1.25);
+        if (next >= 1.2) {
+          setMediaFullyExpanded(true);
+        }
+        return next;
+      });
+    };
+ 
+    const handleTouchEnd = () => {
+      setTouchStartY(null);
+    };
+ 
+    const element = trackRef.current;
+    if (element) {
+      element.addEventListener("wheel", handleWheel, { passive: false });
+      element.addEventListener("touchstart", handleTouchStart, { passive: true });
+      element.addEventListener("touchmove", handleTouchMove, { passive: false });
+      element.addEventListener("touchend", handleTouchEnd, { passive: true });
+    }
+ 
+    return () => {
+      if (element) {
+        element.removeEventListener("wheel", handleWheel);
+        element.removeEventListener("touchstart", handleTouchStart);
+        element.removeEventListener("touchmove", handleTouchMove);
+        element.removeEventListener("touchend", handleTouchEnd);
+      }
+    };
+  }, [mediaFullyExpanded, isMobileState, touchStartY]);
+ 
+  // Synchronize state with Framer Motion values
+  const motionProgress = useMotionValue(0);
+  useEffect(() => {
+    motionProgress.set(scrollProgress);
+  }, [scrollProgress]);
+ 
   // Calculate visual progress (clamped between 0 and 1)
-  const visualProgress = useTransform(scrollYProgress, [0, 0.8], [0, 1]);
-
+  const visualProgress = useTransform(motionProgress, [0, 1.0], [0, 1]);
+ 
   // Interpolated dimensions using calc() to guarantee full-screen coverage with no gaps
   const mediaWidth = useTransform(visualProgress, (v) => `calc(300px + (100vw - 300px) * ${v})`);
   const mediaHeight = useTransform(visualProgress, (v) => `calc(400px + (var(--hero-vh) - 400px) * ${v})`);
   
   // Smoothly morph border radius from rounded card to straight viewport edges
   const borderRadius = useTransform(visualProgress, (v) => `${(1 - v) * 24}px`);
-
+ 
   // Background and title fade out as the user scrolls
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  const bgOpacity = useTransform(motionProgress, [0, 0.45], [1, 0]);
+  const textOpacity = useTransform(motionProgress, [0, 0.4], [1, 0]);
   
   // Subtle scaling effect inside the media frame
   const imgScale = useTransform(visualProgress, [0, 1], [1.3, 1.0]);
-
+ 
   // Translate header/titles left and right on scroll
   const leftTranslateX = useTransform(visualProgress, (v) => `-${v * (isMobileState ? 100 : 80)}vw`);
   const rightTranslateX = useTransform(visualProgress, (v) => `${v * (isMobileState ? 100 : 80)}vw`);
-
+ 
   const firstWord = title ? title.split(" ")[0] : "";
   const restOfTitle = title ? title.split(" ").slice(1).join(" ") : "";
 
