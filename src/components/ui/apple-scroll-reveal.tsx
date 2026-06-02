@@ -6,37 +6,44 @@ import Image from "next/image";
 
 interface ScrollRevealProps {
   texts: React.ReactNode[];
-  imageSrc: string;
+  images: string[];
 }
 
-export const AppleScrollReveal = ({ texts, imageSrc }: ScrollRevealProps) => {
+export const AppleScrollReveal = ({ texts, images }: ScrollRevealProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
+    // Start when the top of container hits the top of viewport
+    // End when bottom of container hits bottom of viewport
     offset: ["start start", "end end"],
   });
 
-  // Calculate opacity ranges based on the number of text items
   const numItems = texts.length;
-  // Let's divide the scroll area into chunks for each text
-  // Since we have 4 items usually, chunk size is 0.25
+  // Increase height significantly based on number of items (e.g. 5 items = 600vh)
+  const containerHeight = `${numItems * 120}vh`;
+
+  // Global 3D transforms for the right side container so all images drift smoothly
+  // We use `scrollYProgress` to drift from start to end continuously
+  const globalScale = useTransform(scrollYProgress, [0, 1], [0.9, 1.3]);
+  const globalY = useTransform(scrollYProgress, [0, 1], [100, -100]);
+  const globalRotateX = useTransform(scrollYProgress, [0, 1], [15, -15]);
+  const globalRotateY = useTransform(scrollYProgress, [0, 1], [-25, 25]);
+  const globalRotateZ = useTransform(scrollYProgress, [0, 1], [-10, 10]);
 
   return (
-    <div ref={containerRef} className="relative h-[400vh] w-full bg-[#ece8e1]">
+    <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1]">
       <div className="sticky top-0 flex h-screen w-full items-center justify-between overflow-hidden px-8 md:px-16 lg:px-24">
         
         {/* Left Side: Text Reveal */}
-        <div className="relative flex h-full w-full md:w-[50%] flex-col justify-center">
+        <div className="relative flex h-full w-full md:w-[45%] flex-col justify-center">
           {texts.map((text, index) => {
             const startReveal = index * (1 / numItems);
-            const peakReveal = startReveal + (0.5 / numItems);
-            const startHide = startReveal + (0.8 / numItems);
+            const peakReveal = startReveal + (0.3 / numItems);
+            const startHide = startReveal + (0.7 / numItems);
             const endHide = startReveal + (1 / numItems);
 
             const isLast = index === numItems - 1;
 
-            // Opacity transforms
-            // Map: startReveal -> 0, peakReveal -> 1, startHide -> 1, endHide -> 0 (unless last item)
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const opacity = useTransform(
               scrollYProgress,
@@ -44,7 +51,6 @@ export const AppleScrollReveal = ({ texts, imageSrc }: ScrollRevealProps) => {
               [0, 1, 1, isLast ? 1 : 0]
             );
 
-            // TranslateY transforms for a slight upward drift
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const translateY = useTransform(
               scrollYProgress,
@@ -52,10 +58,17 @@ export const AppleScrollReveal = ({ texts, imageSrc }: ScrollRevealProps) => {
               [50, 0, 0, isLast ? 0 : -50]
             );
 
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const filter = useTransform(
+              scrollYProgress,
+              [startReveal, peakReveal, startHide, endHide],
+              ["blur(10px)", "blur(0px)", "blur(0px)", "blur(10px)"]
+            );
+
             return (
               <motion.div
                 key={index}
-                style={{ opacity, translateY }}
+                style={{ opacity, translateY, filter }}
                 className="absolute left-0 right-0"
               >
                 {text}
@@ -64,35 +77,63 @@ export const AppleScrollReveal = ({ texts, imageSrc }: ScrollRevealProps) => {
           })}
         </div>
 
-        {/* Right Side: The Tools / Utensil Reveal */}
-        <div className="hidden h-full w-[45%] md:flex flex-col items-center justify-center [perspective:1000px]">
-          {/* We animate the image container in 3D */}
+        {/* Right Side: The Tools Reveal */}
+        <div className="hidden h-full w-[50%] md:flex flex-col items-center justify-center [perspective:1200px]">
+          {/* We animate the entire container in continuous 3D space */}
           <motion.div
             style={{
-              // The image scales up slightly as you scroll through the entire section
-              scale: useTransform(scrollYProgress, [0, 1], [0.8, 1.1]),
-              // It also floats up slightly
-              y: useTransform(scrollYProgress, [0, 1], [150, -100]),
-              // 3D Rotations for a premium hardware feel
-              rotateX: useTransform(scrollYProgress, [0, 1], [15, -5]),
-              rotateY: useTransform(scrollYProgress, [0, 1], [-15, 5]),
-              // Fade in at the very beginning
-              opacity: useTransform(scrollYProgress, [0, 0.1], [0, 1]),
+              scale: globalScale,
+              y: globalY,
+              rotateX: globalRotateX,
+              rotateY: globalRotateY,
+              rotateZ: globalRotateZ,
             }}
-            className="relative w-full max-w-lg aspect-square"
+            className="relative w-full max-w-2xl aspect-square"
           >
-            <div className="absolute inset-0">
-              <Image
-                src="/images/dental_tools_premium.png"
-                alt="Premium Dental Tools"
-                fill
-                className="object-cover object-center mix-blend-multiply" 
-                priority
-              />
-            </div>
+            {/* Map over the images, tying their opacity to the exact same ranges as the text! */}
+            {images.map((src, index) => {
+              const startReveal = index * (1 / numItems);
+              const peakReveal = startReveal + (0.3 / numItems);
+              const startHide = startReveal + (0.7 / numItems);
+              const endHide = startReveal + (1 / numItems);
+
+              const isLast = index === numItems - 1;
+
+              // eslint-disable-next-line react-hooks/rules-of-hooks
+              const opacity = useTransform(
+                scrollYProgress,
+                [startReveal, peakReveal, startHide, endHide],
+                [0, 1, 1, isLast ? 1 : 0]
+              );
+
+              // Add a slight internal pop scale when the image becomes visible
+              // eslint-disable-next-line react-hooks/rules-of-hooks
+              const itemScale = useTransform(
+                scrollYProgress,
+                [startReveal, peakReveal, startHide, endHide],
+                [0.8, 1, 1, 1.2]
+              );
+
+              return (
+                <motion.div
+                  key={index}
+                  style={{ opacity, scale: itemScale }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <Image
+                    src={src}
+                    alt={`Dental tool ${index + 1}`}
+                    fill
+                    className="object-contain mix-blend-multiply scale-[1.3]"
+                    priority
+                  />
+                </motion.div>
+              );
+            })}
             
             {/* Decorative Apple-style blur shadows to anchor the floating tools */}
-            <div className="absolute -bottom-20 right-0 w-64 h-24 bg-stone-400 rounded-full blur-3xl opacity-30 -z-10" />
+            <div className="absolute -bottom-20 right-10 w-[30rem] h-32 bg-stone-400 rounded-[100%] blur-3xl opacity-20 -z-10" />
+            <div className="absolute top-10 -left-10 w-64 h-64 bg-white/40 rounded-full blur-3xl opacity-60 -z-10" />
           </motion.div>
         </div>
         
