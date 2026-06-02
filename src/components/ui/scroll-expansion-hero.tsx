@@ -45,16 +45,21 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
  
-  // Dynamically set --hero-vh to window.innerHeight in pixels on mobile.
-  // On desktop screens (>= 1024px), CSS zoom is applied, so we remove the pixel-based property
-  // and let the browser's native CSS engine resolve 100vh/100dvh correctly under zoom.
+  // Dynamically set --hero-vh and --hero-vw to window.innerHeight and window.innerWidth in pixels.
+  // On desktop screens (>= 1024px), CSS zoom: 0.9 is applied, so we divide the values by 0.9
+  // to scale them up in CSS pixels, ensuring they fill 100% of the physical viewport.
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        document.documentElement.style.removeProperty("--hero-vh");
+        const vh = window.innerHeight / 0.9;
+        const vw = window.innerWidth / 0.9;
+        document.documentElement.style.setProperty("--hero-vh", `${vh}px`);
+        document.documentElement.style.setProperty("--hero-vw", `${vw}px`);
       } else {
         const vh = window.innerHeight;
+        const vw = window.innerWidth;
         document.documentElement.style.setProperty("--hero-vh", `${vh}px`);
+        document.documentElement.style.setProperty("--hero-vw", `${vw}px`);
       }
     };
     handleResize();
@@ -174,7 +179,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
   const visualProgress = useTransform(motionProgress, [0, 1.0], [0, 1]);
  
   // Interpolated dimensions using calc() to guarantee full-screen coverage with no gaps
-  const mediaWidth = useTransform(visualProgress, (v) => `calc(300px + (100vw - 300px) * ${v})`);
+  const mediaWidth = useTransform(visualProgress, (v) => `calc(300px + (var(--hero-vw) - 300px) * ${v})`);
   const mediaHeight = useTransform(visualProgress, (v) => `calc(400px + (var(--hero-vh) - 400px) * ${v})`);
   
   // Smoothly morph border radius from rounded card to straight viewport edges
