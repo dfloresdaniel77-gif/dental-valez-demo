@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform, useMotionValue } from "framer-motion";
 import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useLenis } from "lenis/react";
  
 interface ScrollExpandMediaProps {
   mediaSrc: string;
@@ -31,11 +30,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
 }) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobileState, setIsMobileState] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [mediaFullyExpanded, setMediaFullyExpanded] = useState(false);
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
- 
-  const lenis = useLenis();
+
  
   // Detect mobile width
   useEffect(() => {
@@ -68,124 +63,19 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
  
-  // Lock body scroll on desktop while the media is expanding
-  useEffect(() => {
-    if (isMobileState || mediaFullyExpanded) return;
- 
-    // Reset to top and lock overflow
-    window.scrollTo(0, 0);
-    document.body.style.overflow = "hidden";
- 
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mediaFullyExpanded, isMobileState]);
- 
-  // Synchronize Lenis smooth scrolling state
-  useEffect(() => {
-    if (isMobileState) return;
- 
-    if (!mediaFullyExpanded) {
-      if (lenis) lenis.stop();
-    } else {
-      if (lenis) lenis.start();
-    }
- 
-    return () => {
-      if (lenis) lenis.start();
-    };
-  }, [mediaFullyExpanded, lenis, isMobileState]);
- 
-  // Handle native scroll link on mobile
-  useEffect(() => {
-    if (!isMobileState) return;
- 
-    const handleNativeScroll = () => {
-      const currentScroll = window.scrollY;
-      const progress = Math.min(currentScroll / 250, 1.25);
-      setScrollProgress(progress);
-      if (progress >= 1.2) {
-        setMediaFullyExpanded(true);
-      }
-    };
- 
-    window.addEventListener("scroll", handleNativeScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleNativeScroll);
-  }, [isMobileState]);
- 
-  // Handle manual wheel/touch scroll interception on desktop
-  useEffect(() => {
-    if (mediaFullyExpanded || isMobileState) return;
- 
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      // Reduced divisor from 800 to 200 to make the expansion/contraction require exactly 2 scroll clicks
-      const scrollDelta = e.deltaY / 200;
-      setScrollProgress((prev) => {
-        const next = Math.min(Math.max(prev + scrollDelta, 0), 1.25);
-        if (next >= 1.2) {
-          setMediaFullyExpanded(true);
-        }
-        return next;
-      });
-    };
- 
-    const handleTouchStart = (e: TouchEvent) => {
-      setTouchStartY(e.touches[0].clientY);
-    };
- 
-    const handleTouchMove = (e: TouchEvent) => {
-      if (touchStartY === null) return;
-      e.preventDefault();
-      const currentY = e.touches[0].clientY;
-      const deltaY = touchStartY - currentY;
-      // Reduced divisor from 600 to 150 for touch to match the wheel speed increase
-      const scrollDelta = deltaY / 150;
-      setScrollProgress((prev) => {
-        const next = Math.min(Math.max(prev + scrollDelta, 0), 1.25);
-        if (next >= 1.2) {
-          setMediaFullyExpanded(true);
-        }
-        return next;
-      });
-    };
- 
-    const handleTouchEnd = () => {
-      setTouchStartY(null);
-    };
- 
-    const element = trackRef.current;
-    if (element) {
-      element.addEventListener("wheel", handleWheel, { passive: false });
-      element.addEventListener("touchstart", handleTouchStart, { passive: true });
-      element.addEventListener("touchmove", handleTouchMove, { passive: false });
-      element.addEventListener("touchend", handleTouchEnd, { passive: true });
-    }
- 
-    return () => {
-      if (element) {
-        element.removeEventListener("wheel", handleWheel);
-        element.removeEventListener("touchstart", handleTouchStart);
-        element.removeEventListener("touchmove", handleTouchMove);
-        element.removeEventListener("touchend", handleTouchEnd);
-      }
-    };
-  }, [mediaFullyExpanded, isMobileState, touchStartY]);
- 
-  // Relock scroll and re-enable wheel contraction when scrolling back to the top on desktop
-  useLenis((lenisInstance) => {
-    if (isMobileState || !mediaFullyExpanded) return;
-    if (lenisInstance.scroll <= 8 && lenisInstance.direction === -1) {
-      setMediaFullyExpanded(false);
-      setScrollProgress(1.2);
-    }
-  }, [mediaFullyExpanded, isMobileState]);
- 
-  // Synchronize state with Framer Motion values
-  const motionProgress = useMotionValue(0);
-  useEffect(() => {
-    motionProgress.set(scrollProgress);
-  }, [scrollProgress]);
+  // Native scroll-linked animation
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ["start start", "end start"]
+  });
+
+  // Calculate visual progress (clamped between 0 and 1)
+  // On desktop (180vh track), sticky container is fixed for 80vh (80/180 = 0.444)
+  // On mobile (140vh track), sticky container is fixed for 40vh (40/140 = 0.285)
+  const motionProgress = useTransform(scrollYProgress, (v) => {
+    const maxScroll = isMobileState ? (40 / 140) : (80 / 180);
+    return Math.min(v / maxScroll, 1);
+  });
  
   // Calculate visual progress (clamped between 0 and 1)
   const visualProgress = useTransform(motionProgress, [0, 1.0], [0, 1]);
