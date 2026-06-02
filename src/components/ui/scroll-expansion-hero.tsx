@@ -171,18 +171,12 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
   }, [mediaFullyExpanded, isMobileState, touchStartY]);
  
   // Relock scroll and re-enable wheel contraction when scrolling back to the top on desktop
-  useEffect(() => {
+  useLenis((lenisInstance) => {
     if (isMobileState || !mediaFullyExpanded) return;
- 
-    const handleScroll = () => {
-      if (window.scrollY === 0) {
-        setMediaFullyExpanded(false);
-        setScrollProgress(1.2);
-      }
-    };
- 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    if (lenisInstance.scroll <= 8 && lenisInstance.direction === -1) {
+      setMediaFullyExpanded(false);
+      setScrollProgress(1.2);
+    }
   }, [mediaFullyExpanded, isMobileState]);
  
   // Synchronize state with Framer Motion values
