@@ -57,9 +57,9 @@ export default function FounderProfile() {
             </>
           }
           description={
-            <div className="space-y-6 text-gray-200 font-light leading-relaxed mt-4">
+            <div className="space-y-6 text-stone-800 font-light leading-relaxed mt-4">
               <UltimateReveal delay={0.3}>
-                <div className="w-16 h-[1px] bg-gray-500 mb-6"></div>
+                <div className="w-16 h-[1px] bg-stone-400 mb-6"></div>
               </UltimateReveal>
               <UltimateReveal delay={0.4}>
                 <p>
@@ -77,12 +77,12 @@ export default function FounderProfile() {
               </UltimateReveal>
               <div className="pt-8">
                 <UltimateReveal delay={0.6}>
-                  <h3 className="text-xl font-medium tracking-widest uppercase text-white">
+                  <h3 className="text-xl font-medium tracking-widest uppercase text-stone-900">
                     <AnimatedUnderline>Dental Velez</AnimatedUnderline>
                   </h3>
                 </UltimateReveal>
                 <UltimateReveal delay={0.7}>
-                  <p className="text-xs uppercase tracking-widest text-gray-300 mt-2">
+                  <p className="text-xs uppercase tracking-widest text-stone-600 mt-2">
                     <AnimatedUnderline>Visión y Equipo Clínico</AnimatedUnderline>
                   </p>
                 </UltimateReveal>

@@ -55,26 +55,26 @@ export default function DemoFive() {
     }
   };
   return (
-    <section className="relative w-full bg-[#111111] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
+    <section className="relative w-full bg-[#ece8e1] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
       <div className="max-w-xl w-full mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-white text-4xl md:text-5xl font-light tracking-tight mb-4">
+          <h2 className="text-stone-900 text-4xl md:text-5xl font-light tracking-tight mb-4">
             A Un Solo <span className="italic font-serif text-stone-700">Clic</span>
           </h2>
-          <p className="text-gray-400 font-light text-lg tracking-wide max-w-md mx-auto">
+          <p className="text-stone-800 font-light text-lg tracking-wide max-w-md mx-auto">
             Estás a un solo clic de tu sonrisa perfecta. Llena el formulario y comencemos.
           </p>
         </div>
 
         {isSubmitted ? (
-          <div className="flex flex-col items-center justify-center py-12 px-8 bg-[#333333] border border-gray-700 shadow-xl shadow-black/30 rounded-2xl animate-in fade-in zoom-in duration-500">
-            <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
-              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <div className="flex flex-col items-center justify-center py-12 px-8 bg-[#f5f2ed] border border-stone-300 shadow-xl shadow-black/10 rounded-2xl animate-in fade-in zoom-in duration-500">
+            <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mb-6">
+              <svg className="w-10 h-10 text-stone-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-4 tracking-tight">¡Gracias!</h3>
-            <p className="text-gray-400 text-center text-lg leading-relaxed max-w-md">
+            <h3 className="text-3xl font-bold text-stone-900 mb-4 tracking-tight">¡Gracias!</h3>
+            <p className="text-stone-800 text-center text-lg leading-relaxed max-w-md">
               Hemos recibido tu información. Nos pondremos en contacto contigo pronto para confirmar tu cita.
             </p>
           </div>
@@ -98,9 +98,9 @@ export default function DemoFive() {
               />
 
               <div className="flex items-center justify-center pt-2">
-                <div className="h-px bg-gray-800 flex-grow"></div>
-                <span className="px-4 text-gray-400 text-xs font-medium tracking-widest uppercase">O</span>
-                <div className="h-px bg-gray-800 flex-grow"></div>
+                <div className="h-px bg-stone-300 flex-grow"></div>
+                <span className="px-4 text-stone-600 text-xs font-medium tracking-widest uppercase">O</span>
+                <div className="h-px bg-stone-300 flex-grow"></div>
               </div>
 
               <div className="pb-2">

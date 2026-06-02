@@ -44,7 +44,7 @@ const SectionWithMockup: React.FC<SectionWithMockupProps> = ({
 
 
     return (
-        <section className="relative py-24 md:py-48 bg-[#111111] overflow-hidden min-h-screen flex items-center">
+        <section className="relative py-24 md:py-48 bg-[#ece8e1] overflow-hidden min-h-screen flex items-center">
             <div className="container max-w-[1220px] w-full px-6 md:px-10 relative z-10 mx-auto">
                 <motion.div
                     className={`grid grid-cols-1 gap-16 md:gap-8 w-full items-center ${layoutClasses}`}
@@ -59,12 +59,12 @@ const SectionWithMockup: React.FC<SectionWithMockupProps> = ({
                         variants={itemVariants}
                     >
                         <div className="space-y-2 md:space-y-1">
-                            <h2 className="text-white text-3xl md:text-[40px] font-semibold leading-tight md:leading-[53px]">
+                            <h2 className="text-stone-900 text-3xl md:text-[40px] font-serif font-light leading-tight md:leading-[53px]">
                                 {title}
                             </h2>
                         </div>
 
-                        <div className="text-[#868f97] text-sm md:text-[15px] leading-6">
+                        <div className="text-stone-600 text-sm md:text-[15px] leading-relaxed">
                             {description}
                         </div>
                     </motion.div>
@@ -76,7 +76,7 @@ const SectionWithMockup: React.FC<SectionWithMockupProps> = ({
                     >
                         {/* Decorative Background Element */}
                         <motion.div
-                            className={`absolute w-[300px] h-[317px] md:w-[472px] md:h-[500px] bg-[#090909] rounded-[32px] z-0`}
+                            className={`absolute w-[300px] h-[317px] md:w-[472px] md:h-[500px] bg-stone-300 rounded-[32px] z-0`}
                             style={{
                                 top: reverseLayout ? 'auto' : '10%',
                                 bottom: reverseLayout ? '10%' : 'auto',

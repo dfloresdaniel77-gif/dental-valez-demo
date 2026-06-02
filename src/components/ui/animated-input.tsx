@@ -47,7 +47,7 @@ export const AnimatedInput = ({
   return (
     <div className={cn("relative w-full font-sans", className)}>
       <motion.div
-        className="absolute top-4 left-0 pointer-events-none text-gray-400 text-xs uppercase tracking-[0.2em] font-medium flex"
+        className="absolute top-4 left-0 pointer-events-none text-stone-500 text-xs uppercase tracking-[0.2em] font-medium flex"
         variants={containerVariants}
         initial="initial"
         animate={showLabel ? "animate" : "initial"}
@@ -70,7 +70,7 @@ export const AnimatedInput = ({
         onBlur={() => setIsFocused(false)}
         value={value}
         {...props}
-        className="outline-none border-b border-gray-600 focus:border-white transition-colors py-3 pt-4 w-full text-lg font-light font-sans text-white bg-transparent placeholder-transparent"
+        className="outline-none border-b border-stone-400 focus:border-stone-900 transition-colors py-3 pt-4 w-full text-lg font-light font-sans text-stone-900 bg-transparent placeholder-transparent"
       />
     </div>
   );

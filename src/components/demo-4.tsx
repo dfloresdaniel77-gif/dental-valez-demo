@@ -37,20 +37,20 @@ export default function DemoFour() {
   }, []);
 
   return (
-    <section className="relative w-full bg-[#111111] flex flex-col items-center py-32 px-8">
+    <section className="relative w-full bg-[#ece8e1] flex flex-col items-center py-32 px-8">
       <div className="max-w-4xl w-full flex flex-col items-center">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
             <ShimmerText className="text-stone-700">Transformaciones</ShimmerText>
           </h2>
-          <p className="text-gray-200 font-light text-lg tracking-wide">
+          <p className="text-stone-800 font-light text-lg tracking-wide">
             La sutil diferencia entre el cuidado estándar y el verdadero arte.
           </p>
         </div>
 
         <div 
           ref={containerRef}
-          className="relative w-full max-w-2xl mx-auto aspect-square md:aspect-[4/3] overflow-hidden rounded-xl shadow-2xl cursor-ew-resize select-none border border-white/10"
+          className="relative w-full max-w-2xl mx-auto aspect-square md:aspect-[4/3] overflow-hidden rounded-xl shadow-2xl shadow-black/10 cursor-ew-resize select-none border border-black/10"
           onMouseMove={handleMouseMove}
           onTouchMove={handleTouchMove}
           onMouseDown={(e) => {
