@@ -59,7 +59,7 @@ export default function DemoFive() {
       <div className="max-w-xl w-full mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-white text-4xl md:text-5xl font-light tracking-tight mb-4">
-            A Un Solo <span className="italic font-serif text-gray-400">Clic</span>
+            A Un Solo <span className="italic font-serif text-stone-700">Clic</span>
           </h2>
           <p className="text-gray-400 font-light text-lg tracking-wide max-w-md mx-auto">
             Estás a un solo clic de tu sonrisa perfecta. Llena el formulario y comencemos.

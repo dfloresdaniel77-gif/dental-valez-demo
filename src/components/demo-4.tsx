@@ -41,7 +41,7 @@ export default function DemoFour() {
       <div className="max-w-4xl w-full flex flex-col items-center">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
-            <ShimmerText className="text-gray-400">Transformaciones</ShimmerText>
+            <ShimmerText className="text-stone-700">Transformaciones</ShimmerText>
           </h2>
           <p className="text-gray-200 font-light text-lg tracking-wide">
             La sutil diferencia entre el cuidado estándar y el verdadero arte.

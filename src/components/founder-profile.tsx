@@ -41,7 +41,7 @@ export default function FounderProfile() {
           title={
             <>
               <UltimateReveal delay={0.1}>
-                <div className="text-xs font-semibold tracking-[0.3em] uppercase text-gray-400 mb-4 block">
+                <div className="text-xs font-semibold tracking-[0.3em] uppercase text-stone-700 mb-4 block">
                   <AnimatedUnderline>
                     <ShimmerText duration={3}>Transformando Vidas</ShimmerText>
                   </AnimatedUnderline>
@@ -49,8 +49,8 @@ export default function FounderProfile() {
               </UltimateReveal>
               <UltimateReveal delay={0.2}>
                 <AnimatedUnderline>
-                  <ShimmerText duration={3} className="text-gray-400">
-                    "Entendemos el miedo a sonreír. <span className="italic font-serif text-gray-500">Ya no tienes por qué esconderlo</span>."
+                  <ShimmerText duration={3} className="text-stone-700">
+                    "Entendemos el miedo a sonreír. <span className="italic font-serif text-stone-700">Ya no tienes por qué esconderlo</span>."
                   </ShimmerText>
                 </AnimatedUnderline>
               </UltimateReveal>
