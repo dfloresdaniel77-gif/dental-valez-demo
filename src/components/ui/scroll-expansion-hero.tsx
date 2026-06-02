@@ -38,6 +38,19 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
+  // Dynamically set --hero-vh to window.innerHeight in pixels.
+  // This guarantees that 100vh resolves to the exact screen pixel height on all viewports,
+  // resolving any zoom-related gaps and preventing jumping address bars on mobile.
+  useEffect(() => {
+    const handleResize = () => {
+      const vh = window.innerHeight;
+      document.documentElement.style.setProperty("--hero-vh", `${vh}px`);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Track scroll progress of the entire container track
   const { scrollYProgress } = useScroll({
     target: trackRef,
@@ -73,7 +86,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
       {/* Scroll track defines the scroll animation distance */}
       <div 
         ref={trackRef} 
-        className="relative w-full h-[140vh] md:h-[180vh] bg-[#111111]"
+        className="relative w-full h-[140vh] md:h-[180vh] bg-[#ece8e1]"
       >
         {/* Sticky viewport container */}
         <div 

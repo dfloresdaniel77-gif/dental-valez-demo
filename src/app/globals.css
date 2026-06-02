@@ -130,9 +130,6 @@
     scroll-behavior: auto !important;
   }
   @media (min-width: 1024px) {
-    :root {
-      --hero-vh: 111.11vh;
-    }
     html {
       zoom: 0.9;
     }
