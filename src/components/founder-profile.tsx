@@ -40,11 +40,11 @@ export default function FounderProfile() {
   ];
 
   const images = [
-    "/images/tool_mirror.png",
-    "/images/tool_scaler.png",
-    "/images/tool_probe.png",
-    "/images/tool_syringe.png",
-    "/images/tool_forceps.png"
+    "/images/tool_mirror_nobg.png",
+    "/images/tool_scaler_nobg.png",
+    "/images/tool_probe_nobg.png",
+    "/images/tool_syringe_nobg.png",
+    "/images/tool_forceps_nobg.png"
   ];
 
   return (
