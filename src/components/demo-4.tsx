@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import ShimmerText from "@/components/ui/shimmer-text";
+import { RevealText } from "@/components/ui/reveal-text";
 import { GripVertical } from "lucide-react";
 import { ScrollReveal, RevealItem } from "@/components/ui/scroll-reveal";
 
@@ -42,9 +42,9 @@ export default function DemoFour() {
       <ScrollReveal className="max-w-4xl w-full flex flex-col items-center">
         <div className="text-center mb-16">
           <RevealItem delay={0.1}>
-            <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4">
-              <ShimmerText className="text-stone-700">Transformaciones</ShimmerText>
-            </h2>
+            <div className="mb-4">
+              <RevealText text="TRANSFORMACIONES" fontSize="text-4xl md:text-5xl lg:text-6xl" />
+            </div>
           </RevealItem>
           <RevealItem delay={0.2}>
             <p className="text-stone-800 font-light text-lg tracking-wide">

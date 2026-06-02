@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnimatedInput } from "@/components/ui/animated-input";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { ScrollReveal, RevealItem } from "@/components/ui/scroll-reveal";
+import { RevealText } from "@/components/ui/reveal-text";
 
 export default function DemoFive() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -59,9 +60,9 @@ export default function DemoFive() {
     <section className="relative w-full bg-[#ece8e1] flex flex-col items-center py-32 px-8 min-h-screen justify-center">
       <ScrollReveal className="max-w-xl w-full mx-auto">
         <RevealItem delay={0.1} className="text-center mb-16">
-          <h2 className="text-stone-900 text-4xl md:text-5xl font-light tracking-tight mb-4">
-            A Un Solo <span className="italic font-serif text-stone-700">Clic</span>
-          </h2>
+          <div className="mb-4">
+            <RevealText text="A UN SOLO CLIC" fontSize="text-4xl md:text-5xl" />
+          </div>
           <p className="text-stone-800 font-light text-lg tracking-wide max-w-md mx-auto">
             Estás a un solo clic de tu sonrisa perfecta. Llena el formulario y comencemos.
           </p>
