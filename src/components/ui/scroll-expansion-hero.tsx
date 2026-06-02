@@ -45,21 +45,22 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
  
-  // Dynamically set --hero-vh and --hero-vw to window.innerHeight and window.innerWidth in pixels.
-  // On desktop screens (>= 1024px), CSS zoom: 0.9 is applied, so we divide the values by 0.9
-  // to scale them up in CSS pixels, ensuring they fill 100% of the physical viewport.
+  // Dynamically set CSS variables for viewport dimensions.
+  // --hero-vh and --hero-vw are scaled by 1/0.9 on desktop to ensure the background image fills the physical viewport.
+  // --media-vh is kept at the unscaled window.innerHeight to maintain the original 21stDev card layout and sizing.
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        const vh = window.innerHeight / 0.9;
-        const vw = window.innerWidth / 0.9;
-        document.documentElement.style.setProperty("--hero-vh", `${vh}px`);
-        document.documentElement.style.setProperty("--hero-vw", `${vw}px`);
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+      
+      if (vw >= 1024) {
+        document.documentElement.style.setProperty("--hero-vh", `${vh / 0.9}px`);
+        document.documentElement.style.setProperty("--hero-vw", `${vw / 0.9}px`);
+        document.documentElement.style.setProperty("--media-vh", `${vh}px`);
       } else {
-        const vh = window.innerHeight;
-        const vw = window.innerWidth;
         document.documentElement.style.setProperty("--hero-vh", `${vh}px`);
         document.documentElement.style.setProperty("--hero-vw", `${vw}px`);
+        document.documentElement.style.setProperty("--media-vh", `${vh}px`);
       }
     };
     handleResize();
@@ -179,8 +180,8 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
   const visualProgress = useTransform(motionProgress, [0, 1.0], [0, 1]);
  
   // Interpolated dimensions using calc() to guarantee full-screen coverage with no gaps
-  const mediaWidth = useTransform(visualProgress, (v) => `calc(300px + (var(--hero-vw) - 300px) * ${v})`);
-  const mediaHeight = useTransform(visualProgress, (v) => `calc(400px + (var(--hero-vh) - 400px) * ${v})`);
+  const mediaWidth = useTransform(visualProgress, (v) => `calc(300px + (100vw - 300px) * ${v})`);
+  const mediaHeight = useTransform(visualProgress, (v) => `calc(400px + (var(--media-vh) - 400px) * ${v})`);
   
   // Smoothly morph border radius from rounded card to straight viewport edges
   const borderRadius = useTransform(visualProgress, (v) => `${(1 - v) * 24}px`);
