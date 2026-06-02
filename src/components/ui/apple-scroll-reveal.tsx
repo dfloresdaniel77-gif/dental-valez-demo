@@ -83,15 +83,7 @@ export const AppleScrollReveal = ({ texts, images }: ScrollRevealProps) => {
               const isFirst = index === 0;
               const isLast = index === numItems - 1;
 
-              // Opacity just for safety, but they are sliding out of view anyway
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              const opacity = useTransform(
-                scrollYProgress,
-                [startReveal, peakReveal, startHide, endHide],
-                [0, 1, 1, isLast ? 1 : 0]
-              );
-
-              // Slide up from bottom (100vh), hold at center (0vh), slide up and out (-100vh)
+              // Remove opacity fade so there is no "appearing effect", only physical sliding!
               // eslint-disable-next-line react-hooks/rules-of-hooks
               const translateY = useTransform(
                 scrollYProgress,
@@ -102,7 +94,7 @@ export const AppleScrollReveal = ({ texts, images }: ScrollRevealProps) => {
               return (
                 <motion.div
                   key={index}
-                  style={{ opacity, y: translateY }}
+                  style={{ y: translateY }}
                   className="absolute inset-0 flex items-center justify-center"
                 >
                   {/* Container that rotates the tool upright and scales it massively */}

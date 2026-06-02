@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatedUnderline, UnderlineGroup } from "./ui/animated-underline";
 import { AppleScrollReveal } from "./ui/apple-scroll-reveal";
 
 export default function FounderProfile() {
@@ -9,7 +8,7 @@ export default function FounderProfile() {
   const texts = [
     <div key="1" className="flex flex-col gap-6">
       <div className="text-xs font-semibold tracking-[0.3em] uppercase text-stone-700 block">
-        <AnimatedUnderline>Transformando Vidas</AnimatedUnderline>
+        Transformando Vidas
       </div>
       <h2 className={typographyClass}>
         "Entendemos el miedo a sonreír."
@@ -48,11 +47,9 @@ export default function FounderProfile() {
   ];
 
   return (
-    <UnderlineGroup>
-      <AppleScrollReveal 
-        texts={texts} 
-        images={images} 
-      />
-    </UnderlineGroup>
+    <AppleScrollReveal 
+      texts={texts} 
+      images={images} 
+    />
   );
 }
