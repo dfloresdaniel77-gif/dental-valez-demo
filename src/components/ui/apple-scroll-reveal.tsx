@@ -19,11 +19,39 @@ export const AppleScrollReveal = ({ texts, images }: ScrollRevealProps) => {
   const numItems = texts.length;
   const containerHeight = `${numItems * 120}vh`;
 
+  // ── GLOBAL 3D SPIN tied to the entire scroll ──
+  // This creates a continuous back-and-forth rotation as the user scrolls
+  // through the ENTIRE section, making the tool feel like it's spinning in 3D
+  const globalRotateY = useTransform(
+    scrollYProgress,
+    [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+    [0, 35, 0, -35, 0, 35, 0, -35, 0, 35, 0]
+  );
+
+  const globalRotateX = useTransform(
+    scrollYProgress,
+    [0, 0.15, 0.35, 0.5, 0.65, 0.85, 1],
+    [5, -10, 8, -8, 10, -5, 5]
+  );
+
+  const globalRotateZ = useTransform(
+    scrollYProgress,
+    [0, 0.25, 0.5, 0.75, 1],
+    [0, -3, 0, 3, 0]
+  );
+
+  // Shadow that moves dynamically with the rotation
+  const shadowX = useTransform(
+    globalRotateY,
+    [-35, 0, 35],
+    ["-20px", "0px", "20px"]
+  );
+
   return (
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1]">
       <div className="sticky top-0 flex h-screen w-full items-center justify-between overflow-hidden px-8 md:px-16 lg:px-24">
         
-        {/* Left Side: Text — simple crossfade, no blur or movement */}
+        {/* Left Side: Text — simple crossfade */}
         <div className="relative flex h-full w-full md:w-[45%] flex-col justify-center">
           {texts.map((text, index) => {
             const start = index / numItems;
@@ -49,104 +77,72 @@ export const AppleScrollReveal = ({ texts, images }: ScrollRevealProps) => {
           })}
         </div>
 
-        {/* Right Side: 3D Floating Tools */}
-        <div className="hidden h-full w-[50%] md:flex items-center justify-center">
-          <div className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden" style={{ perspective: "1000px" }}>
-            
-            {images.map((src, index) => {
-              const segmentStart = index / numItems;
-              const segmentEnd = (index + 1) / numItems;
-              const isFirst = index === 0;
-              const isLast = index === numItems - 1;
+        {/* Right Side: 3D Spinning Tools */}
+        <div 
+          className="hidden h-full w-[50%] md:flex items-center justify-center"
+          style={{ perspective: "800px" }}
+        >
+          {/* This outer wrapper applies the GLOBAL 3D spin to ALL tools */}
+          <motion.div
+            style={{
+              rotateY: globalRotateY,
+              rotateX: globalRotateX,
+              rotateZ: globalRotateZ,
+              transformStyle: "preserve-3d",
+            }}
+            className="relative w-full h-[85vh] flex items-center justify-center"
+          >
+            {/* Inner container clips tool sliding in/out */}
+            <div className="relative w-full h-full overflow-hidden">
+              {images.map((src, index) => {
+                const segmentStart = index / numItems;
+                const segmentEnd = (index + 1) / numItems;
+                const isFirst = index === 0;
+                const isLast = index === numItems - 1;
 
-              // SLIDE Y: Enter from below (+100%), hold center (0%), exit up top (-100%)
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              const y = useTransform(
-                scrollYProgress,
-                [segmentStart, segmentStart + 0.08, segmentEnd - 0.08, segmentEnd],
-                [isFirst ? "0%" : "120%", "0%", "0%", isLast ? "0%" : "-120%"]
-              );
+                // SLIDE Y: tool enters from below, holds center, exits up and out
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                const toolY = useTransform(
+                  scrollYProgress,
+                  [segmentStart, segmentStart + 0.06, segmentEnd - 0.06, segmentEnd],
+                  [isFirst ? 0 : 800, 0, 0, isLast ? 0 : -800]
+                );
 
-              // 3D TILT on scroll — gentle rotateX creates "leaning back/forward" depth
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              const rotateX = useTransform(
-                scrollYProgress,
-                [segmentStart, segmentStart + 0.08, segmentEnd - 0.08, segmentEnd],
-                [isFirst ? 0 : 25, 0, 0, isLast ? 0 : -25]
-              );
-
-              // SHADOW Y offset: shifts down when entering (from below), shifts up when exiting (going up)
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              const shadowY = useTransform(
-                scrollYProgress,
-                [segmentStart, segmentStart + 0.08, segmentEnd - 0.08, segmentEnd],
-                [40, 25, 25, 10]
-              );
-
-              // SHADOW BLUR: more diffused when far, tighter when centered
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              const shadowBlur = useTransform(
-                scrollYProgress,
-                [segmentStart, segmentStart + 0.08, segmentEnd - 0.08, segmentEnd],
-                [60, 40, 40, 60]
-              );
-
-              return (
-                <motion.div
-                  key={index}
-                  style={{
-                    y,
-                    rotateX,
-                    transformStyle: "preserve-3d",
-                  }}
-                  className="absolute inset-0 flex items-center justify-center"
-                >
-                  {/* The tool image — big, centered, vertical, no rotation */}
-                  <motion.div 
-                    className="relative w-[80%] h-[80%]"
-                    style={{
-                      filter: useTransform(
-                        shadowY,
-                        [10, 25, 40],
-                        [
-                          "drop-shadow(0px 10px 60px rgba(0,0,0,0.12))",
-                          "drop-shadow(0px 25px 40px rgba(0,0,0,0.2))",
-                          "drop-shadow(0px 40px 60px rgba(0,0,0,0.12))",
-                        ]
-                      ),
-                    }}
-                  >
-                    <Image
-                      src={src}
-                      alt={`Dental tool ${index + 1}`}
-                      fill
-                      className="object-contain"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      priority={index < 2}
-                    />
-                  </motion.div>
-
-                  {/* Floating shadow on the "ground" beneath the tool */}
+                return (
                   <motion.div
-                    className="absolute bottom-[8%] w-[40%] h-4 rounded-[100%] bg-black/10"
-                    style={{
-                      filter: useTransform(shadowBlur, (v) => `blur(${v}px)`),
-                      scaleX: useTransform(
-                        scrollYProgress,
-                        [segmentStart, segmentStart + 0.08, segmentEnd - 0.08, segmentEnd],
-                        [0.5, 1, 1, 0.5]
-                      ),
-                      opacity: useTransform(
-                        scrollYProgress,
-                        [segmentStart, segmentStart + 0.08, segmentEnd - 0.08, segmentEnd],
-                        [0, 0.6, 0.6, 0]
-                      ),
-                    }}
-                  />
-                </motion.div>
-              );
-            })}
-          </div>
+                    key={index}
+                    style={{ y: toolY }}
+                    className="absolute inset-0 flex items-center justify-center p-8"
+                  >
+                    <div className="relative w-full h-full max-w-sm">
+                      <Image
+                        src={src}
+                        alt={`Dental tool ${index + 1}`}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, 40vw"
+                        priority={index < 2}
+                      />
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Dynamic shadow beneath the 3D object */}
+            <motion.div
+              className="absolute -bottom-4 w-[60%] h-6 rounded-[100%] bg-black/15"
+              style={{
+                x: shadowX,
+                filter: "blur(20px)",
+                scaleX: useTransform(
+                  scrollYProgress,
+                  [0, 0.5, 1],
+                  [0.8, 1.2, 0.8]
+                ),
+              }}
+            />
+          </motion.div>
         </div>
         
       </div>
