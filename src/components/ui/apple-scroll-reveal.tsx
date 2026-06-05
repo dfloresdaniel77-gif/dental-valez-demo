@@ -1,23 +1,16 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import dynamic from "next/dynamic";
-
-// Dynamically import the 3D viewer (no SSR — Three.js needs the browser)
-const ToolViewer3D = dynamic(
-  () => import("./dental-tools-3d/viewer").then((mod) => ({ default: mod.ToolViewer3D })),
-  { ssr: false }
-);
 
 interface ScrollRevealProps {
   texts: React.ReactNode[];
-  toolCount?: number;
+  videoSrc: string;
 }
 
-export const AppleScrollReveal = ({ texts, toolCount = 5 }: ScrollRevealProps) => {
+export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = React.useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -27,14 +20,24 @@ export const AppleScrollReveal = ({ texts, toolCount = 5 }: ScrollRevealProps) =
   const numItems = texts.length;
   const containerHeight = `${numItems * 120}vh`;
 
-  // Track which tool should be visible based on scroll position
+  // ── Sync video playback to scroll position ──
+  // When scroll is at 0%, video is at 0:00
+  // When scroll is at 100%, video is at the end
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const idx = Math.min(Math.floor(latest * numItems), numItems - 1);
-    setActiveIndex(idx);
+    const video = videoRef.current;
+    if (video && video.duration && isFinite(video.duration)) {
+      video.currentTime = latest * video.duration;
+    }
   });
 
-  // Scroll-driven rotation value passed to the 3D viewer
-  const scrollRotation = useTransform(scrollYProgress, [0, 1], [0, Math.PI * 6]);
+  // Make sure video is loaded and paused (we control time manually)
+  const handleVideoLoad = useCallback(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  }, []);
 
   return (
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1]">
@@ -66,12 +69,21 @@ export const AppleScrollReveal = ({ texts, toolCount = 5 }: ScrollRevealProps) =
           })}
         </div>
 
-        {/* Right Side: 3D Tool Viewer */}
+        {/* Right Side: Scroll-synced video */}
         <div className="hidden h-full w-[50%] md:flex items-center justify-center">
-          <div className="w-full h-[80vh]">
-            <ToolViewer3D
-              toolIndex={activeIndex}
-              scrollRotation={scrollRotation.get()}
+          <div className="relative w-full h-[85vh] flex items-center justify-center">
+            <video
+              ref={videoRef}
+              src={videoSrc}
+              muted
+              playsInline
+              preload="auto"
+              onLoadedMetadata={handleVideoLoad}
+              className="h-full w-auto max-w-full object-contain"
+              style={{
+                /* Remove video background — blend with section bg */
+                mixBlendMode: "multiply",
+              }}
             />
           </div>
         </div>
