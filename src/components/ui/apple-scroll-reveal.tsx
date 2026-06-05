@@ -1,16 +1,24 @@
 "use client";
 
 import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import Image from "next/image";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import dynamic from "next/dynamic";
+
+// Dynamically import the 3D viewer (no SSR — Three.js needs the browser)
+const ToolViewer3D = dynamic(
+  () => import("./dental-tools-3d/viewer").then((mod) => ({ default: mod.ToolViewer3D })),
+  { ssr: false }
+);
 
 interface ScrollRevealProps {
   texts: React.ReactNode[];
-  images: string[];
+  toolCount?: number;
 }
 
-export const AppleScrollReveal = ({ texts, images }: ScrollRevealProps) => {
+export const AppleScrollReveal = ({ texts, toolCount = 5 }: ScrollRevealProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = React.useState(0);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -19,27 +27,20 @@ export const AppleScrollReveal = ({ texts, images }: ScrollRevealProps) => {
   const numItems = texts.length;
   const containerHeight = `${numItems * 120}vh`;
 
-  // ── Gentle 3D rotation — subtle enough to never look paper-thin ──
-  const globalRotateY = useTransform(
-    scrollYProgress,
-    [0, 0.12, 0.25, 0.37, 0.5, 0.62, 0.75, 0.87, 1],
-    [0, 12, 0, -12, 0, 12, 0, -12, 0]
-  );
+  // Track which tool should be visible based on scroll position
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const idx = Math.min(Math.floor(latest * numItems), numItems - 1);
+    setActiveIndex(idx);
+  });
 
-  const globalRotateX = useTransform(
-    scrollYProgress,
-    [0, 0.2, 0.4, 0.6, 0.8, 1],
-    [3, -5, 3, -5, 3, -5]
-  );
-
-  // Shadow shifts with rotation for realistic lighting
-  const shadowX = useTransform(globalRotateY, [-12, 0, 12], [-8, 0, 8]);
+  // Scroll-driven rotation value passed to the 3D viewer
+  const scrollRotation = useTransform(scrollYProgress, [0, 1], [0, Math.PI * 6]);
 
   return (
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1]">
       <div className="sticky top-0 flex h-screen w-full items-center justify-between overflow-hidden px-8 md:px-16 lg:px-24">
         
-        {/* Left Side: Text */}
+        {/* Left Side: Text — simple crossfade */}
         <div className="relative flex h-full w-full md:w-[45%] flex-col justify-center">
           {texts.map((text, index) => {
             const start = index / numItems;
@@ -65,66 +66,14 @@ export const AppleScrollReveal = ({ texts, images }: ScrollRevealProps) => {
           })}
         </div>
 
-        {/* Right Side: 3D Floating Tools */}
-        <div 
-          className="hidden h-full w-[50%] md:flex items-center justify-center"
-          style={{ perspective: "600px" }}
-        >
-          <motion.div
-            style={{
-              rotateY: globalRotateY,
-              rotateX: globalRotateX,
-              transformStyle: "preserve-3d",
-            }}
-            className="relative w-full h-[80vh] flex items-center justify-center"
-          >
-            {/* Clip container for slide in/out */}
-            <div className="relative w-full h-full overflow-hidden flex items-center justify-center">
-              {images.map((src, index) => {
-                const segmentStart = index / numItems;
-                const segmentEnd = (index + 1) / numItems;
-                const isFirst = index === 0;
-                const isLast = index === numItems - 1;
-
-                // Slide Y: enter from bottom, hold, exit top
-                // eslint-disable-next-line react-hooks/rules-of-hooks
-                const toolY = useTransform(
-                  scrollYProgress,
-                  [segmentStart, segmentStart + 0.06, segmentEnd - 0.06, segmentEnd],
-                  [isFirst ? 0 : 900, 0, 0, isLast ? 0 : -900]
-                );
-
-                return (
-                  <motion.div
-                    key={index}
-                    style={{ y: toolY }}
-                    className="absolute inset-0 flex items-center justify-center"
-                  >
-                    {/* Floating animation wrapper */}
-                    <div className="relative w-[70%] h-[70%] animate-float">
-                      <Image
-                        src={src}
-                        alt={`Dental tool ${index + 1}`}
-                        fill
-                        className="object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,0.25)]"
-                        sizes="(max-width: 768px) 100vw, 35vw"
-                        priority={index < 2}
-                      />
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-
-            {/* Ground shadow */}
-            <motion.div
-              className="absolute -bottom-2 w-[50%] h-8 rounded-[100%] bg-black/10"
-              style={{
-                x: shadowX,
-                filter: "blur(24px)",
-              }}
+        {/* Right Side: 3D Tool Viewer */}
+        <div className="hidden h-full w-[50%] md:flex items-center justify-center">
+          <div className="w-full h-[80vh]">
+            <ToolViewer3D
+              toolIndex={activeIndex}
+              scrollRotation={scrollRotation.get()}
             />
-          </motion.div>
+          </div>
         </div>
         
       </div>

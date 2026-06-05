@@ -38,18 +38,10 @@ export default function FounderProfile() {
     </div>
   ];
 
-  const images = [
-    "/images/dental_mirror_3d.png",
-    "/images/dental_scaler_3d.png",
-    "/images/dental_probe_3d.png",
-    "/images/dental_syringe_3d.png",
-    "/images/dental_forceps_3d.png"
-  ];
-
   return (
     <AppleScrollReveal 
       texts={texts} 
-      images={images} 
+      toolCount={5}
     />
   );
 }
