@@ -37,8 +37,8 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
           <ToolViewer3D scrollYProgress={scrollYProgress} />
         </div>
 
-        {/* Text Container: Full width, centered, behind 3D models */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full z-0 pointer-events-none">
+        {/* Text Container: Full width, centered, behind 3D models. Shifted up via pb-48 to avoid blocking tools */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full z-0 pointer-events-none pb-48 md:pb-64">
           {texts.map((text, index) => {
             const start = index / numItems;
             const end = (index + 1) / numItems;
