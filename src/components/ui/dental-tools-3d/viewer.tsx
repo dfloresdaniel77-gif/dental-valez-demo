@@ -2,57 +2,132 @@
 
 import React, { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
-import { DENTAL_TOOLS } from "./tools";
+import { Environment, ContactShadows } from "@react-three/drei";
+import { DENTAL_TOOLS, SurgicalTray } from "./tools";
 import * as THREE from "three";
+import { MotionValue } from "framer-motion";
 
-// ── Spinning wrapper: continuously rotates the tool ──
-function SpinningTool({
-  toolIndex,
-  scrollRotation,
-}: {
-  toolIndex: number;
-  scrollRotation: number;
-}) {
-  const groupRef = useRef<THREE.Group>(null);
-  const { Component } = DENTAL_TOOLS[toolIndex] || DENTAL_TOOLS[0];
+// Configuration for how each tool scatters and lands
+const TOOL_ANIMATIONS = [
+  {
+    // Mirror
+    startPos: new THREE.Vector3(-3, 3, -2),
+    startRot: new THREE.Euler(Math.PI / 4, Math.PI, Math.PI / 3),
+    endPos: new THREE.Vector3(-1.2, -2.4, 0),
+    endRot: new THREE.Euler(-Math.PI / 2, 0, 0),
+    scrollRange: [0, 0.2],
+  },
+  {
+    // Scaler
+    startPos: new THREE.Vector3(3, 4, 1),
+    startRot: new THREE.Euler(-Math.PI / 3, Math.PI / 2, -Math.PI / 4),
+    endPos: new THREE.Vector3(-0.6, -2.4, 0),
+    endRot: new THREE.Euler(-Math.PI / 2, 0, 0),
+    scrollRange: [0.2, 0.4],
+  },
+  {
+    // Probe
+    startPos: new THREE.Vector3(0, 5, -3),
+    startRot: new THREE.Euler(Math.PI / 2, -Math.PI / 4, Math.PI / 6),
+    endPos: new THREE.Vector3(0, -2.4, 0),
+    endRot: new THREE.Euler(-Math.PI / 2, 0, 0),
+    scrollRange: [0.4, 0.6],
+  },
+  {
+    // Syringe
+    startPos: new THREE.Vector3(-4, 0, 2),
+    startRot: new THREE.Euler(-Math.PI / 6, Math.PI / 3, -Math.PI / 2),
+    endPos: new THREE.Vector3(0.6, -2.4, 0),
+    endRot: new THREE.Euler(-Math.PI / 2, 0, 0),
+    scrollRange: [0.6, 0.8],
+  },
+  {
+    // Forceps
+    startPos: new THREE.Vector3(4, -1, 3),
+    startRot: new THREE.Euler(Math.PI / 3, -Math.PI / 6, Math.PI / 4),
+    endPos: new THREE.Vector3(1.2, -2.4, 0),
+    endRot: new THREE.Euler(-Math.PI / 2, 0, 0),
+    scrollRange: [0.8, 1.0],
+  },
+];
 
-  // Continuous gentle rotation + scroll-driven rotation
-  useFrame((_, delta) => {
-    if (groupRef.current) {
-      // Continuous slow spin on Y axis
-      groupRef.current.rotation.y += delta * 0.5;
-      // Add scroll-driven rotation for extra responsiveness
-    }
+function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
+  const toolRefs = useRef<(THREE.Group | null)[]>([]);
+
+  useFrame((state, delta) => {
+    const scroll = scrollYProgress.get();
+
+    TOOL_ANIMATIONS.forEach((anim, i) => {
+      const ref = toolRefs.current[i];
+      if (!ref) return;
+
+      // Calculate interpolation factor (0 to 1) for this specific tool's range
+      const [start, end] = anim.scrollRange;
+      // Clamp and normalize progress for this tool
+      let t = Math.max(0, Math.min(1, (scroll - start) / (end - start)));
+      
+      // Apply easing function (smoothstep) for graceful landing
+      t = t * t * (3 - 2 * t);
+
+      // Interpolate Position
+      ref.position.lerpVectors(anim.startPos, anim.endPos, t);
+
+      // Interpolate Rotation (using Quaternions for smooth 3D rotation)
+      const qStart = new THREE.Quaternion().setFromEuler(anim.startRot);
+      const qEnd = new THREE.Quaternion().setFromEuler(anim.endRot);
+      const qCurrent = new THREE.Quaternion().slerpQuaternions(qStart, qEnd, t);
+      
+      // Add a slight continuous floating spin if it hasn't landed yet
+      if (t < 1) {
+        const floatSpin = new THREE.Quaternion().setFromAxisAngle(
+          new THREE.Vector3(0, 1, 0),
+          state.clock.elapsedTime * 0.5 * (i % 2 === 0 ? 1 : -1)
+        );
+        qCurrent.multiply(floatSpin);
+        
+        // Add a gentle hover effect based on time
+        ref.position.y += Math.sin(state.clock.elapsedTime * 2 + i) * 0.1 * (1 - t);
+      }
+
+      ref.quaternion.copy(qCurrent);
+    });
   });
 
   return (
-    <group ref={groupRef} rotation={[0.1, scrollRotation, 0]}>
-      <Component />
-    </group>
+    <>
+      {/* The Tray is static at the bottom */}
+      <group position={[0, -2.45, 0]}>
+        <SurgicalTray />
+      </group>
+
+      {/* The Tools */}
+      {DENTAL_TOOLS.map(({ Component }, i) => (
+        <group 
+          key={i} 
+          ref={(el) => { toolRefs.current[i] = el; }}
+          // Ensure they start at their initial scattered positions before useFrame kicks in
+          position={TOOL_ANIMATIONS[i].startPos}
+          rotation={TOOL_ANIMATIONS[i].startRot}
+        >
+          <Component />
+        </group>
+      ))}
+    </>
   );
 }
 
 // ── Main 3D Viewer ──
-export function ToolViewer3D({
-  toolIndex = 0,
-  scrollRotation = 0,
-}: {
-  toolIndex: number;
-  scrollRotation: number;
-}) {
+export function ToolViewer3D({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
   return (
     <Canvas
-      camera={{ position: [0, 0, 5], fov: 35 }}
-      style={{ width: "100%", height: "100%" }}
+      camera={{ position: [0, 0, 7], fov: 35 }}
+      style={{ width: "100%", height: "100%", pointerEvents: "none" }}
       gl={{ antialias: true, alpha: true }}
+      shadows
     >
-      {/* Transparent background */}
-      <color attach="background" args={["#ece8e1"]} />
-
       {/* Lighting setup for metallic look */}
       <ambientLight intensity={0.4} />
-      <directionalLight position={[5, 5, 5]} intensity={1.2} color="#ffffff" />
+      <directionalLight position={[5, 10, 5]} intensity={1.2} color="#ffffff" castShadow shadow-mapSize={[1024, 1024]} />
       <directionalLight position={[-3, 3, -3]} intensity={0.6} color="#e0e0ff" />
       <directionalLight position={[0, -3, 3]} intensity={0.3} color="#ffe0d0" />
 
@@ -61,13 +136,12 @@ export function ToolViewer3D({
       <pointLight position={[2, 0, -3]} intensity={0.8} color="#ffd0c0" />
 
       <Suspense fallback={null}>
-        {/* Environment map for realistic metallic reflections */}
         <Environment preset="studio" environmentIntensity={0.6} />
+        
+        <SceneAnimator scrollYProgress={scrollYProgress} />
 
-        <SpinningTool
-          toolIndex={toolIndex}
-          scrollRotation={scrollRotation}
-        />
+        {/* Realistic ground shadow below the tray */}
+        <ContactShadows position={[0, -2.6, 0]} opacity={0.4} scale={10} blur={2} far={4} />
       </Suspense>
     </Canvas>
   );
