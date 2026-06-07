@@ -11,7 +11,7 @@ import { MotionValue } from "framer-motion";
 const TOOL_ANIMATIONS = [
   {
     // Mirror
-    startPos: new THREE.Vector3(-3, 3, -2),
+    startPos: new THREE.Vector3(-6, 6, -2),
     startRot: new THREE.Euler(Math.PI / 4, Math.PI, Math.PI / 3),
     endPos: new THREE.Vector3(-1.2, -1.2, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
@@ -19,7 +19,7 @@ const TOOL_ANIMATIONS = [
   },
   {
     // Scaler
-    startPos: new THREE.Vector3(3, 4, 1),
+    startPos: new THREE.Vector3(7, 7, 1),
     startRot: new THREE.Euler(-Math.PI / 3, Math.PI / 2, -Math.PI / 4),
     endPos: new THREE.Vector3(-0.6, -1.2, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
@@ -27,7 +27,7 @@ const TOOL_ANIMATIONS = [
   },
   {
     // Probe
-    startPos: new THREE.Vector3(0, 5, -3),
+    startPos: new THREE.Vector3(0, 8, -3),
     startRot: new THREE.Euler(Math.PI / 2, -Math.PI / 4, Math.PI / 6),
     endPos: new THREE.Vector3(0, -1.2, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
@@ -35,7 +35,7 @@ const TOOL_ANIMATIONS = [
   },
   {
     // Syringe
-    startPos: new THREE.Vector3(-4, 0, 2),
+    startPos: new THREE.Vector3(-7, -4, 2),
     startRot: new THREE.Euler(-Math.PI / 6, Math.PI / 3, -Math.PI / 2),
     endPos: new THREE.Vector3(0.6, -1.2, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
@@ -43,7 +43,7 @@ const TOOL_ANIMATIONS = [
   },
   {
     // Forceps
-    startPos: new THREE.Vector3(4, -1, 3),
+    startPos: new THREE.Vector3(7, -5, 3),
     startRot: new THREE.Euler(Math.PI / 3, -Math.PI / 6, Math.PI / 4),
     endPos: new THREE.Vector3(1.2, -1.2, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
@@ -125,15 +125,16 @@ export function ToolViewer3D({ scrollYProgress }: { scrollYProgress: MotionValue
       gl={{ antialias: true, alpha: true }}
       shadows
     >
-      {/* Lighting setup for metallic look */}
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[5, 10, 5]} intensity={1.2} color="#ffffff" castShadow shadow-mapSize={[1024, 1024]} />
-      <directionalLight position={[-3, 3, -3]} intensity={0.6} color="#e0e0ff" />
-      <directionalLight position={[0, -3, 3]} intensity={0.3} color="#ffe0d0" />
+      {/* Balanced Lighting setup for metallic look */}
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[5, 8, 5]} intensity={0.9} color="#ffffff" castShadow shadow-mapSize={[1024, 1024]} />
+      <directionalLight position={[-5, 8, 5]} intensity={0.7} color="#ffffff" castShadow shadow-mapSize={[1024, 1024]} />
+      <directionalLight position={[0, 3, -5]} intensity={0.4} color="#e0e0ff" />
+      <directionalLight position={[0, -5, 5]} intensity={0.3} color="#ffe0d0" />
 
-      {/* Rim light for edge highlights */}
-      <pointLight position={[-2, 0, -3]} intensity={0.8} color="#c0d0ff" />
-      <pointLight position={[2, 0, -3]} intensity={0.8} color="#ffd0c0" />
+      {/* Symmetrical rim lights for edge highlights */}
+      <pointLight position={[-4, 0, -3]} intensity={0.8} color="#c0d0ff" />
+      <pointLight position={[4, 0, -3]} intensity={0.8} color="#ffd0c0" />
 
       <Suspense fallback={null}>
         <Environment preset="studio" environmentIntensity={0.6} />
