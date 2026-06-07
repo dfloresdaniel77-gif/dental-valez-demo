@@ -11,7 +11,7 @@ import { MotionValue } from "framer-motion";
 const TOOL_ANIMATIONS = [
   {
     // Mirror
-    startPos: new THREE.Vector3(-6, 6, -2),
+    startPos: new THREE.Vector3(-2.2, 2.5, -1),
     startRot: new THREE.Euler(Math.PI / 4, Math.PI, Math.PI / 3),
     endPos: new THREE.Vector3(-1.2, -1.2, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
@@ -19,7 +19,7 @@ const TOOL_ANIMATIONS = [
   },
   {
     // Scaler
-    startPos: new THREE.Vector3(7, 7, 1),
+    startPos: new THREE.Vector3(2.2, 2.8, 1),
     startRot: new THREE.Euler(-Math.PI / 3, Math.PI / 2, -Math.PI / 4),
     endPos: new THREE.Vector3(-0.6, -1.2, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
@@ -27,7 +27,7 @@ const TOOL_ANIMATIONS = [
   },
   {
     // Probe
-    startPos: new THREE.Vector3(0, 8, -3),
+    startPos: new THREE.Vector3(0, 3.2, -2),
     startRot: new THREE.Euler(Math.PI / 2, -Math.PI / 4, Math.PI / 6),
     endPos: new THREE.Vector3(0, -1.2, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
@@ -35,7 +35,7 @@ const TOOL_ANIMATIONS = [
   },
   {
     // Syringe
-    startPos: new THREE.Vector3(-7, -4, 2),
+    startPos: new THREE.Vector3(-2.5, 0.5, 1),
     startRot: new THREE.Euler(-Math.PI / 6, Math.PI / 3, -Math.PI / 2),
     endPos: new THREE.Vector3(0.6, -1.2, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
@@ -43,7 +43,7 @@ const TOOL_ANIMATIONS = [
   },
   {
     // Forceps
-    startPos: new THREE.Vector3(7, -5, 3),
+    startPos: new THREE.Vector3(2.5, 0.2, 2),
     startRot: new THREE.Euler(Math.PI / 3, -Math.PI / 6, Math.PI / 4),
     endPos: new THREE.Vector3(1.2, -1.2, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
