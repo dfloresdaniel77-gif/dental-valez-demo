@@ -13,41 +13,41 @@ const TOOL_ANIMATIONS = [
     // Mirror
     startPos: new THREE.Vector3(-3, 3, -2),
     startRot: new THREE.Euler(Math.PI / 4, Math.PI, Math.PI / 3),
-    endPos: new THREE.Vector3(-1.2, -2.4, 0),
-    endRot: new THREE.Euler(-Math.PI / 2, 0, 0),
-    scrollRange: [0, 0.2],
+    endPos: new THREE.Vector3(-1.2, -1.2, 0),
+    endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
+    scrollRange: [0.0, 0.20],
   },
   {
     // Scaler
     startPos: new THREE.Vector3(3, 4, 1),
     startRot: new THREE.Euler(-Math.PI / 3, Math.PI / 2, -Math.PI / 4),
-    endPos: new THREE.Vector3(-0.6, -2.4, 0),
-    endRot: new THREE.Euler(-Math.PI / 2, 0, 0),
-    scrollRange: [0.2, 0.4],
+    endPos: new THREE.Vector3(-0.6, -1.2, 0),
+    endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
+    scrollRange: [0.15, 0.35],
   },
   {
     // Probe
     startPos: new THREE.Vector3(0, 5, -3),
     startRot: new THREE.Euler(Math.PI / 2, -Math.PI / 4, Math.PI / 6),
-    endPos: new THREE.Vector3(0, -2.4, 0),
-    endRot: new THREE.Euler(-Math.PI / 2, 0, 0),
-    scrollRange: [0.4, 0.6],
+    endPos: new THREE.Vector3(0, -1.2, 0),
+    endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
+    scrollRange: [0.30, 0.50],
   },
   {
     // Syringe
     startPos: new THREE.Vector3(-4, 0, 2),
     startRot: new THREE.Euler(-Math.PI / 6, Math.PI / 3, -Math.PI / 2),
-    endPos: new THREE.Vector3(0.6, -2.4, 0),
-    endRot: new THREE.Euler(-Math.PI / 2, 0, 0),
-    scrollRange: [0.6, 0.8],
+    endPos: new THREE.Vector3(0.6, -1.2, 0),
+    endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
+    scrollRange: [0.45, 0.65],
   },
   {
     // Forceps
     startPos: new THREE.Vector3(4, -1, 3),
     startRot: new THREE.Euler(Math.PI / 3, -Math.PI / 6, Math.PI / 4),
-    endPos: new THREE.Vector3(1.2, -2.4, 0),
-    endRot: new THREE.Euler(-Math.PI / 2, 0, 0),
-    scrollRange: [0.8, 1.0],
+    endPos: new THREE.Vector3(1.2, -1.2, 0),
+    endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
+    scrollRange: [0.60, 0.82],
   },
 ];
 
@@ -96,7 +96,7 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
   return (
     <>
       {/* The Tray is static at the bottom */}
-      <group position={[0, -2.45, 0]}>
+      <group position={[0, -1.25, 0]} rotation={[0.15, 0, 0]}>
         <SurgicalTray />
       </group>
 
@@ -141,7 +141,7 @@ export function ToolViewer3D({ scrollYProgress }: { scrollYProgress: MotionValue
         <SceneAnimator scrollYProgress={scrollYProgress} />
 
         {/* Realistic ground shadow below the tray */}
-        <ContactShadows position={[0, -2.6, 0]} opacity={0.4} scale={10} blur={2} far={4} />
+        <ContactShadows position={[0, -1.4, 0]} opacity={0.4} scale={10} blur={2} far={4} />
       </Suspense>
     </Canvas>
   );
