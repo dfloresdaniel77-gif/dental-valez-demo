@@ -11,41 +11,41 @@ import { MotionValue } from "framer-motion";
 const TOOL_ANIMATIONS = [
   {
     // Mirror
-    startPos: new THREE.Vector3(-4.5, 4.5, -2),
+    startPos: new THREE.Vector3(-2.2, 2.5, -1),
     startRot: new THREE.Euler(Math.PI / 4, Math.PI, Math.PI / 3),
-    endPos: new THREE.Vector3(-1.2, -0.5, 0),
+    endPos: new THREE.Vector3(-1.2, -1.0, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.0, 0.20],
   },
   {
     // Scaler
-    startPos: new THREE.Vector3(4.5, 5, 1),
+    startPos: new THREE.Vector3(2.2, 2.8, 1),
     startRot: new THREE.Euler(-Math.PI / 3, Math.PI / 2, -Math.PI / 4),
-    endPos: new THREE.Vector3(-0.6, -0.5, 0),
+    endPos: new THREE.Vector3(-0.6, -1.0, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.15, 0.35],
   },
   {
     // Probe
-    startPos: new THREE.Vector3(0, 6, -3),
+    startPos: new THREE.Vector3(0, 3.2, -2),
     startRot: new THREE.Euler(Math.PI / 2, -Math.PI / 4, Math.PI / 6),
-    endPos: new THREE.Vector3(0, -0.5, 0),
+    endPos: new THREE.Vector3(0, -1.0, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.30, 0.50],
   },
   {
     // Syringe
-    startPos: new THREE.Vector3(-5, -2, 2),
+    startPos: new THREE.Vector3(-2.5, 0.5, 1),
     startRot: new THREE.Euler(-Math.PI / 6, Math.PI / 3, -Math.PI / 2),
-    endPos: new THREE.Vector3(0.6, -0.5, 0),
+    endPos: new THREE.Vector3(0.6, -1.0, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.45, 0.65],
   },
   {
     // Forceps
-    startPos: new THREE.Vector3(5, -3, 3),
+    startPos: new THREE.Vector3(2.5, 0.2, 2),
     startRot: new THREE.Euler(Math.PI / 3, -Math.PI / 6, Math.PI / 4),
-    endPos: new THREE.Vector3(1.2, -0.5, 0),
+    endPos: new THREE.Vector3(1.2, -1.0, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.60, 0.82],
   },
@@ -53,21 +53,9 @@ const TOOL_ANIMATIONS = [
 
 function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
   const toolRefs = useRef<(THREE.Group | null)[]>([]);
-  const trayRef = useRef<THREE.Group>(null);
-  const shadowRef = useRef<THREE.Group>(null);
 
   useFrame((state, delta) => {
     const scroll = scrollYProgress.get();
-
-    // ── Animate Tray Sliding Up ──
-    if (trayRef.current && shadowRef.current) {
-      // If scroll is near 0, tray is hidden far below. Reaches final position quickly (by scroll 0.15)
-      const trayTargetY = scroll < 0.05 ? -10 : -0.55;
-      const shadowTargetY = scroll < 0.05 ? -10.15 : -0.7;
-      
-      trayRef.current.position.y = THREE.MathUtils.lerp(trayRef.current.position.y, trayTargetY, 0.1);
-      shadowRef.current.position.y = THREE.MathUtils.lerp(shadowRef.current.position.y, shadowTargetY, 0.1);
-    }
 
     TOOL_ANIMATIONS.forEach((anim, i) => {
       const ref = toolRefs.current[i];
@@ -107,8 +95,8 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
 
   return (
     <>
-      {/* The Tray slides up from bottom */}
-      <group ref={trayRef} position={[0, -10, 0]} rotation={[0.15, 0, 0]}>
+      {/* The Tray is static at the bottom */}
+      <group position={[0, -1.05, 0]} rotation={[0.15, 0, 0]}>
         <SurgicalTray />
       </group>
 
@@ -124,11 +112,6 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
           <Component />
         </group>
       ))}
-
-      {/* Realistic ground shadow below the tray, animated with the tray */}
-      <group ref={shadowRef} position={[0, -10.15, 0]}>
-        <ContactShadows opacity={0.4} scale={10} blur={2} far={4} />
-      </group>
     </>
   );
 }
@@ -157,6 +140,9 @@ export function ToolViewer3D({ scrollYProgress }: { scrollYProgress: MotionValue
         <Environment preset="studio" environmentIntensity={0.6} />
         
         <SceneAnimator scrollYProgress={scrollYProgress} />
+
+        {/* Realistic ground shadow below the tray */}
+        <ContactShadows position={[0, -1.2, 0]} opacity={0.4} scale={10} blur={2} far={4} />
       </Suspense>
     </Canvas>
   );
