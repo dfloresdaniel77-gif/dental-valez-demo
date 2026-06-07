@@ -3,7 +3,7 @@
 import { AppleScrollReveal } from "./ui/apple-scroll-reveal";
 
 export default function FounderProfile() {
-  const typographyClass = "text-3xl md:text-5xl lg:text-6xl font-light tracking-tight text-stone-900 leading-tight";
+  const typographyClass = "text-4xl md:text-6xl lg:text-[7rem] font-bold tracking-tighter text-stone-900/15 leading-[0.9] max-w-6xl mx-auto";
 
   const texts = [
     <div key="1" className="flex flex-col gap-6">
@@ -15,7 +15,7 @@ export default function FounderProfile() {
       </h2>
     </div>,
     <h2 key="2" className={typographyClass}>
-      "Ya no tienes por qué <span className="italic font-serif text-stone-700">esconderlo.</span>"
+      "Ya no tienes por qué <span className="italic font-serif text-stone-900/25">esconderlo.</span>"
     </h2>,
     <h2 key="3" className={typographyClass}>
       "Vivir con una sonrisa que no te gusta es agotador."
@@ -27,8 +27,8 @@ export default function FounderProfile() {
       <h2 className={typographyClass}>
         "Es momento de recuperar tu confianza y volver a sonreír."
       </h2>
-      <div className="flex flex-col items-start gap-1">
-        <p className="font-semibold tracking-[0.2em] uppercase text-sm text-stone-900">
+      <div className="flex flex-col items-center gap-2">
+        <p className="font-bold tracking-[0.3em] uppercase text-sm text-stone-900/40">
           DENTAL VELEZ
         </p>
         <p className="text-xs tracking-[0.1em] text-stone-500 uppercase">

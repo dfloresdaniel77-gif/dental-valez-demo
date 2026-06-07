@@ -32,13 +32,13 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1]">
       <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden">
         
-        {/* Full Screen 3D Viewer Background */}
-        <div className="absolute inset-0 w-full h-full z-0">
+        {/* Full Screen 3D Viewer Background (Now in front of text) */}
+        <div className="absolute inset-0 w-full h-full z-10 pointer-events-none">
           <ToolViewer3D scrollYProgress={scrollYProgress} />
         </div>
 
-        {/* Left Side: Text */}
-        <div className="relative flex h-full w-full md:w-[45%] flex-col justify-center px-8 md:px-16 lg:px-24 z-10 pointer-events-none">
+        {/* Text Container: Full width, centered, behind 3D models */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full z-0 pointer-events-none">
           {texts.map((text, index) => {
             const start = index / numItems;
             const end = (index + 1) / numItems;
@@ -62,7 +62,7 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
               <motion.div
                 key={index}
                 style={{ opacity, y }}
-                className="absolute left-0 right-0 px-8 md:px-16 lg:px-24 pointer-events-auto"
+                className="absolute w-full px-4 text-center pointer-events-auto"
               >
                 {text}
               </motion.div>
