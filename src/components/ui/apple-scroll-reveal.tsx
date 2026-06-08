@@ -30,7 +30,7 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
 
   return (
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1]">
-      <div className="sticky top-0 flex h-screen w-full items-center">
+      <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden">
         
         {/* 3D Viewer Background (Absolute layout guarantees perfect alignment with the centered text) */}
         <div className="absolute inset-0 w-full h-full z-10 pointer-events-none">
@@ -48,14 +48,14 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
             const opacity = useTransform(
               scrollYProgress,
               [start, start + 0.05, end - 0.05, end],
-              [index === 0 ? 1 : 0, 1, 1, isLast ? 1 : 0]
+              [0, 1, isLast ? 1 : 1, isLast ? 1 : 0]
             );
 
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const y = useTransform(
               scrollYProgress,
               [start, start + 0.05, end - 0.05, end],
-              [index === 0 ? 0 : 20, 0, 0, isLast ? 0 : -20]
+              [20, 0, 0, isLast ? 0 : -20]
             );
 
             return (
