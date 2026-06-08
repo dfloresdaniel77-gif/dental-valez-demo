@@ -106,7 +106,7 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
       {/* Scroll track defines the scroll animation distance */}
       <div 
         ref={trackRef} 
-        className="relative w-full h-[140vh] md:h-[180vh] bg-[#ece8e1]"
+        className="relative w-full h-[240vh] md:h-[300vh] bg-[#ece8e1]"
       >
         {/* Sticky viewport container */}
         <div 

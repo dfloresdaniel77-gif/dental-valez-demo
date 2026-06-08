@@ -33,7 +33,7 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
       <div className="sticky top-0 flex h-screen w-full items-center">
         
         {/* Globally fixed 3D Viewer Background (Never clips, perfectly covers the viewport, maintains aspect ratio) */}
-        <div className="fixed inset-0 w-full h-full z-50 pointer-events-none">
+        <div className="fixed top-0 left-0 w-screen h-screen z-50 pointer-events-none flex items-center justify-center">
           <ToolViewer3D scrollYProgress={scrollYProgress} />
         </div>
 
@@ -48,14 +48,14 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
             const opacity = useTransform(
               scrollYProgress,
               [start, start + 0.05, end - 0.05, end],
-              [0, 1, isLast ? 1 : 1, isLast ? 1 : 0]
+              [index === 0 ? 1 : 0, 1, 1, isLast ? 1 : 0]
             );
 
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const y = useTransform(
               scrollYProgress,
               [start, start + 0.05, end - 0.05, end],
-              [20, 0, 0, isLast ? 0 : -20]
+              [index === 0 ? 0 : 20, 0, 0, isLast ? 0 : -20]
             );
 
             return (
