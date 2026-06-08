@@ -32,8 +32,8 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1]">
       <div className="sticky top-0 flex h-screen w-full items-center">
         
-        {/* Oversized 3D Viewer Background (Bleeds into adjacent sections to prevent clipping) */}
-        <div className="absolute w-[100vw] h-[120vh] -top-[10vh] left-0 z-10 pointer-events-none">
+        {/* Globally fixed 3D Viewer Background (Never clips, perfectly covers the viewport, maintains aspect ratio) */}
+        <div className="fixed inset-0 w-full h-full z-50 pointer-events-none">
           <ToolViewer3D scrollYProgress={scrollYProgress} />
         </div>
 
