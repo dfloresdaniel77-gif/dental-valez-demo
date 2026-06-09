@@ -1,51 +1,60 @@
 "use client";
 
 import React, { Suspense, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, ContactShadows } from "@react-three/drei";
 import { DENTAL_TOOLS, SurgicalTray } from "./tools";
 import * as THREE from "three";
 import { MotionValue } from "framer-motion";
 
+function ResponsiveScene({ children }: { children: React.ReactNode }) {
+  const { viewport } = useThree();
+  // The tray is 4.5 units wide, and tools spread to ~5.5 units.
+  // If the viewport width is less than 6 units, scale everything down uniformly to prevent horizontal clipping.
+  const scale = Math.min(1, viewport.width / 6.5);
+  
+  return <group scale={scale}>{children}</group>;
+}
+
 // Configuration for how each tool scatters and lands
 const TOOL_ANIMATIONS = [
   {
     // Mirror
-    startPos: new THREE.Vector3(-1.8, 1.6, -1),
+    startPos: new THREE.Vector3(-2.2, 2.2, -1),
     startRot: new THREE.Euler(Math.PI / 4, Math.PI, Math.PI / 3),
-    endPos: new THREE.Vector3(-1.2, 0.05, 0),
+    endPos: new THREE.Vector3(-1.2, -0.75, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.0, 0.20],
   },
   {
     // Scaler
-    startPos: new THREE.Vector3(1.8, 1.6, 1),
+    startPos: new THREE.Vector3(2.2, 2.2, 1),
     startRot: new THREE.Euler(-Math.PI / 3, Math.PI / 2, -Math.PI / 4),
-    endPos: new THREE.Vector3(-0.6, 0.05, 0),
+    endPos: new THREE.Vector3(-0.6, -0.75, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.15, 0.35],
   },
   {
     // Probe
-    startPos: new THREE.Vector3(0, 1.8, -2),
+    startPos: new THREE.Vector3(0, 2.5, -2),
     startRot: new THREE.Euler(Math.PI / 2, -Math.PI / 4, Math.PI / 6),
-    endPos: new THREE.Vector3(0, 0.05, 0),
+    endPos: new THREE.Vector3(0, -0.75, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.30, 0.50],
   },
   {
     // Syringe
-    startPos: new THREE.Vector3(-1.8, 0.4, 1),
+    startPos: new THREE.Vector3(-2.6, 0.8, 1),
     startRot: new THREE.Euler(-Math.PI / 6, Math.PI / 3, -Math.PI / 2),
-    endPos: new THREE.Vector3(0.6, 0.05, 0),
+    endPos: new THREE.Vector3(0.6, -0.75, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.45, 0.65],
   },
   {
     // Forceps
-    startPos: new THREE.Vector3(1.8, 0.1, 2),
+    startPos: new THREE.Vector3(2.6, 0.5, 2),
     startRot: new THREE.Euler(Math.PI / 3, -Math.PI / 6, Math.PI / 4),
-    endPos: new THREE.Vector3(1.2, 0.05, 0),
+    endPos: new THREE.Vector3(1.2, -0.75, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.60, 0.82],
   },
@@ -96,7 +105,7 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
   return (
     <>
       {/* The Tray is static at the bottom */}
-      <group position={[0, 0, 0]} rotation={[0.15, 0, 0]}>
+      <group position={[0, -0.8, 0]} rotation={[0.15, 0, 0]}>
         <SurgicalTray />
       </group>
 
@@ -139,10 +148,12 @@ export function ToolViewer3D({ scrollYProgress }: { scrollYProgress: MotionValue
       <Suspense fallback={null}>
         <Environment preset="studio" environmentIntensity={0.6} />
         
-        <SceneAnimator scrollYProgress={scrollYProgress} />
+        <ResponsiveScene>
+          <SceneAnimator scrollYProgress={scrollYProgress} />
 
-        {/* Realistic ground shadow below the tray */}
-        <ContactShadows position={[0, -0.15, 0]} opacity={0.4} scale={10} blur={2} far={4} />
+          {/* Realistic ground shadow below the tray */}
+          <ContactShadows position={[0, -0.95, 0]} opacity={0.4} scale={10} blur={2} far={4} />
+        </ResponsiveScene>
       </Suspense>
     </Canvas>
   );
