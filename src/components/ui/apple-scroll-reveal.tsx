@@ -30,15 +30,15 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
 
   return (
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1]">
-      <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden">
+      <div className="sticky top-0 h-screen w-full">
         
-        {/* 3D Viewer Background */}
-        <div className="absolute inset-0 z-10 pointer-events-none block">
+        {/* 3D Viewer Background — OUTSIDE overflow-hidden so tools are never clipped */}
+        <div className="absolute inset-0 w-full h-full z-10 pointer-events-none">
           <ToolViewer3D scrollYProgress={scrollYProgress} />
         </div>
 
-        {/* Text Container: Full width, centered, behind 3D models. Shifted up via pb-48 to avoid blocking tools */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full z-0 pointer-events-none pb-48 md:pb-64">
+        {/* Text Container — has overflow-hidden for the curtain wipe effect */}
+        <div className="absolute inset-0 w-full h-full z-0 overflow-hidden flex flex-col items-center justify-center pointer-events-none pb-48 md:pb-64">
           {texts.map((text, index) => {
             const start = index / numItems;
             const end = (index + 1) / numItems;

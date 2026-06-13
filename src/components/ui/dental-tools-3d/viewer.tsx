@@ -9,50 +9,53 @@ import { MotionValue } from "framer-motion";
 
 function ResponsiveScene({ children }: { children: React.ReactNode }) {
   const { viewport } = useThree();
-  // The tray is 4.5 units wide, and tools spread to ~5.5 units.
-  // If the viewport width is less than 6 units, scale everything down uniformly to prevent horizontal clipping.
+  // The tray is 4.5 units wide. If the viewport is too narrow, scale down uniformly.
   const scale = Math.min(1, viewport.width / 6.5);
   
   return <group scale={scale}>{children}</group>;
 }
 
-// Configuration for how each tool scatters and lands
+// Camera: position=[0, 0, 7], fov=35
+// Visible Y range at z=0: approximately -2.2 to +2.2
+// Visible X range at 16:9: approximately -3.9 to +3.9
+// All coordinates MUST stay well within these bounds.
+
 const TOOL_ANIMATIONS = [
   {
-    // Mirror
-    startPos: new THREE.Vector3(-2.2, 2.2, -1),
+    // Mirror — top-left
+    startPos: new THREE.Vector3(-1.8, 1.5, -1),
     startRot: new THREE.Euler(Math.PI / 4, Math.PI, Math.PI / 3),
     endPos: new THREE.Vector3(-1.2, -0.75, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.0, 0.20],
   },
   {
-    // Scaler
-    startPos: new THREE.Vector3(2.2, 2.2, 1),
+    // Scaler — top-right
+    startPos: new THREE.Vector3(1.8, 1.5, 1),
     startRot: new THREE.Euler(-Math.PI / 3, Math.PI / 2, -Math.PI / 4),
     endPos: new THREE.Vector3(-0.6, -0.75, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.15, 0.35],
   },
   {
-    // Probe
-    startPos: new THREE.Vector3(0, 2.5, -2),
+    // Probe — top-center
+    startPos: new THREE.Vector3(0.3, 1.7, -2),
     startRot: new THREE.Euler(Math.PI / 2, -Math.PI / 4, Math.PI / 6),
     endPos: new THREE.Vector3(0, -0.75, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.30, 0.50],
   },
   {
-    // Syringe
-    startPos: new THREE.Vector3(-2.6, 0.8, 1),
+    // Syringe — left
+    startPos: new THREE.Vector3(-2.0, 0.3, 1),
     startRot: new THREE.Euler(-Math.PI / 6, Math.PI / 3, -Math.PI / 2),
     endPos: new THREE.Vector3(0.6, -0.75, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
     scrollRange: [0.45, 0.65],
   },
   {
-    // Forceps
-    startPos: new THREE.Vector3(2.6, 0.5, 2),
+    // Forceps — right
+    startPos: new THREE.Vector3(2.0, 0.2, 2),
     startRot: new THREE.Euler(Math.PI / 3, -Math.PI / 6, Math.PI / 4),
     endPos: new THREE.Vector3(1.2, -0.75, 0),
     endRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
@@ -94,8 +97,8 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
         );
         qCurrent.multiply(floatSpin);
         
-        // Add a gentle hover effect based on time
-        ref.position.y += Math.sin(state.clock.elapsedTime * 2 + i) * 0.1 * (1 - t);
+        // Add a gentle hover effect — clamped so it can't push tools out of frustum
+        ref.position.y += Math.sin(state.clock.elapsedTime * 2 + i) * 0.05 * (1 - t);
       }
 
       ref.quaternion.copy(qCurrent);
