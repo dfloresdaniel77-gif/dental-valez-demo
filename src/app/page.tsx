@@ -21,8 +21,9 @@ export default function Home() {
         <MainHero />
       </section>
 
-      {/* Founder Profile Section — z-30 so it slides over the sticky "Elevando" section like a curtain */}
-      <div id="nuestro-enfoque" className="relative z-30">
+      {/* Founder Profile Section — negative margin pulls it up to overlap the sticky "Elevando" content.
+           z-30 ensures it slides OVER the pinned content like a curtain. */}
+      <div id="nuestro-enfoque" className="relative z-30 -mt-[100vh]">
         <FounderProfile />
       </div>
 
