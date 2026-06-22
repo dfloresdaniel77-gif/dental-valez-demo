@@ -41,22 +41,13 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
   }, []);
  
   // Dynamically set CSS variables for viewport dimensions.
-  // --hero-vh and --hero-vw are scaled by 1/0.9 on desktop to ensure the background image fills the physical viewport.
-  // --media-vh is kept at the unscaled window.innerHeight to maintain the original 21stDev card layout and sizing.
   useEffect(() => {
     const handleResize = () => {
       const vh = window.innerHeight;
       const vw = window.innerWidth;
-      
-      if (vw >= 1024) {
-        document.documentElement.style.setProperty("--hero-vh", `${vh / 0.9}px`);
-        document.documentElement.style.setProperty("--hero-vw", `${vw / 0.9}px`);
-        document.documentElement.style.setProperty("--media-vh", `${vh}px`);
-      } else {
-        document.documentElement.style.setProperty("--hero-vh", `${vh}px`);
-        document.documentElement.style.setProperty("--hero-vw", `${vw}px`);
-        document.documentElement.style.setProperty("--media-vh", `${vh}px`);
-      }
+      document.documentElement.style.setProperty("--hero-vh", `${vh}px`);
+      document.documentElement.style.setProperty("--hero-vw", `${vw}px`);
+      document.documentElement.style.setProperty("--media-vh", `${vh}px`);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
