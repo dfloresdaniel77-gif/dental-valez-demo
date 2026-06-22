@@ -223,9 +223,12 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
         </div>
       </div>
 
-      {/* Beige content section that scrolls up naturally from underneath */}
-      <div className="relative w-full z-20 bg-[#ece8e1]">
-        {children}
+      {/* Beige content section — sticky inside taller wrapper for curtain reveal effect.
+           The children stay pinned while the next section (FounderProfile) scrolls over them. */}
+      <div className="relative w-full" style={{ height: '200vh' }}>
+        <div className="sticky top-0 w-full bg-[#ece8e1] min-h-screen">
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -21,8 +21,8 @@ export default function Home() {
         <MainHero />
       </section>
 
-      {/* Founder Profile Section */}
-      <div id="nuestro-enfoque">
+      {/* Founder Profile Section — z-30 so it slides over the sticky "Elevando" section like a curtain */}
+      <div id="nuestro-enfoque" className="relative z-30">
         <FounderProfile />
       </div>
 
