@@ -21,9 +21,13 @@ export default function Home() {
         <MainHero />
       </section>
 
-      {/* Founder Profile Section — negative margin pulls it up to overlap the sticky "Elevando" content.
-           z-30 ensures it slides OVER the pinned content like a curtain. */}
-      <div id="nuestro-enfoque" className="relative z-30 -mt-[100vh]">
+      {/* Founder Profile Section — slides OVER the sticky "Elevando" content like a curtain.
+           Shadow + rounded top makes the curtain edge visible (both sections share the same bg color). */}
+      <div 
+        id="nuestro-enfoque" 
+        className="relative z-30 -mt-[100vh] rounded-t-[2rem]"
+        style={{ boxShadow: '0 -20px 60px rgba(0,0,0,0.12)' }}
+      >
         <FounderProfile />
       </div>
 

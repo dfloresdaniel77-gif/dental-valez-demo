@@ -29,7 +29,7 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
   const containerHeight = `${numItems * 130}vh`;
 
   return (
-    <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1]">
+    <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1] rounded-t-[2rem]">
       <div className="sticky top-0 h-screen w-full">
         
         {/* 3D Viewer Background — NO overflow-hidden so tools are never clipped */}
