@@ -224,8 +224,9 @@ export const ScrollExpandMedia: React.FC<ScrollExpandMediaProps> = ({
       </div>
 
       {/* Beige content section — sticky inside taller wrapper for curtain reveal effect.
-           The children stay pinned while the next section (FounderProfile) scrolls over them. */}
-      <div className="relative w-full" style={{ height: '200vh' }}>
+           Extra height (350vh) creates a "lock" feel: user must scroll several times before
+           the curtain transition begins, preventing accidental section changes. */}
+      <div className="relative w-full" style={{ height: '350vh' }}>
         <div className="sticky top-0 w-full bg-[#ece8e1] min-h-screen">
           {children}
         </div>
