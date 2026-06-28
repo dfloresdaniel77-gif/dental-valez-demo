@@ -5,9 +5,7 @@ import DemoFour from "@/components/demo-4";
 import DemoFive from "@/components/demo-5";
 import FounderProfile from "@/components/founder-profile";
 import Testimonials from "@/components/testimonials";
-import dynamic from "next/dynamic";
-
-const CurtainSnap = dynamic(() => import("@/components/ui/curtain-snap"), { ssr: false });
+import CurtainSnap from "@/components/ui/curtain-snap";
 
 export default function Home() {
   return (
