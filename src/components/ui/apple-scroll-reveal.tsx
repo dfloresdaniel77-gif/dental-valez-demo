@@ -25,8 +25,8 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
   });
 
   const numItems = texts.length;
-  // Increase height a bit so user has plenty of scroll space for the assembly animation
-  const containerHeight = `${numItems * 130}vh`;
+  // More scroll space per page so each tool gets a full featured moment + landing animation
+  const containerHeight = `${numItems * 200}vh`;
 
   return (
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1] rounded-t-[2rem]">

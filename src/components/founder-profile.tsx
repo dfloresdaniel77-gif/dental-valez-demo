@@ -6,24 +6,37 @@ export default function FounderProfile() {
   const typographyClass = "text-4xl md:text-6xl lg:text-[7rem] font-bold tracking-tighter text-stone-900/15 leading-[0.9] max-w-6xl mx-auto";
 
   const texts = [
+    // Page 1: Intro — all tools floating, no tray
     <div key="1" className="flex flex-col gap-6">
       <div className="text-xs font-semibold tracking-[0.3em] uppercase text-stone-700 block">
-        Transformando Vidas
+        Nuestros Instrumentos
       </div>
       <h2 className={typographyClass}>
         "Entendemos el miedo a sonreír."
       </h2>
     </div>,
+    // Page 2: Mirror featured
     <h2 key="2" className={typographyClass}>
       "Ya no tienes por qué <span className="italic font-serif text-stone-900/25">esconderlo.</span>"
     </h2>,
+    // Page 3: Scaler featured
     <h2 key="3" className={typographyClass}>
+      "Cada detalle importa en tu sonrisa."
+    </h2>,
+    // Page 4: Probe featured
+    <h2 key="4" className={typographyClass}>
       "Vivir con una sonrisa que no te gusta es agotador."
     </h2>,
-    <h2 key="4" className={typographyClass}>
+    // Page 5: Syringe featured
+    <h2 key="5" className={typographyClass}>
       "Creemos en una experiencia clínica completamente libre de estrés."
     </h2>,
-    <div key="5" className="flex flex-col gap-12">
+    // Page 6: Forceps featured
+    <h2 key="6" className={typographyClass}>
+      "Precisión y cuidado en cada procedimiento."
+    </h2>,
+    // Page 7: Finale — all tools on tray
+    <div key="7" className="flex flex-col gap-12">
       <h2 className={typographyClass}>
         "Es momento de recuperar tu confianza y volver a sonreír."
       </h2>
