@@ -17,104 +17,101 @@ function ResponsiveScene({ children }: { children: React.ReactNode }) {
 // Visible Y range at z=0: approximately -2.2 to +2.2
 // Visible X range at 16:9: approximately -3.9 to +3.9
 
-// ── Per-tool animation config ──
-// Each tool has:
-//   scatteredPos/Rot — initial floating position (intro)
-//   featuredPos/Rot  — center-stage showcase position
-//   trayPos/Rot      — final resting position on the tray
-//   featuredRange    — [start, end] scroll range when this tool is featured
-//   landingRange     — [start, end] scroll range when tool flies from featured → tray
-
-const TOOL_PAGES = [
-  {
-    name: "Mirror",
-    scatteredPos: new THREE.Vector3(-1.8, 1.5, -1),
-    scatteredRot: new THREE.Euler(Math.PI / 4, Math.PI, Math.PI / 3),
-    featuredPos: new THREE.Vector3(0, 0.3, 1.5),
-    featuredRot: new THREE.Euler(0.3, Math.PI * 0.8, 0.1),
-    trayPos: new THREE.Vector3(-1.2, -0.75, 0),
-    trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
-    featuredRange: [0.08, 0.20],
-    landingRange: [0.20, 0.28],
-  },
-  {
-    name: "Scaler",
-    scatteredPos: new THREE.Vector3(1.8, 1.5, 1),
-    scatteredRot: new THREE.Euler(-Math.PI / 3, Math.PI / 2, -Math.PI / 4),
-    featuredPos: new THREE.Vector3(0, 0.3, 1.5),
-    featuredRot: new THREE.Euler(-0.2, Math.PI * 0.3, 0.15),
-    trayPos: new THREE.Vector3(-0.6, -0.75, 0),
-    trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
-    featuredRange: [0.22, 0.34],
-    landingRange: [0.34, 0.42],
-  },
-  {
-    name: "Probe",
-    scatteredPos: new THREE.Vector3(0.3, 1.7, -2),
-    scatteredRot: new THREE.Euler(Math.PI / 2, -Math.PI / 4, Math.PI / 6),
-    featuredPos: new THREE.Vector3(0, 0.3, 1.5),
-    featuredRot: new THREE.Euler(0.4, -Math.PI * 0.2, -0.1),
-    trayPos: new THREE.Vector3(0, -0.75, 0),
-    trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
-    featuredRange: [0.36, 0.48],
-    landingRange: [0.48, 0.56],
-  },
-  {
-    name: "Syringe",
-    scatteredPos: new THREE.Vector3(-2.0, 0.3, 1),
-    scatteredRot: new THREE.Euler(-Math.PI / 6, Math.PI / 3, -Math.PI / 2),
-    featuredPos: new THREE.Vector3(0, 0.3, 1.5),
-    featuredRot: new THREE.Euler(-0.3, Math.PI * 0.6, 0.2),
-    trayPos: new THREE.Vector3(0.6, -0.75, 0),
-    trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
-    featuredRange: [0.50, 0.62],
-    landingRange: [0.62, 0.70],
-  },
-  {
-    name: "Forceps",
-    scatteredPos: new THREE.Vector3(2.0, 0.2, 2),
-    scatteredRot: new THREE.Euler(Math.PI / 3, -Math.PI / 6, Math.PI / 4),
-    featuredPos: new THREE.Vector3(0, 0.3, 1.5),
-    featuredRot: new THREE.Euler(0.2, -Math.PI * 0.4, -0.15),
-    trayPos: new THREE.Vector3(1.2, -0.75, 0),
-    trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
-    featuredRange: [0.64, 0.76],
-    landingRange: [0.76, 0.84],
-  },
-];
-
-// Smoothstep easing
+// Smoothstep easing for graceful animations
 function smoothstep(t: number): number {
   return t * t * (3 - 2 * t);
 }
 
-// Clamp and normalize a value within a range to 0–1
+// Clamp and normalize a scroll value within a range to 0–1
 function rangeProgress(scroll: number, start: number, end: number): number {
   return Math.max(0, Math.min(1, (scroll - start) / (end - start)));
 }
+
+// ── The top-of-screen position where each tool starts its descent ──
+// High Y = top of viewport, z=2 = close to camera for dramatic entrance
+const DESCENT_TOP_Y = 2.5;
+const DESCENT_TOP_Z = 2.0;
+
+// ── Per-tool animation config ──
+// Each tool lifecycle: scattered → gather (move to top) → descent (top→tray) → landed
+// The "following" feel comes from the descent: the tool moves DOWN proportionally to scroll.
+// Text pages are evenly spaced at 1/7 increments: 0, 0.143, 0.286, 0.429, 0.571, 0.714, 0.857
+
+const TOOL_PAGES = [
+  {
+    name: "Mirror",
+    // Scattered: floating position (all z >= 0.5 so nothing is behind the scene)
+    scatteredPos: new THREE.Vector3(-1.8, 1.2, 1.0),
+    scatteredRot: new THREE.Euler(0.4, 0.8, 0.3),
+    // Tray slot: final resting position
+    trayPos: new THREE.Vector3(-1.2, -0.75, 0),
+    trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
+    // Scroll ranges (aligned with text page 2: 0.143–0.286)
+    gatherRange: [0.143, 0.185] as [number, number],   // scattered → top of screen
+    descentRange: [0.185, 0.280] as [number, number],   // top → tray (THE FOLLOWING FEEL)
+  },
+  {
+    name: "Scaler",
+    scatteredPos: new THREE.Vector3(1.8, 1.3, 0.8),
+    scatteredRot: new THREE.Euler(-0.3, 0.5, -0.2),
+    trayPos: new THREE.Vector3(-0.6, -0.75, 0),
+    trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
+    // Aligned with text page 3: 0.286–0.429
+    gatherRange: [0.286, 0.325] as [number, number],
+    descentRange: [0.325, 0.420] as [number, number],
+  },
+  {
+    name: "Probe",
+    scatteredPos: new THREE.Vector3(0.3, 1.5, 1.2),
+    scatteredRot: new THREE.Euler(0.5, -0.3, 0.2),
+    trayPos: new THREE.Vector3(0, -0.75, 0),
+    trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
+    // Aligned with text page 4: 0.429–0.571
+    gatherRange: [0.429, 0.465] as [number, number],
+    descentRange: [0.465, 0.560] as [number, number],
+  },
+  {
+    name: "Syringe",
+    scatteredPos: new THREE.Vector3(-2.0, 0.5, 0.6),
+    scatteredRot: new THREE.Euler(-0.2, 0.6, -0.4),
+    trayPos: new THREE.Vector3(0.6, -0.75, 0),
+    trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
+    // Aligned with text page 5: 0.571–0.714
+    gatherRange: [0.571, 0.605] as [number, number],
+    descentRange: [0.605, 0.700] as [number, number],
+  },
+  {
+    name: "Forceps",
+    scatteredPos: new THREE.Vector3(2.0, 0.4, 0.9),
+    scatteredRot: new THREE.Euler(0.3, -0.4, 0.2),
+    trayPos: new THREE.Vector3(1.2, -0.75, 0),
+    trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
+    // Aligned with text page 6: 0.714–0.857
+    gatherRange: [0.714, 0.750] as [number, number],
+    descentRange: [0.750, 0.850] as [number, number],
+  },
+];
 
 function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
   const toolRefs = useRef<(THREE.Group | null)[]>([]);
   const trayRef = useRef<THREE.Group | null>(null);
 
+  // Reusable quaternions (avoid allocating every frame)
+  const qA = useRef(new THREE.Quaternion()).current;
+  const qB = useRef(new THREE.Quaternion()).current;
+  const qC = useRef(new THREE.Quaternion()).current;
+  const tempVec = useRef(new THREE.Vector3()).current;
+
   useFrame((state) => {
     const scroll = scrollYProgress.get();
     const time = state.clock.elapsedTime;
 
-    // ── Tray animation: rises as tools land ──
-    // Tray starts at y=-4 (off-screen below) and rises to y=-0.8 (final)
-    // It rises progressively as each tool lands
+    // ── Tray animation ──
+    // Tray rises from y=-4 (off-screen) to y=-0.8 (final) throughout the section.
+    // It starts rising when the first tool begins descending and is fully up by the last tool landing.
     if (trayRef.current) {
-      let landedCount = 0;
-      TOOL_PAGES.forEach((page) => {
-        const landT = rangeProgress(scroll, page.landingRange[0], page.landingRange[1]);
-        if (landT >= 1) landedCount++;
-        else if (landT > 0) landedCount += landT; // partial credit during landing
-      });
-
-      // Map 0–5 landed tools to tray Y position: -4 → -0.8
-      const trayProgress = Math.min(1, landedCount / TOOL_PAGES.length);
-      const trayY = THREE.MathUtils.lerp(-4, -0.8, smoothstep(trayProgress));
+      const trayProgress = smoothstep(rangeProgress(scroll, 0.15, 0.85));
+      const trayY = THREE.MathUtils.lerp(-4, -0.8, trayProgress);
       trayRef.current.position.y = trayY;
     }
 
@@ -123,87 +120,72 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
       const ref = toolRefs.current[i];
       if (!ref) return;
 
-      const featStart = page.featuredRange[0];
-      const featEnd = page.featuredRange[1];
-      const landStart = page.landingRange[0];
-      const landEnd = page.landingRange[1];
+      const [gatherStart, gatherEnd] = page.gatherRange;
+      const [descentStart, descentEnd] = page.descentRange;
 
-      // Determine tool state and interpolation
-      let targetPos: THREE.Vector3;
-      let targetRot: THREE.Euler;
-      let addFloat = false;
-      let addShowcaseSpin = false;
+      // The descent top position: centered horizontally, at the top of the screen
+      const descentTopPos = tempVec.set(0, DESCENT_TOP_Y, DESCENT_TOP_Z);
 
-      if (scroll < featStart) {
+      if (scroll < gatherStart) {
         // ── SCATTERED: floating at start position ──
-        // Fade from scattered toward featured as we approach featStart
-        const approachT = smoothstep(rangeProgress(scroll, Math.max(0, featStart - 0.08), featStart));
-        targetPos = new THREE.Vector3().lerpVectors(page.scatteredPos, page.featuredPos, approachT);
-        targetRot = page.scatteredRot; // keep scattered rotation until featured
-        addFloat = true;
-
-      } else if (scroll >= featStart && scroll < featEnd) {
-        // ── FEATURED: center stage, slowly spinning ──
-        targetPos = page.featuredPos.clone();
-        targetRot = page.featuredRot;
-        addShowcaseSpin = true;
-        addFloat = true;
-
-      } else if (scroll >= featEnd && scroll < landEnd) {
-        // ── LANDING: flying from featured position to tray slot ──
-        const landT = smoothstep(rangeProgress(scroll, landStart, landEnd));
-        targetPos = new THREE.Vector3().lerpVectors(page.featuredPos, page.trayPos, landT);
+        ref.position.copy(page.scatteredPos);
         
-        // Interpolate rotation using quaternions for smooth transition
-        const qFeat = new THREE.Quaternion().setFromEuler(page.featuredRot);
-        const qTray = new THREE.Quaternion().setFromEuler(page.trayRot);
-        const qCurrent = new THREE.Quaternion().slerpQuaternions(qFeat, qTray, landT);
-        ref.quaternion.copy(qCurrent);
-        ref.position.copy(targetPos);
-        return; // skip the general rotation code below
+        // Gentle floating bob + rotation
+        ref.position.y += Math.sin(time * 1.5 + i * 1.3) * 0.08;
+        
+        qA.setFromEuler(page.scatteredRot);
+        qB.setFromAxisAngle(new THREE.Vector3(0, 1, 0), time * 0.3 * (i % 2 === 0 ? 1 : -1));
+        qA.multiply(qB);
+        ref.quaternion.copy(qA);
+
+      } else if (scroll < gatherEnd) {
+        // ── GATHERING: move from scattered position to top of screen ──
+        const t = smoothstep(rangeProgress(scroll, gatherStart, gatherEnd));
+        
+        ref.position.lerpVectors(page.scatteredPos, descentTopPos, t);
+        
+        // Interpolate rotation from scattered to a nice viewing angle
+        qA.setFromEuler(page.scatteredRot);
+        qB.setFromEuler(new THREE.Euler(0.2, 0, 0.1)); // upright-ish for viewing
+        qC.slerpQuaternions(qA, qB, t);
+        ref.quaternion.copy(qC);
+
+      } else if (scroll < descentEnd) {
+        // ── DESCENDING: top of screen → tray slot (THE "FOLLOWING" FEEL) ──
+        // The tool moves DOWN proportionally to scroll. User scrolls = tool descends.
+        const t = smoothstep(rangeProgress(scroll, descentStart, descentEnd));
+        
+        // Position: interpolate from descent top to tray position
+        ref.position.lerpVectors(descentTopPos, page.trayPos, t);
+        
+        // Rotation: showcase spin that transitions into tray rotation
+        qA.setFromEuler(new THREE.Euler(0.2, 0, 0.1)); // viewing angle
+        qB.setFromEuler(page.trayRot);
+        qC.slerpQuaternions(qA, qB, t);
+        
+        // Add a gentle showcase spin during the first 70% of descent
+        if (t < 0.7) {
+          const spinAmount = (1 - t / 0.7); // fades out as it approaches tray
+          const spin = new THREE.Quaternion().setFromAxisAngle(
+            new THREE.Vector3(0, 1, 0),
+            time * 0.6 * spinAmount
+          );
+          qC.multiply(spin);
+        }
+        
+        ref.quaternion.copy(qC);
 
       } else {
         // ── LANDED: resting in tray slot ──
-        targetPos = page.trayPos.clone();
-        targetRot = page.trayRot;
+        ref.position.copy(page.trayPos);
+        ref.quaternion.setFromEuler(page.trayRot);
       }
-
-      // Apply position
-      ref.position.copy(targetPos);
-
-      // Apply rotation (with optional effects)
-      const qTarget = new THREE.Quaternion().setFromEuler(targetRot);
-
-      if (addShowcaseSpin) {
-        // Gentle Y-axis showcase rotation
-        const spin = new THREE.Quaternion().setFromAxisAngle(
-          new THREE.Vector3(0, 1, 0),
-          time * 0.4
-        );
-        qTarget.multiply(spin);
-      }
-
-      if (addFloat) {
-        // Subtle floating bob
-        ref.position.y += Math.sin(time * 1.5 + i * 1.2) * 0.06;
-        
-        // Very subtle floating rotation
-        if (!addShowcaseSpin) {
-          const floatSpin = new THREE.Quaternion().setFromAxisAngle(
-            new THREE.Vector3(0, 1, 0),
-            time * 0.3 * (i % 2 === 0 ? 1 : -1)
-          );
-          qTarget.multiply(floatSpin);
-        }
-      }
-
-      ref.quaternion.copy(qTarget);
     });
   });
 
   return (
     <>
-      {/* Tray — starts off-screen, rises as tools land */}
+      {/* Tray — starts off-screen below, rises as tools land */}
       <group ref={trayRef} position={[0, -4, 0]} rotation={[0.15, 0, 0]}>
         <SurgicalTray />
       </group>
