@@ -96,11 +96,13 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
   const toolRefs = useRef<(THREE.Group | null)[]>([]);
   const trayRef = useRef<THREE.Group | null>(null);
 
-  // Reusable quaternions (avoid allocating every frame)
+  // Reusable objects (avoid allocating every frame — prevents GC pressure)
   const qA = useRef(new THREE.Quaternion()).current;
   const qB = useRef(new THREE.Quaternion()).current;
   const qC = useRef(new THREE.Quaternion()).current;
+  const qSpin = useRef(new THREE.Quaternion()).current;
   const tempVec = useRef(new THREE.Vector3()).current;
+  const yAxis = useRef(new THREE.Vector3(0, 1, 0)).current;
 
   useFrame((state) => {
     const scroll = scrollYProgress.get();
@@ -134,7 +136,7 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
         ref.position.y += Math.sin(time * 1.5 + i * 1.3) * 0.08;
         
         qA.setFromEuler(page.scatteredRot);
-        qB.setFromAxisAngle(new THREE.Vector3(0, 1, 0), time * 0.3 * (i % 2 === 0 ? 1 : -1));
+        qB.setFromAxisAngle(yAxis, time * 0.3 * (i % 2 === 0 ? 1 : -1));
         qA.multiply(qB);
         ref.quaternion.copy(qA);
 
@@ -166,11 +168,8 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
         // Add a gentle showcase spin during the first 70% of descent
         if (t < 0.7) {
           const spinAmount = (1 - t / 0.7); // fades out as it approaches tray
-          const spin = new THREE.Quaternion().setFromAxisAngle(
-            new THREE.Vector3(0, 1, 0),
-            time * 0.6 * spinAmount
-          );
-          qC.multiply(spin);
+          qSpin.setFromAxisAngle(yAxis, time * 0.6 * spinAmount);
+          qC.multiply(qSpin);
         }
         
         ref.quaternion.copy(qC);
