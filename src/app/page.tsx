@@ -5,7 +5,6 @@ import DemoFour from "@/components/demo-4";
 import DemoFive from "@/components/demo-5";
 import FounderProfile from "@/components/founder-profile";
 import Testimonials from "@/components/testimonials";
-import CurtainSnap from "@/components/ui/curtain-snap";
 
 export default function Home() {
   return (
@@ -22,14 +21,11 @@ export default function Home() {
         <MainHero />
       </section>
 
-      {/* Auto-snaps through the curtain transition — no stopping in the middle */}
-      <CurtainSnap targetId="nuestro-enfoque" />
-
       {/* Founder Profile Section — slides OVER the sticky "Elevando" content like a curtain.
-           Shadow + rounded top makes the curtain edge visible (both sections share the same bg color). */}
+           -mt-[15vh] creates a very short overlap so the transition completes in one scroll. */}
       <div 
         id="nuestro-enfoque" 
-        className="relative z-30 -mt-[100vh] rounded-t-[2rem]"
+        className="relative z-30 -mt-[15vh] rounded-t-[2rem]"
         style={{ boxShadow: '0 -20px 60px rgba(0,0,0,0.12)' }}
       >
         <FounderProfile />
