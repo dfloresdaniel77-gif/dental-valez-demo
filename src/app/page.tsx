@@ -5,6 +5,9 @@ import DemoFour from "@/components/demo-4";
 import DemoFive from "@/components/demo-5";
 import FounderProfile from "@/components/founder-profile";
 import Testimonials from "@/components/testimonials";
+import dynamic from "next/dynamic";
+
+const CurtainSnap = dynamic(() => import("@/components/ui/curtain-snap"), { ssr: false });
 
 export default function Home() {
   return (
@@ -20,6 +23,9 @@ export default function Home() {
       <section id="inicio" className="w-full">
         <MainHero />
       </section>
+
+      {/* Auto-snaps through the curtain transition — no stopping in the middle */}
+      <CurtainSnap targetId="nuestro-enfoque" />
 
       {/* Founder Profile Section — slides OVER the sticky "Elevando" content like a curtain.
            Shadow + rounded top makes the curtain edge visible (both sections share the same bg color). */}
