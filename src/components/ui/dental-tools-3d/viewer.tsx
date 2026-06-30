@@ -109,10 +109,10 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
     const time = state.clock.elapsedTime;
 
     // ── Tray animation ──
-    // Tray rises from y=-4 (off-screen) to y=-0.8 (final) throughout the section.
-    // It starts rising when the first tool begins descending and is fully up by the last tool landing.
+    // Tray rises from y=-4 (off-screen) to y=-0.8 (final).
+    // Must be fully visible BEFORE the first tool lands (Mirror lands at scroll ~0.28).
     if (trayRef.current) {
-      const trayProgress = smoothstep(rangeProgress(scroll, 0.15, 0.85));
+      const trayProgress = smoothstep(rangeProgress(scroll, 0.12, 0.22));
       const trayY = THREE.MathUtils.lerp(-4, -0.8, trayProgress);
       trayRef.current.position.y = trayY;
     }
