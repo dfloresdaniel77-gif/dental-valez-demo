@@ -88,7 +88,6 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
   const qC = useRef(new THREE.Quaternion()).current;
   const qSpin = useRef(new THREE.Quaternion()).current;
   const yAxis = useRef(new THREE.Vector3(0, 1, 0)).current;
-  const tempVec = useRef(new THREE.Vector3()).current;
   const descentRot = useRef(new THREE.Euler(0.2, 0, 0.1)).current; // viewing angle during descent
 
   useFrame((state) => {
