@@ -28,8 +28,8 @@ function rangeProgress(scroll: number, start: number, end: number): number {
 }
 
 // ── The top-of-screen position where each tool starts its descent ──
-// High Y = top of viewport, z=2 = close to camera for dramatic entrance
-const DESCENT_TOP_Y = 2.5;
+// High Y = top of viewport (frustum visible range ~-2.2 to +2.2), z=2 = close to camera
+const DESCENT_TOP_Y = 2.0;
 const DESCENT_TOP_Z = 2.0;
 
 // ── Per-tool animation config ──
@@ -62,7 +62,7 @@ const TOOL_PAGES = [
   },
   {
     name: "Probe",
-    scatteredPos: new THREE.Vector3(0.3, 1.5, 1.2),
+    scatteredPos: new THREE.Vector3(1.5, 1.5, 1.2),
     scatteredRot: new THREE.Euler(0.5, -0.3, 0.2),
     trayPos: new THREE.Vector3(0, -0.75, 0),
     trayRot: new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0),
