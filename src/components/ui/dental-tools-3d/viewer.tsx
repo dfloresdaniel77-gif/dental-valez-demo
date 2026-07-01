@@ -52,13 +52,13 @@ const TOOL_Z = 1.5; // close to camera for nice size
 // This leaves the opposite side clear for readable text
 const TOOL_X = [-1.5, 1.5, -1.5, 1.5, -1.5];  // L R L R L
 
-// ── Per-tool show rotations (angled to face center, reduces "flat" look) ──
+// ── Per-tool show rotations (angled to face the TEXT side, shows widest profile) ──
 const SHOW_ROTATIONS = [
-  new THREE.Euler(0.2, 0.4, 0.1),    // Mirror — angled right toward text
-  new THREE.Euler(0.2, -0.4, -0.1),  // Scaler — angled left toward text
-  new THREE.Euler(0.15, 0.35, 0.08), // Probe — angled right
-  new THREE.Euler(0.15, -0.35, -0.08), // Syringe — angled left
-  new THREE.Euler(0.2, 0.3, 0.1),    // Forceps — angled right
+  new THREE.Euler(0.3, 0.6, 0.15),     // Mirror — angled right, tilted to show face
+  new THREE.Euler(0.3, -0.6, -0.15),   // Scaler — angled left, tilted to show face
+  new THREE.Euler(0.25, 0.5, 0.12),    // Probe — angled right
+  new THREE.Euler(0.25, -0.5, -0.12),  // Syringe — angled left
+  new THREE.Euler(0.3, 0.55, 0.15),    // Forceps — angled right
 ];
 
 // ── Tool ranges: CONTINUOUS, no gaps ──
@@ -156,7 +156,8 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
         const introT = scroll / 0.143;
         ref.position.set(TOOL_X[0], THREE.MathUtils.lerp(3.5, 2.0, smoothstep(introT)), TOOL_Z);
         qShow.setFromEuler(SHOW_ROTATIONS[0]);
-        qSpin.setFromAxisAngle(yAxis, time * 0.3);
+        // Gentle oscillation instead of full spin (avoids thin edge-on view)
+        qSpin.setFromAxisAngle(yAxis, Math.sin(time * 0.8) * 0.25);
         qShow.multiply(qSpin);
         ref.quaternion.copy(qShow);
         return;
@@ -174,9 +175,9 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
 
         ref.position.set(TOOL_X[i], y, TOOL_Z);
 
-        // Gentle showcase rotation (per-tool angle + slow spin)
+        // Gentle oscillation (±15°) — never shows thin edge-on view
         qShow.setFromEuler(SHOW_ROTATIONS[i]);
-        qSpin.setFromAxisAngle(yAxis, time * 0.35);
+        qSpin.setFromAxisAngle(yAxis, Math.sin(time * 0.6 + i * 1.2) * 0.25);
         qShow.multiply(qSpin);
         ref.quaternion.copy(qShow);
       } else {

@@ -3,7 +3,7 @@
 import { AppleScrollReveal } from "./ui/apple-scroll-reveal";
 
 export default function FounderProfile() {
-  const typographyClass = "text-4xl md:text-6xl lg:text-[7rem] font-bold tracking-tighter text-stone-900/15 leading-[0.9] max-w-6xl mx-auto";
+  const typographyClass = "text-4xl md:text-6xl lg:text-[7rem] font-bold tracking-tighter text-stone-900/40 leading-[0.9] max-w-6xl mx-auto";
 
   const texts = [
     // Page 1: Intro — all tools floating, no tray
@@ -17,7 +17,7 @@ export default function FounderProfile() {
     </div>,
     // Page 2: Mirror featured
     <h2 key="2" className={typographyClass}>
-      "Ya no tienes por qué <span className="italic font-serif text-stone-900/25">esconderlo.</span>"
+      "Ya no tienes por qué <span className="italic font-serif text-stone-900/50">esconderlo.</span>"
     </h2>,
     // Page 3: Scaler featured
     <h2 key="3" className={typographyClass}>
