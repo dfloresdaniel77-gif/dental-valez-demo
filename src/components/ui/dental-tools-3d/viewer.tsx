@@ -48,6 +48,19 @@ function followY(t: number): number {
 
 const TOOL_Z = 1.5; // close to camera for nice size
 
+// ── Alternating sides: odd tools left, even tools right ──
+// This leaves the opposite side clear for readable text
+const TOOL_X = [-1.5, 1.5, -1.5, 1.5, -1.5];  // L R L R L
+
+// ── Per-tool show rotations (angled to face center, reduces "flat" look) ──
+const SHOW_ROTATIONS = [
+  new THREE.Euler(0.2, 0.4, 0.1),    // Mirror — angled right toward text
+  new THREE.Euler(0.2, -0.4, -0.1),  // Scaler — angled left toward text
+  new THREE.Euler(0.15, 0.35, 0.08), // Probe — angled right
+  new THREE.Euler(0.15, -0.35, -0.08), // Syringe — angled left
+  new THREE.Euler(0.2, 0.3, 0.1),    // Forceps — angled right
+];
+
 // ── Tool ranges: CONTINUOUS, no gaps ──
 // Each tool occupies exactly one text page (1/7 of total scroll ≈ 0.143)
 // Pages: 1=intro, 2-6=tools, 7=finale
@@ -80,7 +93,6 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
   const qShow = useRef(new THREE.Quaternion()).current;
   const qSpin = useRef(new THREE.Quaternion()).current;
   const yAxis = useRef(new THREE.Vector3(0, 1, 0)).current;
-  const showEuler = useRef(new THREE.Euler(0.15, 0, 0.05)).current;
   const qA = useRef(new THREE.Quaternion()).current;
   const qB = useRef(new THREE.Quaternion()).current;
 
@@ -125,11 +137,11 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
           // Last tool: lands on tray during finale
           const landT = smoothstep(rangeProgress(scroll, FINAL_PAGE_START, 0.96));
           ref.position.set(
-            THREE.MathUtils.lerp(0, TRAY_POSITIONS[i].x, landT),
+            THREE.MathUtils.lerp(TOOL_X[i], TRAY_POSITIONS[i].x, landT),
             THREE.MathUtils.lerp(0.5, TRAY_POSITIONS[i].y + trayOffset, landT),
             THREE.MathUtils.lerp(TOOL_Z, TRAY_POSITIONS[i].z, landT)
           );
-          qA.setFromEuler(showEuler);
+          qA.setFromEuler(SHOW_ROTATIONS[i]);
           qB.setFromEuler(TRAY_ROTATION);
           qShow.slerpQuaternions(qA, qB, landT);
           ref.quaternion.copy(qShow);
@@ -142,8 +154,8 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
         ref.visible = true;
         // First tool slowly enters from above during intro
         const introT = scroll / 0.143;
-        ref.position.set(0, THREE.MathUtils.lerp(3.5, 2.0, smoothstep(introT)), TOOL_Z);
-        qShow.setFromEuler(showEuler);
+        ref.position.set(TOOL_X[0], THREE.MathUtils.lerp(3.5, 2.0, smoothstep(introT)), TOOL_Z);
+        qShow.setFromEuler(SHOW_ROTATIONS[0]);
         qSpin.setFromAxisAngle(yAxis, time * 0.3);
         qShow.multiply(qSpin);
         ref.quaternion.copy(qShow);
@@ -160,10 +172,10 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
         // The following curve: tool enters from top, stays centered, exits bottom
         const y = followY(t);
 
-        ref.position.set(0, y, TOOL_Z);
+        ref.position.set(TOOL_X[i], y, TOOL_Z);
 
-        // Gentle showcase rotation
-        qShow.setFromEuler(showEuler);
+        // Gentle showcase rotation (per-tool angle + slow spin)
+        qShow.setFromEuler(SHOW_ROTATIONS[i]);
         qSpin.setFromAxisAngle(yAxis, time * 0.35);
         qShow.multiply(qSpin);
         ref.quaternion.copy(qShow);
