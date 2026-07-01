@@ -14,7 +14,7 @@ function ResponsiveScene({ children }: { children: React.ReactNode }) {
 }
 
 // Camera: position=[0, 0, 7], fov=35
-// Visible Y range at z=0: approximately -2.2 to +2.2
+// Visible Y: ~-2.2 to +2.2 at z=0
 
 function smoothstep(t: number): number {
   return t * t * (3 - 2 * t);
@@ -24,16 +24,16 @@ function rangeProgress(scroll: number, start: number, end: number): number {
   return Math.max(0, Math.min(1, (scroll - start) / (end - start)));
 }
 
-// ── Descent path (world-space) ──
-const DESCENT_START_Y = 1.8;
-const DESCENT_END_Y = -6.0;  // far below camera — tool disappears off-screen
-const DESCENT_Z = 1.5;       // close to camera for drama
+// ── Descent path ──
+// The tool starts at the top of the viewport and drops below it.
+// The camera follows, so the tool appears to stay centered the whole time.
+const TOOL_START_Y = 1.8;    // top of viewport
+const TOOL_END_Y = -6.0;     // far below viewport
+const TOOL_Z = 1.5;          // close to camera
 
-// ── How far above camera center the "top" tools float ──
-const TOP_OFFSET_Y = 1.6;    // ~top of visible frustum (frustum is ±2.2)
-
-// ── Spread the waiting tools horizontally ──
-const TOP_X_POSITIONS = [-2.0, -1.0, 0.0, 1.0, 2.0];
+// ── Top positions (for intro + between tools) ──
+const TOP_OFFSET_Y = 1.6;
+const TOP_X = [-2.0, -1.0, 0.0, 1.0, 2.0];
 const TOP_Z = 0.5;
 
 const TOP_ROTATIONS = [
@@ -44,7 +44,7 @@ const TOP_ROTATIONS = [
   new THREE.Euler(0.25, -0.3, 0.15),
 ];
 
-// ── Tray slot positions ──
+// ── Tray slots ──
 const TRAY_POSITIONS = [
   new THREE.Vector3(-1.2, -0.75, 0),
   new THREE.Vector3(-0.6, -0.75, 0),
@@ -52,22 +52,22 @@ const TRAY_POSITIONS = [
   new THREE.Vector3(0.6, -0.75, 0),
   new THREE.Vector3(1.2, -0.75, 0),
 ];
-
 const TRAY_ROTATION = new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0);
 
-// ── Scroll ranges per tool (7 text pages, each ~0.143) ──
-const TOOL_SCROLL_RANGES = [
-  { gatherRange: [0.143, 0.175] as [number, number], descentRange: [0.175, 0.280] as [number, number] },
-  { gatherRange: [0.286, 0.318] as [number, number], descentRange: [0.318, 0.420] as [number, number] },
-  { gatherRange: [0.429, 0.460] as [number, number], descentRange: [0.460, 0.565] as [number, number] },
-  { gatherRange: [0.571, 0.603] as [number, number], descentRange: [0.603, 0.708] as [number, number] },
-  { gatherRange: [0.714, 0.746] as [number, number], descentRange: [0.746, 0.850] as [number, number] },
+// ── ONE scroll range per tool (no separate gather/descent — one smooth motion) ──
+// 7 text pages each ~0.143. Page 1=intro, Pages 2-6=tools, Page 7=finale
+const TOOL_RANGES: [number, number][] = [
+  [0.143, 0.280],  // Mirror
+  [0.286, 0.420],  // Scaler
+  [0.429, 0.565],  // Probe
+  [0.571, 0.708],  // Syringe
+  [0.714, 0.850],  // Forceps
 ];
 
-// ── Final page constants ──
+// Final page
 const FINAL_PAGE_START = 0.857;
-const FINAL_TRAY_RISE_END = 0.91;
-const FINAL_TOOL_LAND_END = 0.96;
+const FINAL_TRAY_RISE_END = 0.92;
+const FINAL_TOOL_LAND_END = 0.97;
 const TRAY_FINAL_Y = -0.8;
 const TRAY_HIDDEN_Y = -20;
 
@@ -75,70 +75,67 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
   const toolRefs = useRef<(THREE.Group | null)[]>([]);
   const trayRef = useRef<THREE.Group | null>(null);
 
-  // Reusable objects
   const qA = useRef(new THREE.Quaternion()).current;
   const qB = useRef(new THREE.Quaternion()).current;
   const qC = useRef(new THREE.Quaternion()).current;
   const qSpin = useRef(new THREE.Quaternion()).current;
   const yAxis = useRef(new THREE.Vector3(0, 1, 0)).current;
-  const descentRot = useRef(new THREE.Euler(0.2, 0, 0.1)).current;
+  const showRot = useRef(new THREE.Euler(0.15, 0, 0.05)).current;
 
   useFrame((state) => {
     const scroll = scrollYProgress.get();
     const time = state.clock.elapsedTime;
     const isFinalPage = scroll >= FINAL_PAGE_START;
-    const numTools = TOOL_SCROLL_RANGES.length;
-    const lastToolIndex = numTools - 1;
+    const lastIdx = TOOL_RANGES.length - 1;
 
-    // ════════════════════════════════════════════════
-    // 1. CAMERA TRACKING — follow the active tool down
-    // ════════════════════════════════════════════════
-    let cameraTargetY = 0;
-    let directTrack = false;
+    // ════════════════════════════════════
+    // 1. Find the active tool (if any)
+    // ════════════════════════════════════
+    let activeIndex = -1;
+    let activeT = 0;
 
     if (!isFinalPage) {
-      for (let i = 0; i < numTools; i++) {
-        const { gatherRange, descentRange } = TOOL_SCROLL_RANGES[i];
-        const [gatherStart, gatherEnd] = gatherRange;
-        const [, descentEnd] = descentRange;
-
-        if (scroll >= gatherStart && scroll < gatherEnd) {
-          // GATHERING: camera smoothly moves up to the tool
-          const t = smoothstep(rangeProgress(scroll, gatherStart, gatherEnd));
-          cameraTargetY = THREE.MathUtils.lerp(0, DESCENT_START_Y, t);
-          directTrack = true;
-          break;
-        } else if (scroll >= gatherEnd && scroll < descentEnd) {
-          // DESCENDING: camera directly follows the tool (scroll-linked, no lag)
-          const t = smoothstep(rangeProgress(scroll, gatherEnd, descentEnd));
-          cameraTargetY = THREE.MathUtils.lerp(DESCENT_START_Y, DESCENT_END_Y, t);
-          directTrack = true;
+      for (let i = 0; i < TOOL_RANGES.length; i++) {
+        const [start, end] = TOOL_RANGES[i];
+        if (scroll >= start && scroll < end) {
+          activeIndex = i;
+          activeT = rangeProgress(scroll, start, end);
           break;
         }
       }
-    } else {
-      // Final page: camera settles at tray level
-      const t = smoothstep(rangeProgress(scroll, FINAL_PAGE_START, FINAL_TRAY_RISE_END));
-      cameraTargetY = THREE.MathUtils.lerp(0, TRAY_FINAL_Y, t);
-      directTrack = true;
     }
 
-    // Apply camera Y — direct during active descent, smooth lerp otherwise
-    if (directTrack) {
+    // ════════════════════════════════════
+    // 2. Camera — follows active tool
+    // ════════════════════════════════════
+    let cameraTargetY = 0;
+
+    if (activeIndex >= 0) {
+      // Smooth ease for descent: tool stays screen-centered the whole time
+      const easedT = smoothstep(activeT);
+      cameraTargetY = THREE.MathUtils.lerp(TOOL_START_Y, TOOL_END_Y, easedT);
+    } else if (isFinalPage) {
+      const t = smoothstep(rangeProgress(scroll, FINAL_PAGE_START, FINAL_TRAY_RISE_END));
+      cameraTargetY = THREE.MathUtils.lerp(0, TRAY_FINAL_Y, t);
+    }
+
+    // Smooth camera return between tools (no snapping)
+    if (activeIndex >= 0 || isFinalPage) {
       state.camera.position.y = cameraTargetY;
     } else {
-      state.camera.position.y += (cameraTargetY - state.camera.position.y) * 0.08;
+      // Smooth ease back to 0 between tools
+      state.camera.position.y += (cameraTargetY - state.camera.position.y) * 0.06;
     }
 
     const camY = state.camera.position.y;
 
-    // ════════════════════════════════════════════════
-    // 2. TRAY — hidden until final page
-    // ════════════════════════════════════════════════
+    // ════════════════════════════════════
+    // 3. Tray — hidden until final page
+    // ════════════════════════════════════
     if (trayRef.current) {
       if (isFinalPage) {
-        const trayT = smoothstep(rangeProgress(scroll, FINAL_PAGE_START, FINAL_TRAY_RISE_END));
-        trayRef.current.position.y = THREE.MathUtils.lerp(TRAY_HIDDEN_Y, TRAY_FINAL_Y, trayT);
+        const t = smoothstep(rangeProgress(scroll, FINAL_PAGE_START, FINAL_TRAY_RISE_END));
+        trayRef.current.position.y = THREE.MathUtils.lerp(TRAY_HIDDEN_Y, TRAY_FINAL_Y, t);
       } else {
         trayRef.current.position.y = TRAY_HIDDEN_Y;
       }
@@ -147,40 +144,37 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
     const trayCurrentY = trayRef.current ? trayRef.current.position.y : TRAY_HIDDEN_Y;
     const trayOffset = trayCurrentY - TRAY_FINAL_Y;
 
-    // ════════════════════════════════════════════════
-    // 3. TOOLS
-    // ════════════════════════════════════════════════
-    TOOL_SCROLL_RANGES.forEach((ranges, i) => {
+    // ════════════════════════════════════
+    // 4. Tools
+    // ════════════════════════════════════
+    TOOL_RANGES.forEach((range, i) => {
       const ref = toolRefs.current[i];
       if (!ref) return;
 
-      const isLastTool = i === lastToolIndex;
-      const [gatherStart, gatherEnd] = ranges.gatherRange;
-      const [, descentEnd] = ranges.descentRange;
+      const [rangeStart, rangeEnd] = range;
+      const isLastTool = i === lastIdx;
+      const isActive = i === activeIndex;
+      const isGone = !isFinalPage && scroll >= rangeEnd;
 
       // ── FINAL PAGE ──
       if (isFinalPage) {
         ref.visible = true;
         if (!isLastTool) {
-          // Tools 0–3: on the tray, rise with it
           ref.position.copy(TRAY_POSITIONS[i]);
           ref.position.y += trayOffset;
           ref.quaternion.setFromEuler(TRAY_ROTATION);
         } else {
-          // Last tool: descends from top-of-viewport to tray slot
           const landT = smoothstep(rangeProgress(scroll, FINAL_PAGE_START, FINAL_TOOL_LAND_END));
-          const startY = camY + TOP_OFFSET_Y;
           ref.position.set(
-            THREE.MathUtils.lerp(TOP_X_POSITIONS[i], TRAY_POSITIONS[i].x, landT),
-            THREE.MathUtils.lerp(startY, TRAY_POSITIONS[i].y, landT),
+            THREE.MathUtils.lerp(TOP_X[i], TRAY_POSITIONS[i].x, landT),
+            THREE.MathUtils.lerp(camY + TOP_OFFSET_Y, TRAY_POSITIONS[i].y, landT),
             THREE.MathUtils.lerp(TOP_Z, TRAY_POSITIONS[i].z, landT)
           );
-          
           qA.setFromEuler(TOP_ROTATIONS[i]);
           qB.setFromEuler(TRAY_ROTATION);
           qC.slerpQuaternions(qA, qB, landT);
           if (landT < 0.7) {
-            qSpin.setFromAxisAngle(yAxis, time * 0.5 * (1 - landT / 0.7));
+            qSpin.setFromAxisAngle(yAxis, time * 0.4 * (1 - landT / 0.7));
             qC.multiply(qSpin);
           }
           ref.quaternion.copy(qC);
@@ -188,79 +182,63 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
         return;
       }
 
-      // ── PRE-FINAL PAGE ──
-
-      if (scroll < gatherStart) {
-        // ── WAITING: floating at top of viewport (camera-relative) ──
-        ref.visible = true;
-        ref.position.set(TOP_X_POSITIONS[i], camY + TOP_OFFSET_Y, TOP_Z);
-        ref.position.y += Math.sin(time * 1.2 + i * 1.5) * 0.04;
-
-        qA.setFromEuler(TOP_ROTATIONS[i]);
-        qSpin.setFromAxisAngle(yAxis, time * 0.2 * (i % 2 === 0 ? 1 : -1));
-        qA.multiply(qSpin);
-        ref.quaternion.copy(qA);
-
-      } else if (scroll < gatherEnd) {
-        // ── GATHERING: top → center of screen (camera follows, so tool stays centered) ──
-        ref.visible = true;
-        const t = smoothstep(rangeProgress(scroll, gatherStart, gatherEnd));
-        
-        // Tool moves from its top-of-viewport position to DESCENT_START
-        const startX = TOP_X_POSITIONS[i];
-        const startY = camY + TOP_OFFSET_Y;
-        
-        ref.position.set(
-          THREE.MathUtils.lerp(startX, 0, t),
-          THREE.MathUtils.lerp(startY, DESCENT_START_Y, t),
-          THREE.MathUtils.lerp(TOP_Z, DESCENT_Z, t)
-        );
-
-        qA.setFromEuler(TOP_ROTATIONS[i]);
-        qB.setFromEuler(descentRot);
-        qC.slerpQuaternions(qA, qB, t);
-        ref.quaternion.copy(qC);
-
-      } else if (scroll < descentEnd) {
-        // ── DESCENDING: straight down, camera follows = tool stays centered ──
-        ref.visible = true;
-        const t = smoothstep(rangeProgress(scroll, gatherEnd, descentEnd));
-        
-        ref.position.set(
-          0,
-          THREE.MathUtils.lerp(DESCENT_START_Y, DESCENT_END_Y, t),
-          DESCENT_Z
-        );
-
-        // Gentle spin fading out
-        qA.setFromEuler(descentRot);
-        if (t < 0.6) {
-          qSpin.setFromAxisAngle(yAxis, time * 0.5 * (1 - t / 0.6));
-          qA.multiply(qSpin);
-        }
-        ref.quaternion.copy(qA);
-
-      } else {
-        // ── GONE: invisible ──
+      // ── GONE: already descended, invisible ──
+      if (isGone) {
         ref.visible = false;
         ref.position.set(0, -50, 0);
+        return;
       }
+
+      // ── ACTIVE: this tool is descending (camera follows = stays centered) ──
+      if (isActive) {
+        ref.visible = true;
+        const easedT = smoothstep(activeT);
+
+        // One smooth motion: top → off-screen below
+        ref.position.set(
+          0,
+          THREE.MathUtils.lerp(TOOL_START_Y, TOOL_END_Y, easedT),
+          TOOL_Z
+        );
+
+        // Slowly rotate during descent — gentle showcase
+        qA.setFromEuler(showRot);
+        qSpin.setFromAxisAngle(yAxis, time * 0.35);
+        qA.multiply(qSpin);
+        ref.quaternion.copy(qA);
+        return;
+      }
+
+      // ── WAITING: not yet active ──
+      // Only visible when NO tool is active (intro + between tools)
+      if (activeIndex >= 0) {
+        // Another tool is descending — HIDE this one
+        ref.visible = false;
+        return;
+      }
+
+      // No tool active — show waiting tools at top of viewport
+      ref.visible = true;
+      ref.position.set(TOP_X[i], camY + TOP_OFFSET_Y, TOP_Z);
+      ref.position.y += Math.sin(time * 1.2 + i * 1.5) * 0.04;
+
+      qA.setFromEuler(TOP_ROTATIONS[i]);
+      qSpin.setFromAxisAngle(yAxis, time * 0.2 * (i % 2 === 0 ? 1 : -1));
+      qA.multiply(qSpin);
+      ref.quaternion.copy(qA);
     });
   });
 
   return (
     <>
-      {/* Tray — hidden off-screen until final page */}
       <group ref={trayRef} position={[0, TRAY_HIDDEN_Y, 0]} rotation={[0.15, 0, 0]}>
         <SurgicalTray />
       </group>
-
-      {/* Tools */}
       {DENTAL_TOOLS.map(({ Component }, i) => (
         <group
           key={i}
           ref={(el) => { toolRefs.current[i] = el; }}
-          position={[TOP_X_POSITIONS[i], TOP_OFFSET_Y, TOP_Z]}
+          position={[TOP_X[i], TOP_OFFSET_Y, TOP_Z]}
         >
           <Component />
         </group>
@@ -269,7 +247,6 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
   );
 }
 
-// ── Main 3D Viewer ──
 export function ToolViewer3D({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
   return (
     <Canvas
@@ -285,7 +262,6 @@ export function ToolViewer3D({ scrollYProgress }: { scrollYProgress: MotionValue
       <directionalLight position={[0, -5, 5]} intensity={0.3} color="#ffe0d0" />
       <pointLight position={[-4, 0, -3]} intensity={0.8} color="#c0d0ff" />
       <pointLight position={[4, 0, -3]} intensity={0.8} color="#ffd0c0" />
-
       <Suspense fallback={null}>
         <Environment preset="studio" environmentIntensity={0.6} />
         <ResponsiveScene>
