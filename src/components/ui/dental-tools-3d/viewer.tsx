@@ -2,7 +2,7 @@
 
 import React, { Suspense, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, ContactShadows } from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 import { DENTAL_TOOLS, SurgicalTray } from "./tools";
 import * as THREE from "three";
 import { MotionValue } from "framer-motion";
@@ -13,10 +13,6 @@ function ResponsiveScene({ children }: { children: React.ReactNode }) {
   return <group scale={scale}>{children}</group>;
 }
 
-// Camera: FIXED at position=[0, 0, 7], fov=35
-// NO camera movement. The tool moves through the viewport instead.
-// Visible Y range at z=0: approximately -2.2 to +2.2
-
 function smoothstep(t: number): number {
   return t * t * (3 - 2 * t);
 }
@@ -25,71 +21,56 @@ function rangeProgress(scroll: number, start: number, end: number): number {
   return Math.max(0, Math.min(1, (scroll - start) / (end - start)));
 }
 
-// ── The "following curve" ──
-// Determines the tool's Y position as a function of progress t (0→1).
-// - Entry (0→15%):  tool enters from top, quickly settles near center
-// - Follow (15→85%): tool stays near center, drifts very slowly down (THE FOLLOWING FEEL)
-// - Exit (85→100%): tool smoothly exits at the bottom
-function followY(t: number): number {
-  if (t < 0.15) {
-    // Entry: top of viewport → near center
-    const e = smoothstep(t / 0.15);
-    return 2.0 * (1 - e) + 0.2 * e;  // 2.0 → 0.2
-  } else if (t < 0.85) {
-    // Center zone: slow drift downward (this IS the following feel)
-    const mid = (t - 0.15) / 0.70;
-    return 0.2 - mid * 0.4;  // 0.2 → -0.2
-  } else {
-    // Exit: near center → bottom of viewport
-    const e = smoothstep((t - 0.85) / 0.15);
-    return -0.2 * (1 - e) + (-2.0) * e;  // -0.2 → -2.0
-  }
-}
+// ════════════════════════════════════════════════════════════
+// DESIGN: Continuous camera descent = "following" the tool
+//
+// The camera continuously goes DOWN as the user scrolls.
+// Each tool is positioned relative to the camera:
+//   - Enters from TOP of viewport
+//   - Drifts DOWN through center (the "following" zone)
+//   - Exits at BOTTOM of viewport
+//
+// Because the CAMERA is also descending, the user feels like
+// they're chasing/following the tool down. No resets, no jumps.
+// ════════════════════════════════════════════════════════════
 
-const TOOL_Z = 1.5; // close to camera for nice size
+// Camera descends this many units over the entire tool section
+const TOTAL_DESCENT = 40;
 
-// ── Alternating sides: odd tools left, even tools right ──
-// This leaves the opposite side clear for readable text
-const TOOL_X = [-1.5, 1.5, -1.5, 1.5, -1.5];  // L R L R L
+// Tool appears at this Y relative to camera (+1.8 = near top of frustum)
+const SCREEN_ENTER = 1.8;
+// Tool exits at this Y relative to camera (-1.8 = near bottom of frustum)
+const SCREEN_EXIT = -1.8;
 
-// ── Per-tool show rotations (angled to face the TEXT side, shows widest profile) ──
+const TOOL_Z = 1.5;
+
+// Alternating left/right
+const TOOL_X = [-1.5, 1.5, -1.5, 1.5, -1.5];
+
+// Per-tool rotation (angled to show widest profile)
 const SHOW_ROTATIONS = [
-  new THREE.Euler(0.3, 0.6, 0.15),     // Mirror — angled right, tilted to show face
-  new THREE.Euler(0.3, -0.6, -0.15),   // Scaler — angled left, tilted to show face
-  new THREE.Euler(0.25, 0.5, 0.12),    // Probe — angled right
-  new THREE.Euler(0.25, -0.5, -0.12),  // Syringe — angled left
-  new THREE.Euler(0.3, 0.55, 0.15),    // Forceps — angled right
+  new THREE.Euler(0.3, 0.6, 0.15),
+  new THREE.Euler(0.3, -0.6, -0.15),
+  new THREE.Euler(0.25, 0.5, 0.12),
+  new THREE.Euler(0.25, -0.5, -0.12),
+  new THREE.Euler(0.3, 0.55, 0.15),
 ];
 
-// ── Tool ranges: CONTINUOUS, no gaps ──
-// Each tool occupies exactly one text page (1/7 of total scroll ≈ 0.143)
-// Pages: 1=intro, 2-6=tools, 7=finale
-const TOOL_RANGES: [number, number][] = [
-  [0.143, 0.286],  // Mirror   (text page 2)
-  [0.286, 0.429],  // Scaler   (text page 3)
-  [0.429, 0.571],  // Probe    (text page 4)
-  [0.571, 0.714],  // Syringe  (text page 5)
-  [0.714, 0.857],  // Forceps  (text page 6)
-];
-
-// ── Tray (finale only) ──
-const TRAY_POSITIONS = [
-  new THREE.Vector3(-1.2, -0.75, 0),
-  new THREE.Vector3(-0.6, -0.75, 0),
-  new THREE.Vector3(0, -0.75, 0),
-  new THREE.Vector3(0.6, -0.75, 0),
-  new THREE.Vector3(1.2, -0.75, 0),
-];
+// Tray slot offsets (relative to tray center)
+const TRAY_SLOT_X = [-1.2, -0.6, 0, 0.6, 1.2];
+const TRAY_SLOT_Y_OFFSET = 0.05; // slightly above tray surface
 const TRAY_ROTATION = new THREE.Euler(-Math.PI / 2 + 0.15, 0, 0);
-const FINAL_PAGE_START = 0.857;
-const TRAY_HIDDEN_Y = -10;
-const TRAY_FINAL_Y = -0.8;
+
+// Scroll boundaries
+const SECTION_START = 0.143;  // where tools section begins
+const SECTION_END = 0.857;    // where tools section ends / finale begins
+const NUM_TOOLS = 5;
 
 function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
   const toolRefs = useRef<(THREE.Group | null)[]>([]);
   const trayRef = useRef<THREE.Group | null>(null);
 
-  // Reusable objects (no allocations per frame)
+  // Reusable math objects (zero allocations per frame)
   const qShow = useRef(new THREE.Quaternion()).current;
   const qSpin = useRef(new THREE.Quaternion()).current;
   const yAxis = useRef(new THREE.Vector3(0, 1, 0)).current;
@@ -99,105 +80,131 @@ function SceneAnimator({ scrollYProgress }: { scrollYProgress: MotionValue<numbe
   useFrame((state) => {
     const scroll = scrollYProgress.get();
     const time = state.clock.elapsedTime;
-    const isFinalPage = scroll >= FINAL_PAGE_START;
+    const isFinalPage = scroll >= SECTION_END;
 
-    // ── Camera stays FIXED ──
-    state.camera.position.y = 0;
+    // ════════════════════════════════════
+    // 1. CAMERA — continuous descent
+    // ════════════════════════════════════
+    const sectionProgress = rangeProgress(scroll, SECTION_START, SECTION_END);
+    let camY: number;
 
-    // ── Tray: hidden until finale ──
+    if (scroll < SECTION_START) {
+      // Intro: camera at origin
+      camY = 0;
+    } else if (!isFinalPage) {
+      // Tool section: camera descends linearly with scroll
+      camY = -sectionProgress * TOTAL_DESCENT;
+    } else {
+      // Finale: camera continues down a bit more for tray reveal
+      const finalT = smoothstep(rangeProgress(scroll, SECTION_END, 0.95));
+      camY = THREE.MathUtils.lerp(-TOTAL_DESCENT, -TOTAL_DESCENT - 4, finalT);
+    }
+
+    state.camera.position.y = camY;
+
+    // ════════════════════════════════════
+    // 2. TRAY — hidden until finale, positioned relative to camera
+    // ════════════════════════════════════
     if (trayRef.current) {
       if (isFinalPage) {
-        const t = smoothstep(rangeProgress(scroll, FINAL_PAGE_START, 0.92));
-        trayRef.current.position.y = THREE.MathUtils.lerp(TRAY_HIDDEN_Y, TRAY_FINAL_Y, t);
+        const trayT = smoothstep(rangeProgress(scroll, SECTION_END, 0.93));
+        // Tray rises from below camera to slightly below center
+        const trayScreenY = THREE.MathUtils.lerp(-8, -0.8, trayT);
+        trayRef.current.position.y = camY + trayScreenY;
       } else {
-        trayRef.current.position.y = TRAY_HIDDEN_Y;
+        // Hidden far below camera
+        trayRef.current.position.y = camY - 15;
       }
     }
 
-    const trayOffset = trayRef.current
-      ? trayRef.current.position.y - TRAY_FINAL_Y
-      : TRAY_HIDDEN_Y - TRAY_FINAL_Y;
+    // ════════════════════════════════════
+    // 3. TOOLS — one at a time, drift through viewport
+    // ════════════════════════════════════
 
-    // ── Tools ──
-    TOOL_RANGES.forEach(([start, end], i) => {
+    // Which tool is active? (continuous, no gaps)
+    const rawIndex = sectionProgress * NUM_TOOLS; // 0 → 5
+    const activeIndex = isFinalPage ? -1 : Math.min(Math.floor(rawIndex), NUM_TOOLS - 1);
+    const localT = activeIndex >= 0 ? rawIndex - activeIndex : 0; // 0 → 1 per tool
+
+    for (let i = 0; i < NUM_TOOLS; i++) {
       const ref = toolRefs.current[i];
-      if (!ref) return;
+      if (!ref) continue;
 
-      const isLastTool = i === TOOL_RANGES.length - 1;
+      const isLast = i === NUM_TOOLS - 1;
 
-      // ── FINALE: tray with all tools ──
+      // ── FINALE: all tools on tray ──
       if (isFinalPage) {
         ref.visible = true;
-        if (!isLastTool) {
-          // Tools 0-3: already on tray, move with it
-          ref.position.copy(TRAY_POSITIONS[i]);
-          ref.position.y += trayOffset;
+        const trayWorldY = trayRef.current ? trayRef.current.position.y : camY - 15;
+
+        if (!isLast) {
+          // Tools 0-3: already placed on tray
+          ref.position.set(TRAY_SLOT_X[i], trayWorldY + TRAY_SLOT_Y_OFFSET, 0);
           ref.quaternion.setFromEuler(TRAY_ROTATION);
         } else {
-          // Last tool: lands on tray during finale
-          const landT = smoothstep(rangeProgress(scroll, FINAL_PAGE_START, 0.96));
+          // Tool 4 (Forceps): lands on tray during finale
+          const landT = smoothstep(rangeProgress(scroll, SECTION_END, 0.97));
           ref.position.set(
-            THREE.MathUtils.lerp(TOOL_X[i], TRAY_POSITIONS[i].x, landT),
-            THREE.MathUtils.lerp(0.5, TRAY_POSITIONS[i].y + trayOffset, landT),
-            THREE.MathUtils.lerp(TOOL_Z, TRAY_POSITIONS[i].z, landT)
+            THREE.MathUtils.lerp(TOOL_X[i], TRAY_SLOT_X[i], landT),
+            THREE.MathUtils.lerp(camY + SCREEN_ENTER, trayWorldY + TRAY_SLOT_Y_OFFSET, landT),
+            THREE.MathUtils.lerp(TOOL_Z, 0, landT)
           );
           qA.setFromEuler(SHOW_ROTATIONS[i]);
           qB.setFromEuler(TRAY_ROTATION);
           qShow.slerpQuaternions(qA, qB, landT);
           ref.quaternion.copy(qShow);
         }
-        return;
+        continue;
       }
 
-      // ── INTRO page (scroll < 0.143): show first tool peeking from above ──
-      if (scroll < 0.143 && i === 0) {
+      // ── INTRO: first tool peeks from above ──
+      if (scroll < SECTION_START && i === 0) {
         ref.visible = true;
-        // First tool slowly enters from above during intro
-        const introT = scroll / 0.143;
-        ref.position.set(TOOL_X[0], THREE.MathUtils.lerp(3.5, 2.0, smoothstep(introT)), TOOL_Z);
+        const introT = scroll / SECTION_START;
+        const screenY = THREE.MathUtils.lerp(3.5, SCREEN_ENTER, smoothstep(introT));
+        ref.position.set(TOOL_X[0], camY + screenY, TOOL_Z);
         qShow.setFromEuler(SHOW_ROTATIONS[0]);
-        // Gentle oscillation instead of full spin (avoids thin edge-on view)
         qSpin.setFromAxisAngle(yAxis, Math.sin(time * 0.8) * 0.25);
         qShow.multiply(qSpin);
         ref.quaternion.copy(qShow);
-        return;
+        continue;
       }
 
-      // ── TOOL PAGE: the main animation ──
-      if (scroll >= start && scroll < end) {
+      // ── ACTIVE TOOL: drifts through viewport as camera follows ──
+      if (i === activeIndex) {
         ref.visible = true;
 
-        // Pure linear progress — Lenis smooth scrolling handles the smoothness
-        const t = (scroll - start) / (end - start);
+        // Screen-relative Y: enters top, drifts through center, exits bottom
+        // Linear mapping = directly tied to scroll = maximum "following" feel
+        const screenY = THREE.MathUtils.lerp(SCREEN_ENTER, SCREEN_EXIT, localT);
 
-        // The following curve: tool enters from top, stays centered, exits bottom
-        const y = followY(t);
+        // World position = camera position + screen offset
+        ref.position.set(TOOL_X[i], camY + screenY, TOOL_Z);
 
-        ref.position.set(TOOL_X[i], y, TOOL_Z);
-
-        // Gentle oscillation (±15°) — never shows thin edge-on view
+        // Gentle oscillation (no full spin)
         qShow.setFromEuler(SHOW_ROTATIONS[i]);
         qSpin.setFromAxisAngle(yAxis, Math.sin(time * 0.6 + i * 1.2) * 0.25);
         qShow.multiply(qSpin);
         ref.quaternion.copy(qShow);
-      } else {
-        // Not active: completely hidden
-        ref.visible = false;
-        ref.position.set(0, -50, 0);
+        continue;
       }
-    });
+
+      // ── HIDDEN ──
+      ref.visible = false;
+      ref.position.set(0, -200, 0);
+    }
   });
 
   return (
     <>
-      <group ref={trayRef} position={[0, TRAY_HIDDEN_Y, 0]} rotation={[0.15, 0, 0]}>
+      <group ref={trayRef} position={[0, -200, 0]} rotation={[0.15, 0, 0]}>
         <SurgicalTray />
       </group>
       {DENTAL_TOOLS.map(({ Component }, i) => (
         <group
           key={i}
           ref={(el) => { toolRefs.current[i] = el; }}
-          position={[0, -50, 0]}
+          position={[0, -200, 0]}
           visible={false}
         >
           <Component />
@@ -226,7 +233,6 @@ export function ToolViewer3D({ scrollYProgress }: { scrollYProgress: MotionValue
         <Environment preset="studio" environmentIntensity={0.6} />
         <ResponsiveScene>
           <SceneAnimator scrollYProgress={scrollYProgress} />
-          <ContactShadows position={[0, -0.95, 0]} opacity={0.4} scale={10} blur={2} far={4} />
         </ResponsiveScene>
       </Suspense>
     </Canvas>
