@@ -1,85 +1,19 @@
 "use client";
 
 import React, { useRef } from "react";
-import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
-import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
+import dynamic from "next/dynamic";
 
-// ═══════════════════════════════════════════
-// Tool image data — alternating left/right
-// ═══════════════════════════════════════════
-const TOOL_IMAGES = [
-  { src: "/tools/mirror.png", alt: "Dental Mirror", side: "left" as const },
-  { src: "/tools/scaler.png", alt: "Dental Scaler", side: "right" as const },
-  { src: "/tools/probe.png", alt: "Dental Probe", side: "left" as const },
-  { src: "/tools/syringe.png", alt: "Dental Syringe", side: "right" as const },
-  { src: "/tools/forceps.png", alt: "Dental Forceps", side: "left" as const },
-];
-
-// ═══════════════════════════════════════════
-// Parallax tool image — scroll-driven Y offset
-// creates "following" depth effect
-// ═══════════════════════════════════════════
-function ToolImage({
-  src,
-  alt,
-  side,
-  scrollYProgress,
-  pageStart,
-  pageEnd,
-}: {
-  src: string;
-  alt: string;
-  side: "left" | "right";
-  scrollYProgress: MotionValue<number>;
-  pageStart: number;
-  pageEnd: number;
-}) {
-  // Opacity: fade in → hold → fade out
-  const opacity = useTransform(
-    scrollYProgress,
-    [pageStart, pageStart + 0.02, pageEnd - 0.02, pageEnd],
-    [0, 1, 1, 0]
-  );
-
-  // Parallax Y: image moves SLOWER than scroll = depth effect
-  // Enters from below (+200px), drifts up past center, exits above (-200px)
-  const y = useTransform(
-    scrollYProgress,
-    [pageStart, pageEnd],
-    [200, -200]
-  );
-
-  // Subtle scale: slightly smaller at entry/exit, full size at center
-  const scale = useTransform(
-    scrollYProgress,
-    [pageStart, pageStart + 0.03, pageEnd - 0.03, pageEnd],
-    [0.9, 1, 1, 0.9]
-  );
-
-  return (
-    <motion.div
-      style={{ opacity, y, scale }}
-      className={`absolute top-0 h-full w-[55%] md:w-[48%] z-10 pointer-events-none flex items-center ${
-        side === "left" ? "left-0 justify-start pl-4 md:pl-12" : "right-0 justify-end pr-4 md:pr-12"
-      }`}
-    >
-      <div className="relative w-full h-[70vh] max-h-[800px]">
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="object-contain drop-shadow-2xl"
-          sizes="(max-width: 768px) 55vw, 48vw"
-          priority
-        />
-      </div>
-    </motion.div>
-  );
-}
+// Dynamically import the 3D viewer (no SSR — Three.js needs the browser)
+const ToolViewer3D = dynamic(
+  () => import("./dental-tools-3d/viewer").then((mod) => ({ default: mod.ToolViewer3D })),
+  { ssr: false }
+);
 
 interface ScrollRevealProps {
   texts: React.ReactNode[];
-  videoSrc?: string;
+  // videoSrc is no longer used, kept in interface if you don't want to break other pages right away
+  videoSrc?: string; 
 }
 
 export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
@@ -91,34 +25,20 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
   });
 
   const numItems = texts.length;
+  // More scroll space per page so each tool gets a full featured moment + landing animation
   const containerHeight = `${numItems * 200}vh`;
 
   return (
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1] rounded-t-[2rem]">
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+      <div className="sticky top-0 h-screen w-full">
+        
+        {/* 3D Viewer Background — NO overflow-hidden so tools are never clipped */}
+        <div className="absolute inset-0 z-10 pointer-events-none">
+          <ToolViewer3D scrollYProgress={scrollYProgress} />
+        </div>
 
-        {/* Tool Images — parallax scroll-driven */}
-        {TOOL_IMAGES.map((tool, i) => {
-          // Tools map to pages 1-5 (page 0 = intro, page 6 = finale)
-          const pageIndex = i + 1;
-          const pageStart = pageIndex / numItems;
-          const pageEnd = (pageIndex + 1) / numItems;
-
-          return (
-            <ToolImage
-              key={i}
-              src={tool.src}
-              alt={tool.alt}
-              side={tool.side}
-              scrollYProgress={scrollYProgress}
-              pageStart={pageStart}
-              pageEnd={pageEnd}
-            />
-          );
-        })}
-
-        {/* Text Container */}
-        <div className="absolute inset-0 w-full h-full z-20 overflow-hidden flex flex-col items-center justify-center pointer-events-none pb-48 md:pb-64">
+        {/* Text Container — has overflow-hidden for the curtain wipe effect */}
+        <div className="absolute inset-0 w-full h-full z-0 overflow-hidden flex flex-col items-center justify-center pointer-events-none pb-48 md:pb-64">
           {texts.map((text, index) => {
             const start = index / numItems;
             const end = (index + 1) / numItems;
@@ -138,19 +58,11 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
               [20, 0, 0, isLast ? 0 : -20]
             );
 
-            // For tool pages (1-5), align text to the OPPOSITE side of the tool
-            const toolIndex = index - 1; // 0-based tool index
-            const hasToolImage = toolIndex >= 0 && toolIndex < TOOL_IMAGES.length;
-            const toolSide = hasToolImage ? TOOL_IMAGES[toolIndex].side : null;
-            const textAlign = toolSide === "left" ? "text-right pr-8 md:pr-20 pl-[55%]" 
-                           : toolSide === "right" ? "text-left pl-8 md:pl-20 pr-[55%]"
-                           : "text-center";
-
             return (
               <motion.div
                 key={index}
                 style={{ opacity, y }}
-                className={`absolute w-full px-4 pointer-events-auto ${textAlign}`}
+                className="absolute w-full px-4 text-center pointer-events-auto"
               >
                 {text}
               </motion.div>
