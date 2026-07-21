@@ -11,8 +11,6 @@ interface ScrollRevealProps {
 export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoDuration, setVideoDuration] = useState(0);
-  const [isVideoReady, setIsVideoReady] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -24,32 +22,45 @@ export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
   const containerHeight = `${numItems * 200}vh`;
 
   // ── VIDEO SCROLL SYNC ──
-  // Map overall scroll progress → video currentTime
+  const targetTime = useRef(0);
+
+  // Map overall scroll progress → target video time
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const video = videoRef.current;
-    if (!video || !videoDuration || !isVideoReady) return;
-    const targetTime = latest * videoDuration;
-    // Only seek if there's a meaningful difference to avoid jitter
-    if (Math.abs(video.currentTime - targetTime) > 0.01) {
-      video.currentTime = targetTime;
-    }
+    if (!videoRef.current || Number.isNaN(videoRef.current.duration)) return;
+    targetTime.current = latest * videoRef.current.duration;
   });
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    let animationFrameId: number;
+
+    const loop = () => {
+      if (video.readyState >= 1 && !Number.isNaN(video.duration)) {
+        const diff = targetTime.current - video.currentTime;
+        if (Math.abs(diff) > 0.02) {
+          video.currentTime += diff * 0.15;
+        }
+      }
+      animationFrameId = requestAnimationFrame(loop);
+    };
+
     const handleLoaded = () => {
-      setVideoDuration(video.duration);
-      setIsVideoReady(true);
       video.pause();
       video.currentTime = 0;
     };
 
     video.addEventListener("loadedmetadata", handleLoaded);
     if (video.readyState >= 1) handleLoaded();
+    
+    // Start the rAF loop once
+    loop();
 
-    return () => video.removeEventListener("loadedmetadata", handleLoaded);
+    return () => {
+      video.removeEventListener("loadedmetadata", handleLoaded);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   // Subtle scale pulse for the video — grows slightly as you scroll deeper
