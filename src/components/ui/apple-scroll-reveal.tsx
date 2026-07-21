@@ -37,10 +37,14 @@ export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
   // Seek loop: waits for the browser to finish each seek before starting the next
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video) {
+      console.warn("[ScrollVideo] No video ref found");
+      return;
+    }
 
     let cancelled = false;
     let pendingSeek = false;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
 
     const onSeeked = () => {
       pendingSeek = false;
@@ -53,7 +57,7 @@ export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
     const scheduleSeek = () => {
       if (cancelled || pendingSeek) return;
       if (!video.duration || Number.isNaN(video.duration)) return;
-      if (video.readyState < 1) return;
+      if (video.readyState < 2) return; // Need HAVE_CURRENT_DATA to display frame
 
       const target = targetTimeRef.current;
       // Only seek if target is meaningfully different from current position (~1 frame at 24fps)
@@ -63,17 +67,36 @@ export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
       }
     };
 
-    // Poll for new seek targets at a gentle 30fps — lightweight and RAM-friendly
-    const intervalId = setInterval(() => {
-      if (!cancelled) scheduleSeek();
-    }, 33);
+    const startPolling = () => {
+      if (intervalId) return; // Already started
+      console.log("[ScrollVideo] Video ready — duration:", video.duration, "readyState:", video.readyState);
+      video.pause();
+      video.currentTime = 0;
+      // Poll for new seek targets at ~30fps
+      intervalId = setInterval(() => {
+        if (!cancelled) scheduleSeek();
+      }, 33);
+    };
+
+    // Start polling once video has enough data
+    const onLoadedData = () => {
+      console.log("[ScrollVideo] loadeddata fired");
+      startPolling();
+    };
 
     video.addEventListener("seeked", onSeeked);
+    video.addEventListener("loadeddata", onLoadedData);
+
+    // If video is already loaded (e.g., from cache)
+    if (video.readyState >= 2) {
+      startPolling();
+    }
 
     return () => {
       cancelled = true;
-      clearInterval(intervalId);
+      if (intervalId) clearInterval(intervalId);
       video.removeEventListener("seeked", onSeeked);
+      video.removeEventListener("loadeddata", onLoadedData);
     };
   }, []);
 
