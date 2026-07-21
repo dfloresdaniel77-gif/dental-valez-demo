@@ -1,23 +1,18 @@
 "use client";
 
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import dynamic from "next/dynamic";
-
-// Dynamically import the 3D viewer (no SSR — Three.js needs the browser)
-const ToolViewer3D = dynamic(
-  () => import("./dental-tools-3d/viewer").then((mod) => ({ default: mod.ToolViewer3D })),
-  { ssr: false }
-);
+import React, { useRef, useEffect, useState } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
 interface ScrollRevealProps {
   texts: React.ReactNode[];
-  // videoSrc is no longer used, kept in interface if you don't want to break other pages right away
-  videoSrc?: string; 
+  videoSrc?: string;
 }
 
-export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
+export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const [isVideoReady, setIsVideoReady] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -25,19 +20,72 @@ export const AppleScrollReveal = ({ texts }: ScrollRevealProps) => {
   });
 
   const numItems = texts.length;
-  // More scroll space per page so each tool gets a full featured moment + landing animation
+  // Keep the same generous scroll space per page
   const containerHeight = `${numItems * 200}vh`;
+
+  // ── VIDEO SCROLL SYNC ──
+  // Map overall scroll progress → video currentTime
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const video = videoRef.current;
+    if (!video || !videoDuration || !isVideoReady) return;
+    const targetTime = latest * videoDuration;
+    // Only seek if there's a meaningful difference to avoid jitter
+    if (Math.abs(video.currentTime - targetTime) > 0.01) {
+      video.currentTime = targetTime;
+    }
+  });
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleLoaded = () => {
+      setVideoDuration(video.duration);
+      setIsVideoReady(true);
+      video.pause();
+      video.currentTime = 0;
+    };
+
+    video.addEventListener("loadedmetadata", handleLoaded);
+    if (video.readyState >= 1) handleLoaded();
+
+    return () => video.removeEventListener("loadedmetadata", handleLoaded);
+  }, []);
+
+  // Subtle scale pulse for the video — grows slightly as you scroll deeper
+  const videoScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.85, 1.05, 0.95]);
+  const videoOpacity = useTransform(scrollYProgress, [0, 0.04, 0.92, 1], [0, 1, 1, 0.6]);
 
   return (
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1] rounded-t-[2rem]">
       <div className="sticky top-0 h-screen w-full">
-        
-        {/* 3D Viewer Background — NO overflow-hidden so tools are never clipped */}
-        <div className="absolute inset-0 z-10 pointer-events-none">
-          <ToolViewer3D scrollYProgress={scrollYProgress} />
-        </div>
 
-        {/* Text Container — has overflow-hidden for the curtain wipe effect */}
+        {/* ── SCROLL-SYNCED VIDEO BACKGROUND ── */}
+        {videoSrc && (
+          <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+            <motion.div
+              className="w-full h-full flex items-center justify-center"
+              style={{ scale: videoScale, opacity: videoOpacity }}
+            >
+              <video
+                ref={videoRef}
+                src={videoSrc}
+                muted
+                playsInline
+                preload="auto"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  mixBlendMode: "multiply",
+                  display: "block",
+                }}
+              />
+            </motion.div>
+          </div>
+        )}
+
+        {/* Text Container — curtain wipe effect for quotes */}
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden flex flex-col items-center justify-center pointer-events-none pb-48 md:pb-64">
           {texts.map((text, index) => {
             const start = index / numItems;

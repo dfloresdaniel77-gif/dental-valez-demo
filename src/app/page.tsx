@@ -21,8 +21,13 @@ export default function Home() {
         <MainHero />
       </section>
 
-      {/* Founder Profile Section */}
-      <div id="nuestro-enfoque" className="relative z-30">
+      {/* Founder Profile Section — slides OVER the sticky "Elevando" content like a curtain.
+           -mt-[15vh] creates a very short overlap so the transition completes in one scroll. */}
+      <div 
+        id="nuestro-enfoque" 
+        className="relative z-30 -mt-[15vh] rounded-t-[2rem]"
+        style={{ boxShadow: '0 -20px 60px rgba(0,0,0,0.12)' }}
+      >
         <FounderProfile />
       </div>
 

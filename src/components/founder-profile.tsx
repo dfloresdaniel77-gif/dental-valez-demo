@@ -54,7 +54,7 @@ export default function FounderProfile() {
   return (
     <AppleScrollReveal 
       texts={texts} 
-      videoSrc="/videos/kling_20260606_VIDEO_Tool_2___D_342_0.mp4"
+      videoSrc="/videos/scaler-spin.mp4"
     />
   );
 }
