@@ -62,7 +62,7 @@ export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
 
         {/* ── SCROLL-SYNCED VIDEO BACKGROUND ── */}
         {videoSrc && (
-          <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+          <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
             <motion.div
               className="w-full h-full flex items-center justify-center"
               style={{ scale: videoScale, opacity: videoOpacity }}
@@ -86,7 +86,7 @@ export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
         )}
 
         {/* Text Container — curtain wipe effect for quotes */}
-        <div className="absolute inset-0 w-full h-full z-0 overflow-hidden flex flex-col items-center justify-center pointer-events-none pb-48 md:pb-64">
+        <div className="absolute inset-0 w-full h-full z-10 overflow-hidden flex flex-col items-center justify-center pointer-events-none pb-48 md:pb-64">
           {texts.map((text, index) => {
             const start = index / numItems;
             const end = (index + 1) / numItems;
