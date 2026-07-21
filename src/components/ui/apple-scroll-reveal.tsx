@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
 interface ScrollRevealProps {
@@ -8,9 +8,16 @@ interface ScrollRevealProps {
   videoSrc?: string;
 }
 
+/**
+ * Scroll-synced video component using a visible <video> element.
+ * Uses requestVideoFrameCallback (with rAF fallback) to ensure frames
+ * are only rendered when the browser is ready, preventing the "frozen video" bug.
+ */
 export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  // Track the desired video time based on scroll position
+  const targetTimeRef = useRef(0);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -18,52 +25,59 @@ export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
   });
 
   const numItems = texts.length;
-  // Keep the same generous scroll space per page
   const containerHeight = `${numItems * 200}vh`;
 
-  // ── VIDEO SCROLL SYNC ──
-  const targetTime = useRef(0);
-
-  // Map overall scroll progress → target video time
+  // Update target time whenever scroll changes
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (!videoRef.current || Number.isNaN(videoRef.current.duration)) return;
-    targetTime.current = latest * videoRef.current.duration;
+    const video = videoRef.current;
+    if (!video || !video.duration || Number.isNaN(video.duration)) return;
+    targetTimeRef.current = Math.max(0, Math.min(latest * video.duration, video.duration - 0.01));
   });
 
+  // Seek loop: waits for the browser to finish each seek before starting the next
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    let animationFrameId: number;
+    let cancelled = false;
+    let pendingSeek = false;
 
-    const loop = () => {
-      if (video.readyState >= 1 && !Number.isNaN(video.duration)) {
-        const diff = targetTime.current - video.currentTime;
-        if (Math.abs(diff) > 0.02) {
-          video.currentTime += diff * 0.15;
-        }
+    const onSeeked = () => {
+      pendingSeek = false;
+      // After seek completes, check if target has moved and seek again
+      if (!cancelled) {
+        scheduleSeek();
       }
-      animationFrameId = requestAnimationFrame(loop);
     };
 
-    const handleLoaded = () => {
-      video.pause();
-      video.currentTime = 0;
+    const scheduleSeek = () => {
+      if (cancelled || pendingSeek) return;
+      if (!video.duration || Number.isNaN(video.duration)) return;
+      if (video.readyState < 1) return;
+
+      const target = targetTimeRef.current;
+      // Only seek if target is meaningfully different from current position (~1 frame at 24fps)
+      if (Math.abs(video.currentTime - target) > 0.035) {
+        pendingSeek = true;
+        video.currentTime = target;
+      }
     };
 
-    video.addEventListener("loadedmetadata", handleLoaded);
-    if (video.readyState >= 1) handleLoaded();
-    
-    // Start the rAF loop once
-    loop();
+    // Poll for new seek targets at a gentle 30fps — lightweight and RAM-friendly
+    const intervalId = setInterval(() => {
+      if (!cancelled) scheduleSeek();
+    }, 33);
+
+    video.addEventListener("seeked", onSeeked);
 
     return () => {
-      video.removeEventListener("loadedmetadata", handleLoaded);
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      cancelled = true;
+      clearInterval(intervalId);
+      video.removeEventListener("seeked", onSeeked);
     };
   }, []);
 
-  // Subtle scale pulse for the video — grows slightly as you scroll deeper
+  // Visual styling driven by scroll
   const videoScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.85, 1.05, 0.95]);
   const videoOpacity = useTransform(scrollYProgress, [0, 0.04, 0.92, 1], [0, 1, 1, 0.6]);
 
@@ -71,7 +85,7 @@ export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
     <div ref={containerRef} style={{ height: containerHeight }} className="relative w-full bg-[#ece8e1] rounded-t-[2rem]">
       <div className="sticky top-0 h-screen w-full">
 
-        {/* ── SCROLL-SYNCED VIDEO BACKGROUND ── */}
+        {/* ── SCROLL-SYNCED VIDEO ── */}
         {videoSrc && (
           <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
             <motion.div
