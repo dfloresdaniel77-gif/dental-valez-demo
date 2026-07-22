@@ -54,6 +54,8 @@ export default function FounderProfile() {
   return (
     <AppleScrollReveal 
       texts={texts} 
+      frameBasePath="/videos/frames_nobg/frame_"
+      totalFrames={120}
       videoSrc="/videos/scaler-spin.mp4"
     />
   );
