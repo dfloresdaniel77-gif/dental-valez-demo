@@ -8,15 +8,9 @@ interface ScrollRevealProps {
   videoSrc?: string;
 }
 
-/**
- * Scroll-synced video component using a visible <video> element.
- * Uses requestVideoFrameCallback (with rAF fallback) to ensure frames
- * are only rendered when the browser is ready, preventing the "frozen video" bug.
- */
 export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  // Track the desired video time based on scroll position
   const targetTimeRef = useRef(0);
 
   const { scrollYProgress } = useScroll({
@@ -34,69 +28,41 @@ export const AppleScrollReveal = ({ texts, videoSrc }: ScrollRevealProps) => {
     targetTimeRef.current = Math.max(0, Math.min(latest * video.duration, video.duration - 0.01));
   });
 
-  // Seek loop: waits for the browser to finish each seek before starting the next
+  // Seek engine: rAF-based loop that directly sets video.currentTime
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) {
-      console.warn("[ScrollVideo] No video ref found");
-      return;
-    }
+    if (!video) return;
 
-    let cancelled = false;
-    let pendingSeek = false;
-    let intervalId: ReturnType<typeof setInterval> | null = null;
+    let rafId: number;
+    let lastSetTime = -1;
 
-    const onSeeked = () => {
-      pendingSeek = false;
-      // After seek completes, check if target has moved and seek again
-      if (!cancelled) {
-        scheduleSeek();
+    const tick = () => {
+      // Only attempt to seek when the video is ready enough to display frames
+      if (video.readyState >= 2) {
+        const target = targetTimeRef.current;
+        // Only seek if the target has changed meaningfully from what we last commanded
+        if (Math.abs(target - lastSetTime) > 0.03) {
+          lastSetTime = target;
+          video.currentTime = target;
+        }
       }
+      rafId = requestAnimationFrame(tick);
     };
 
-    const scheduleSeek = () => {
-      if (cancelled || pendingSeek) return;
-      if (!video.duration || Number.isNaN(video.duration)) return;
-      if (video.readyState < 2) return; // Need HAVE_CURRENT_DATA to display frame
-
-      const target = targetTimeRef.current;
-      // Only seek if target is meaningfully different from current position (~1 frame at 24fps)
-      if (Math.abs(video.currentTime - target) > 0.035) {
-        pendingSeek = true;
-        video.currentTime = target;
-      }
-    };
-
-    const startPolling = () => {
-      if (intervalId) return; // Already started
-      console.log("[ScrollVideo] Video ready — duration:", video.duration, "readyState:", video.readyState);
+    const onReady = () => {
       video.pause();
-      video.currentTime = 0;
-      // Poll for new seek targets at ~30fps
-      intervalId = setInterval(() => {
-        if (!cancelled) scheduleSeek();
-      }, 33);
+      rafId = requestAnimationFrame(tick);
     };
 
-    // Start polling once video has enough data
-    const onLoadedData = () => {
-      console.log("[ScrollVideo] loadeddata fired");
-      startPolling();
-    };
-
-    video.addEventListener("seeked", onSeeked);
-    video.addEventListener("loadeddata", onLoadedData);
-
-    // If video is already loaded (e.g., from cache)
     if (video.readyState >= 2) {
-      startPolling();
+      onReady();
+    } else {
+      video.addEventListener("loadeddata", onReady, { once: true });
     }
 
     return () => {
-      cancelled = true;
-      if (intervalId) clearInterval(intervalId);
-      video.removeEventListener("seeked", onSeeked);
-      video.removeEventListener("loadeddata", onLoadedData);
+      cancelAnimationFrame(rafId);
+      video.removeEventListener("loadeddata", onReady);
     };
   }, []);
 
