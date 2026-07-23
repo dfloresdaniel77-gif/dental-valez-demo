@@ -173,7 +173,7 @@ export const AppleScrollReveal = ({ texts, videoSrc, frameBasePath, totalFrames 
                   height: "100%",
                   objectFit: "contain",
                   mixBlendMode: "multiply",
-                  filter: "brightness(1.2)",
+                  filter: "brightness(1.5) contrast(1.15)",
                   display: "block",
                 }}
               />
