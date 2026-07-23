@@ -45,6 +45,18 @@ export const AppleScrollReveal = ({ texts, videoSrc, frameBasePath, totalFrames 
         loadedCount++;
         if (loadedCount === totalFrames && !cancelled) {
           setFramesLoaded(true);
+          // Draw frame 0 immediately so the tool is visible right away
+          const canvas = canvasRef.current;
+          const firstImg = images[0];
+          if (canvas && firstImg) {
+            canvas.width = firstImg.naturalWidth;
+            canvas.height = firstImg.naturalHeight;
+            const ctx = canvas.getContext("2d");
+            if (ctx) {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(firstImg, 0, 0);
+            }
+          }
         }
       };
       images.push(img);
@@ -143,9 +155,9 @@ export const AppleScrollReveal = ({ texts, videoSrc, frameBasePath, totalFrames 
               <canvas
                 ref={canvasRef}
                 style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  aspectRatio: "960 / 540",
                   display: "block",
                 }}
               />
